@@ -1,0 +1,107 @@
+\name{SM91}
+\alias{ddtSM91}
+\alias{ddtSM91_no}
+\alias{propSM91}
+\alias{propSM91_no}
+\alias{mapSM91}
+\alias{mapSM91.alt}
+ 
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{Climate state derivative according to the Saltzman and Maasch model}
+
+\usage{
+propSM91(...)
+ddtSM91(time, state, parms,Rforcing=zero,fmu=zero)
+propSM91_no(...)
+ddtSM91_no(time, state, parms,Rforcing=zero,fmu=zero)
+mapSM91(parms)
+mapSM91.alt(parms)
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{time}{time, years after 1950}
+  \item{state}{Climate state,  a tuple with elements '\code{I}', '\code{mu}' and '\code{theta}'
+               corresponding to ice volume (in E18 kg), CO2 concentration (in ppm) and
+               deep ocean temperature, respectively}
+  \item{parms}{all parameters corresponding
+               to the full equations (4 - 6) in original reference}
+  \item{Rforcing}{time-function or scalar representing the Insolation forcing (R in eq. 4)}
+  \item{fmu}{time-function or scalar representing the Carbon cycle  forcing (Fmu in eq. 5)}
+  \item{...}{parameters to be passed to \code{propagate.stochastic}}
+}
+\details{
+SM91 with the standard parameter configuration presents three fixed points, all unstable. The
+limit cycle orbits around these three fixed points. The two extremum fixed times quickly become
+imaginary under weak forcing.
+}
+
+\description{
+  \code{ddtSM91} returns the time-derivative of the climatic state vector
+  \code{propSM91} returns the state vector at time \code{newt}, given its value at time \code{oldt}. Cf.  \code{propagate_stochastic} for other parameters.
+ \code{mapSM91} maps the set of standard parameters as given in p. 204 of original reference
+                    (\code{p,q,r,s,lambda_i,c,K_theta,K_R}) to
+                    the form (\code{alpha,beta,gamma}) as given in p. 207.
+ \code{mapSM91.alt} maps the set of standard parameters as given in p. 206 (\code{ai, bi, ci}) to
+                    the form (\code{alpha,beta,gamma}) as given in p. 207 
+                    The standard set of these parameters is given in mapSM91.alt.
+ \code{mapSM91.epj} maps the set of standard parameters as given in p. 24 of Crucifix
+                    and Rougier (2009), to the form (\code{alpha,beta,gamma}) as given in p. 207 
+                    The standard set of these parameters is given in \code{mapSM91.epj}.
+ \code{ddtSM91_no}  identical to ddtSM91 but written in \code{R} instead of \code{Fortran}. Much slower.
+ \code{propSM91_no}  identical to propSM91 but calling \code{propSM91_no} instead of {propSM91}. 
+}
+
+ \note{More explanation on the different parameter sets and conversions between these different parameter
+ sets is available at \url{http://www.astr.ucl.ac.be/index.php?page=crucifix\%23Research} }
+
+\references{
+B. Saltzman and K. A. Maasch. A first-order global model of late Cenozoic climate. II further analysis based on a simplification of the CO_2 dynamics. Clim. Dyn., 5:201-210, 1991.
+
+M. Crucifix and J. Rougier. On the use of simple dynamical systems for climate predictions: a bayesian prediction of the next glacial inception. European Physics Journal - Special Topics, 174:11-31, 2009.
+}
+  
+\author{Michel Crucifix, U. catholique de Louvain, Belgium.}
+
+\examples{
+# reproduces (as well as possible...) Figures 5a-d of SM91 but in dimensional form
+t <- seq(-5e5,0,1e3)
+Rforcing <- sapply(t, function (tt) Insol(ber78(tt),long=120*pi/180,lat=65*pi/180))
+Rforcing <- Rforcing - mean(Rforcing)
+Rforcing <- approxfun(t,Rforcing)
+par <- mapSM91(parSM91)
+SM91.Fig5 <- ts_stochastic (ddtSM91,init=c(I=0,mu=183,theta=4.5),t,par=par,Rforcing=Rforcing,stochastic=FALSE)
+SM91.Fig5 <- cbind(F=Rforcing(t),SM91.Fig5)
+SM91.Fig5 <- ts(SM91.Fig5,start=t[1],deltat=t[2]-t[1])
+plot(SM91.Fig5)
+# reproduces Figure 4 of Crucifix and Rougier 2009, European Physics Journal - Special topics
+t <- seq(-5e5,0,1e3)
+Rforcing <- sapply(t, function (tt) Insol(ber78(tt),long=90*pi/180,lat=65*pi/180))
+meanForcing <- mean(Rforcing)
+Rforcing <- Rforcing - meanForcing
+Rforcing <- approxfun(t,Rforcing)
+mypar.epj <- parSM91.epj
+mypar.epj['theta0'] <- 0 
+mypar.epj['I0'] <- 0 
+par <- mapSM91.epj(mypar.epj)
+CR09.Fig4 <- ts_stochastic (ddtSM91,init=c(I=-15,mu=300,theta=1.5),t,par=par,Rforcing=Rforcing,stochastic=FALSE)
+CR09.Fig4 <- cbind(F=Rforcing(t)+meanForcing,CR09.Fig4)
+CR09.Fig4 <- ts(CR09.Fig4,start=t[1],deltat=t[2]-t[1])
+plot(CR09.Fig4,frame=FALSE)
+# reproduces Figure 10 of SM91 (takes a bit longer)
+t <- seq(-5e6,0,2e3)
+Rforcing <- sapply(t, function (tt) 
+                   Insol(ber78(tt),long=120*pi/180,lat=65*pi/180))
+Rforcing <- Rforcing - mean(Rforcing)
+Rforcing <- approxfun(t,Rforcing)
+par <- mapSM91(parSM91)
+fmu <- function(t) {(t*1e-6 )^2/25*0.03}
+SM91.Fig10 <- ts_stochastic (ddtSM91,init=c(I=0,mu=253,theta=4),t,
+                             par=par,fmu=fmu,Rforcing=Rforcing,
+                             stochastic=FALSE)
+SM91.Fig10 <- cbind(Fmu=fmu(t),SM91.Fig10)
+SM91.Fig10 <- ts(SM91.Fig10,start=t[1],deltat=t[2]-t[1])
+plot(SM91.Fig10)
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+\keyword{misc}

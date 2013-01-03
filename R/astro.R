@@ -1,0 +1,176 @@
+ ## calculates astronomical elements according to the solutions given below
+ 
+astro <- function(t,solution=ber78,degree=FALSE) {solution(t,degree)}
+
+ ## Calculates climate orbital elements according to the algorithm given in A. Berger (1978)
+ # Berger, A. L. (1978).  Long-term variations of daily insolation and Quaternary climatic changes, 
+ # J. Atmos. Sci., 35(), 2362-2367
+
+ # This solution is valid for + / - 1e6 years. 
+ # uses MBCS_BER78 provided by A. Berger, available on
+ # ftp://ftp.astr.ucl.ac.be/pub/berger/berger78/INSOL.IN
+
+## attach table to ber78 function
+## Input :  t = time expressed in yr after 1950.0 (reference epoch)
+
+ber78 <- function(t,degree=FALSE)
+{
+  if (!exists(".BER78"))
+  { 
+     message('load BER78data')
+     .BER78 <<- new.env()
+     data(BER78, envir=.BER78)
+  }
+
+  
+  psibar<- 50.439273/60./60. * pi/180 
+  estar <- 23.320556
+  e0    <- 0.028707
+  zeta  <- 3.392506 * pi/180.
+  twopi <- 2*pi
+ 
+  sectorad <- pi/(180*60.*60.)
+
+  M <- .BER78$Table4$V2
+  g <- .BER78$Table4$V3*sectorad
+  b <- .BER78$Table4$V4*pi/180
+  F <- .BER78$Table5$V2*sectorad
+  fp <- .BER78$Table5$V3*sectorad
+  d <- .BER78$Table5$V4*pi/180.
+  A <- .BER78$Table1$V2/60./60.
+  f <- .BER78$Table1$V3*sectorad
+  phi<- .BER78$Table1$V4*pi/180.
+
+  ## Obliquity
+
+  eps <- estar + sum(A*cos(f*t+phi))
+  epsp <- estar + sum(A*sin(f*t+phi))
+
+  esinpi <- sum(M*sin(g*t+b))
+  ecospi <- sum(M*cos(g*t+b))
+  psi    <- psibar*t + zeta + sum(F*sin(fp*t +d))
+
+  e <- sqrt(esinpi^2+ecospi^2)
+  Pi <-atan(esinpi/ecospi)+pi*(ecospi<0)
+  eps <- eps * pi/180.
+  epsp <- epsp * pi/180.
+  varpi <- (Pi+psi+pi) %% (twopi)
+
+  if (degree) {rad2deg <- 180/pi
+               eps <- eps*rad2deg
+               varpi <- varpi*rad2deg}
+
+  c(eps=eps,ecc=e,varpi=varpi,epsp=epsp)
+}
+ ## Calculates climate orbital elements according to the algorithm given in A. Berger (1978)
+ # Berger, A. L. (1978).  Long-term variations of daily insolation and Quaternary climatic changes, 
+ # J. Atmos. Sci., 35(), 2362-2367
+
+ # This solution is valid for + / - 3e6 years. 
+
+## attach table to ber90 function
+## Input :  t = time expressed in yr after 1950.0 (reference epoch)
+
+ber90 <- function(t,degree=FALSE)
+{
+  if (!exists(".BER90"))
+  {
+     message("load BER90 data")
+     .BER90 <<- new.env()
+     data(BER90, envir=.BER90)
+  }
+ 
+  psibar<- 50.3908110/60./60. * pi/180 
+  estar <- 23.33340950
+  zeta  <- 1.60075265 * pi/180.
+  twopi <- 2*pi
+ 
+  sectorad <- pi/(180*60.*60.)
+
+  M <- .BER90$Table4_90$V2
+  g <- .BER90$Table4_90$V3*sectorad
+  b <- .BER90$Table4_90$V4*pi/180
+  F <- .BER90$Table5_90$V2*sectorad
+  fp <- .BER90$Table5_90$V3*sectorad
+  d <- .BER90$Table5_90$V4*pi/180.
+  A <- .BER90$Table1_90$V2/60./60.
+  f <- .BER90$Table1_90$V3*sectorad
+  phi<- .BER90$Table1_90$V4*pi/180.
+
+  ## Obliquity
+
+  eps <- estar + sum(A*cos(f*t+phi))
+  epsp <- estar + sum(A*sin(f*t+phi))
+
+  esinpi <- sum(M*sin(g*t+b))
+  ecospi <- sum(M*cos(g*t+b))
+  psi    <- psibar*t + zeta + sum(F*sin(fp*t +d))
+
+  e <- sqrt(esinpi^2+ecospi^2)
+  Pi <-atan(esinpi/ecospi)+pi*(ecospi<0)
+  eps <- eps * pi/180.
+  epsp <- epsp * pi/180.
+  varpi <- (Pi+psi+pi) %% (twopi)
+
+  if (degree) {rad2deg <- 180/pi
+               eps <- eps*rad2deg
+               varpi <- varpi*rad2deg}
+
+  c(eps=eps,ecc=e,varpi=varpi,epsp=epsp)
+}
+
+ # This solution is valid for 50e6 years
+
+## Input :  t = time expressed in yr after 1950.0 (reference epoch)
+
+la04 <- function(t,degree=FALSE)
+{
+ if (!exists(".LA04"))
+  {
+     .LA04 <<- new.env()
+     data(LA04, envir=.LA04)
+     message("LA04 data loaded")
+  }
+ 
+  tka = t/1000.
+  if (tka>0) 
+  {
+   local(
+   {
+    F <-  floor(tka)
+    ORB <<- .LA04$la04future[F+1, ]
+    if (! (tka == F)) {
+      D  <- tka - floor(tka)
+      ORB <<- ORB + D*(.LA04$la04future[F+2, ] - ORB)
+    }
+   })}
+   else
+   {
+   local(
+   {
+    F <-  floor(tka)
+    ORB <<- .LA04$la04past[-F+1, ]
+    if (! (tka == F)) {
+      D  <- tka - floor(tka)
+      ORB <<- ORB + D*(.LA04$la04past[-F+2, ] - ORB)
+    }
+   })}
+  
+  if (degree) {rad2deg <- 180/pi
+               ORB['eps'] <- ORB['eps']*rad2deg
+               ORB['varpi'] <- ORB['varpi']*rad2deg}
+
+
+   ORB[c('ecc','eps','varpi')]
+   }
+
+precession <- function(t,solution=ber78)
+##  as astro, but returns only precession parameter e sin (varpi)
+{ 
+  O <- astro(t,solution, degree=FALSE)
+  O['ecc'] * sin (O['varpi'])
+}
+
+obliquity <- function(t,solution=ber78,degree=FALSE)
+##  as astro, but returns only obliquity
+{ astro(t,solution, degree=degree)['eps'] }

@@ -1,0 +1,59 @@
+\name{propagate_stochastic}
+\alias{propagate_stochastic}
+\alias{ts_stochastic}
+ 
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{Climate state derivative according to the Saltzman and Maasch model}
+
+\usage{
+propagate_stochastic <- with(list(dt = 100),
+                       function(ddtfunction,state, par, oldt, newt, stochastic=true,  
+                       iliminf=false,fixed = numeric(0), mapper = identity,mergepar=true,...)
+ts_stochastic <- function(ddtfunction,init,t=NULL,from=NULL,to=NULL,length.out=NULL,...)
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{ddtfunction}{function giving first-order derivatives of state variables, years after 1950}
+  \item{state}{state vector }
+  \item{par}{ a tuple with model parameters}
+  \item{oldt}{time from which stochastic integration is performed}
+  \item{newt}{time until which stochastic integration is performed}
+  \item{stochastic}{logical determining if stochastic terms are added to the propagation equations}
+  \item{iliminf}{ad-hoc parameter, useful for the SV92 and SV93 equations. If \code{iliminf} is true, then
+                 ice volume is floored to zero}
+  \item{fixed}{optional set of additional model parameters. In filter application or sensitivity experiments,
+              variable and fixed parameters are partitionned along  \code{par}  and \code{fixed}, respectively.}
+  \item{mapper}{optional function mapping the parameters in \code{par} and \code{fixed}, into a set directly 
+                passed to \code{ddtfunction}}.
+  \item{mergepar}{If \code{true} then a check is operated to detect possible overlaps between the parameters passed
+                  in \code{fixed} and \code{par}, in which case \code{fixed} parameters are overridden. Useful
+                  to disable to spare computing time in filtering applications.}
+}
+
+\value{
+\code{propagate_stochastics} returns a sample state-vector at time \code{newt}. 
+\code{propagate_stochastics} returns a matrix with columns giving sample state-evolution at the time steps \code{t}
+}
+
+
+\description{
+\code{propagate_stochastic} simply implements a forward (Euler-like) scheme to sample a state-evolution constrained by stochastic differential equations. The governing equation is
+
+\code{dX = df(X) + Sigma dW},
+
+where the deterministic drift df is given by the \code{ddtfunction} and dW is an increment of the Wiener process over \code{dt}. Here, \code{dt} is hardwired to 100 time-units. The variance matrix \code{Sigma} is diagonal, with elements \code{sig.X}, \code{sig.Y} and \code{sig.Z} if (\code{X,Y,Z}) are the names of the state vector. The variances
+must be embedded in the named vector \code{par}.
+
+\code{ts_stochastic} is a wrapper of \code{propagate_stochastic} where the time series is either provided
+in the form of a vector in \code{t}, or as a \code{from}, \code{to}, \code{length.out} combinations,
+where \code{length.out} is the length of the timeseries. 
+}
+
+  
+\author{Jonty Rougier (U. Bristol, UK ) and Michel Crucifix  (U. catholique de Louvain, Belgium.)}
+
+\examples{
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+\keyword{misc}

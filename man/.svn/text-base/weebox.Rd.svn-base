@@ -1,0 +1,34 @@
+\name{weebox}
+\alias{weebox}
+
+\title{Box-plot-type graphical object}
+
+\description{
+Produce simple box-plot-type representation of weighted sample.
+}
+
+\usage{
+weebox(y, w, at, width = wd, col = "grey", xpd = NA)
+}
+
+\arguments{
+  \item{y}{Vector of values}
+  \item{w}{Vector of weights}
+  \item{at}{Where on the x-axis}
+  \item{width}{Width of box}
+  \item{col}{Colour of box}
+  \item{xpd}{See \code{?par}}
+}
+
+\value{Invoked for its side-effect of drawing a box on a figure.  Returns
+  quantiles invisibly.}
+
+\author{Jonathan Rougier}
+
+\seealso{\code{\link{APF1step}}, used in the example.}
+
+\examples{
+## see the example in ?APF1step
+}
+
+\keyword{misc}

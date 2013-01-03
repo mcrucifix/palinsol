@@ -1,0 +1,9 @@
+require(stats)
+local({
+fpath_data <- file.path('..','orig','ODP','ODP927_data.txt')
+fpath_tm <- file.path('..','orig','ODP','ODP927_time.txt')
+ODP927 <<- read.table(fpath_data,skip=8, header = TRUE)
+ODP927_tm <- read.table(fpath_tm,header = TRUE)
+time_depth <- approxfun(ODP927_tm$mcd,ODP927_tm$age.Ma)
+ODP927$Age <<- time_depth(ODP927$mcd)
+})

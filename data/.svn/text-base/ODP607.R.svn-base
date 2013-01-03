@@ -1,0 +1,10 @@
+
+local({
+  fpath <- file.path('..', 'orig', 'moraymo.us', 's607ageCK92isoadjmean.dat')
+  dummy <- read.table(fpath, header = TRUE, row.names = NULL)
+  ODP607 <<- data.frame(CE = -1e3*dummy$ageCK92, O18= -dummy$X607O18)
+})
+
+ODP607 <- ODP607
+  
+

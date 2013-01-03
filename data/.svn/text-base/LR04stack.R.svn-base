@@ -1,0 +1,15 @@
+#### LR04stack.R : process Lorraine Lisiecki's data.  Citation:
+#### Lisiecki, L. E., and M. E. Raymo (2005), A Pliocene-Pleistocene
+#### stack of 57 globally distributed benthic d18O records,
+#### Paleoceanography,20, PA1003, doi:10.1029/2004PA001071.
+
+local({
+
+  LR04stack <- read.table('../orig/LR04stack.txt', skip = 5, header = FALSE)
+  names(LR04stack) <- c('Age', 'delta18O', 'StdErr')
+  
+  LR04stack$CE <- -1e3 * LR04stack$Age
+
+  LR04stack <<- LR04stack[order(LR04stack$CE), c('CE', 'delta18O', 'StdErr')]
+
+})

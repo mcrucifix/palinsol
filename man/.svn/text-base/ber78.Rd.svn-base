@@ -1,0 +1,78 @@
+\name{ber78}
+\alias{ber78}
+\alias{Insol}
+ 
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{Compute insolation parameters using Berger (1978) algorithm}
+
+\description{
+--
+}
+\usage{
+ber78(t,degree=FALSE)
+Insol(long=pi/2, lat=65*pi/180,orbit,S0=1365)
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{t}{Time, years after 1950}
+  \item{long}{true solar longitude}
+  \item{lat}{latitude}
+  \item{orbit}{Output from \code{ber78}}
+  \item{S0}{Total solar irradiance}
+  \item{degree}{returns angles in degrees if \code{TRUE}}
+}
+\details{
+  True solar longitude is measured in radiants:
+  \tabular{ll}{
+    pi/2 \tab for summer solstice\cr
+    pi \tab   for autumn equinox\cr
+    3 * pi/2 \tab for winter solstice\cr
+    0 \tab for spring equinox\cr
+  }
+
+  The Berger (1978) algorithm is accurate for +/- 1e6 years about the
+  present.
+  
+}
+
+\value{
+  \code{ber78} returns the three orbital parameters: \code{eps} :obliquity,
+  \code{ecc}: eccentricity and \code{varpi} true solar longitude of the perihelion, 
+  as well as \code{epsp}, the Hilbert transform of obliquity (sines changed
+  in cosines in the trigonometrical expansion). 
+  Angles are returned in radians unless \code{degree=TRUE}
+  
+  \code{Insol} returns daily mean incoming solar radiation at the top of
+  the atmosphere in the same unit as \code{SO}.
+}
+
+\references{
+  Berger, A. L. (1978).  Long-term variations of daily
+insolation and Quaternary climatic changes, J. Atmos. Sci., 35,
+2362-2367.
+}
+  
+\author{Michel Crucifix, U. catholique de Louvain, Belgium.}
+
+\examples{
+
+## make a little wrapper, with all default values
+
+insolation <- function(times)
+  sapply(times, function(tt) Insol(orbit=ber78(tt)))
+
+tts <- seq(from = -400e3, to = 0, by = 10e3)
+isl <- insolation(tts)
+
+## produces a so-called "Milankovitch" graph,
+## where insolation is plotted versus latitude
+## and true-solar longitude
+
+long <- seq(0,2*pi,l=20)
+lat <- seq(-pi/2,pi/2,l=20)
+M <- outer(long,lat,Vectorize(Insol,c("long","lat")),orbit=ber78(0))
+filled.contour(M)
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+\keyword{misc}

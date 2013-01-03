@@ -1,0 +1,9 @@
+Package: insol
+Version: 0.91
+Date: 2010-12-05
+Title: Insolation for palaeoclimate studies
+Author: Michel Crucifix 
+Maintainer: Michel Crucifix <michel.crucifix@uclouvain.be>
+Depends: stats, gsl
+Description: 
+License: GPL

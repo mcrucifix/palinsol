@@ -1,0 +1,9 @@
+#### load Berger 1978 table from INSOL file
+
+fpath <- file.path('..', 'orig', 'INSOL.IN')
+
+Table4 <- read.table(fpath, skip=6, nrow=19)
+Table1 <- read.table(fpath, skip=25, nrow=47)
+Table5 <- read.table(fpath, skip=72, nrow=78)
+
+rm(list = c('fpath'))

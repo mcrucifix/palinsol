@@ -1,0 +1,120 @@
+\name{SV93}
+\alias{ddtSV93}
+\alias{propSV93}
+\alias{mapSV93}
+\alias{parSV93.ref}
+ 
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{Climate state derivative according to the Saltzman and Maasch model}
+
+\usage{
+propSV93(...)
+ddtSV93(time, state, parms,Rforcing=0,fmu=0)
+parSV93
+mapSV93(parms)
+parSV93
+mapSV93.ref(parms)
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{time}{time, years after 1950}
+  \item{state}{Climate state,  a tuple with elements '\code{I}', '\code{D}', '\code{mu}' and '\code{theta}'
+               corresponding to ice volume (in E18 kg), bedrock deflection (in m), CO2 concentration (in ppm) and
+               deep ocean temperature, respectively}
+  \item{parms}{all parameters corresponding
+               to the full equations (17-21) in original reference, but expressed directly in terms of the
+               full state variables and not the anomalies with respect to a reference state.}
+  \item{Rforcing}{time-function or scalar representing the Insolation forcing (R'), expressed
+                  as an anoamly to the mean}
+  \item{fmu}{time-function or scalar representing the Carbon cycle  forcing (Fmu)}
+  \item{...}{parameters to be passed to \code{propagate.stochastic}}
+}
+
+\description{
+  \code{ddtSV93} returns the time-derivative of the climatic state vector
+  \code{propSV93} returns the state vector at time \code{newt}, given its value at time \code{oldt}. Cf.  \code{propagate_stochastic} for other parameters.
+ \code{parSV93}  provides a set of standard parameters for direct comparison with SV92, SM91 and SM90. 
+ \code{mapSV93} maps the set of standard parameters as used in \code{SM91} 
+                    (\code{p,q,r,s,lambda_i,c,K_theta,K_R}) to
+                    the form (\code{alpha,beta,gamma}) required to integrate the set of
+                    equations (11), (12), (2) and (3) [equation numbers refer to the reference below]
+ \code{parSV93.ref}  provides a set of  parameters used in the publication, and  given in table 1,
+                  plus a set \code{I_0,mu_0} and \code{theta_0} corresponding to  fixed point.
+ \code{mapSV93.ref} maps \code{SV93.ref} into parameters used in equations (2-8).
+}
+
+\details{SV93 includes four differential equations, for ice volume, bedrock deflection, carbon dioxide
+and deep-ocean temperature. It is very similar to SV92, but a few modifications have been introduced.
+\itemize{
+\item  the CO2-dependency of temperature is formally supposed to be logarithmic, but in fact appears as a linear term because of the linearisation around \code{mu_0}. In practice this only implies that the climate sensitivity parameters, now denoted \code{B}, had to be redefined. In summary, the following conversion applies between the SV92 and SV93 parameters (note that \code{B} was hardwired to 18 in SM91 and earlier versions)  
+\code{cmu -> 1/mu0
+      Ktheta / cmu -> Ktheta
+      KR / cmu -> KR }
+
+\item  The ice volume equation implicitly considers two identical ice sheets, which forces a recalibration of the critical height \code{Z} for instability
+\item The cricital height \code{Z} for instability now includes a dependency on sea-level. I am unsure as whether this actually causes new dynamical properties.
+}}
+\references{
+  Saltzman B. and M. Y. Verbitsky. Mutiple instabilities and modes of glacial rhytmicity in the Plio-Pleistocene: a general theory of late Cenozoic climatic change. \emph{Clim. Dyn.}, 9:1-15, 1993.
+}
+  
+\author{Michel Crucifix, U. catholique de Louvain, Belgium.}
+
+\examples{
+t <- seq(-3e6,0,2e3)
+par <- mapSV93.ref(parSV93.ref)
+Rforcing <- sapply(t, function (tt) Insol(ber78(tt),long=120*pi/180,lat=70*pi/180))
+Rforcing <- approxfun(t,Rforcing - mean(Rforcing))
+
+# reproduces Figure3
+SV93.Fig3 <- ts_stochastic (ddtSV93,init=c(I=0,D=0,mu=253,theta=0),
+                            t,fixed=parSV93.ref,Rforcing=Rforcing,
+                            fmu=0.0006,map=mapSV93.ref,par=c(Kmu=0.3),Iliminf=TRUE)
+
+# reproduces figure 4
+SV93.Fig4 <- ts_stochastic (ddtSV93,init=c(I=30,D=0,mu=245,theta=0),
+                            t,fixed=parSV93.ref,par=NULL,fmu=0.0006,
+                            Rforcing=0,stoch=TRUE,map=mapSV93.ref) 
+
+# reproduces Figure 5
+# SV93 claims that suppressing the calving instability reduces the residence 
+# time in highCO2 / lowice mode, but I don't find this is the case, neither 
+# in his figures nor in these experiments (which convincingly reproduce the figure)
+
+SV93.Fig5 <- ts_stochastic (ddtSV93,init=c(I=30,D=0,mu=245,theta=0),t,
+                            fixed=parSV93.ref,par=c(alpha4=0),fmu=0.0006,
+                            Rforcing=0,stoch=TRUE,map=mapSV93.ref) 
+
+# reproduces Figure 7 
+
+fmu <- function(t) {(t*1e-6 + 1.0)^2*0.0035-0.0035}
+SV93.Fig7 <- ts_stochastic (ddtSV93,init=c(I=0,D=0,mu=280,theta=0),t,
+                           fixed=parSV93.ref, par=c(mu0=253),map=mapSV93.ref,
+                           Rforcing=Rforcing,fmu=fmu)
+
+
+# same as Figre 7 but with no forcing (to evidence the different regimes)
+# the forcing function is shifted by 1Myr.
+
+fmu <- function(t) {(t*1e-6 + 2.0)^2*0.0035-0.0035}
+SV93.Fig7.2 <- ts_stochastic (ddtSV93,init=c(I=0,D=0,mu=280,theta=0),t,
+                              fixed=parSV93.ref, par=NULL,map=mapSV93.ref,
+                              fmu=fmu,Rforcing=0,stochastic=FALSE)
+
+
+# idem but with stochastic forcing
+
+SV93.Fig7.3 <- ts_stochastic (ddtSV93,init=c(I=0,D=0,mu=280,theta=0),t,
+                              fixed=parSV93.ref, par=NULL,map=mapSV93.ref,
+                              fmu=fmu,Rforcing=0,stochastic=TRUE)
+
+# to create a 40k calving instability, one needs to consider a case where
+# the cold state is stable, and Z0 sufficiently low.
+
+SV93.CalvInst <- ts_stochastic (ddtSV93,init=c(I=30,D=0,mu=245,theta=0),t,
+                                fixed=parSV93.ref,par=c(I0=20,Z0=50),fmu=-0.005,
+                                Rforcing=0,stoch=FALSE,map=mapSV93.ref) 
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.
+\keyword{misc}

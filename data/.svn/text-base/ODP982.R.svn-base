@@ -1,0 +1,6 @@
+local({
+  fpath <- file.path('..', 'orig', 'ODP', 'ODP982.txt')
+  ODP982 <<- read.table (fpath, skip = 28, header = TRUE)
+})
+
+ODP982
