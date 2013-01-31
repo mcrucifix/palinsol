@@ -173,7 +173,14 @@ la04 <- function(t,degree=FALSE)
     ORB <<- .LA04$la04future[F+1, ]
     if (! (tka == F)) {
       D  <- tka - floor(tka)
-      ORB <<- ORB + D*(.LA04$la04future[F+2, ] - ORB)
+      diff <- .LA04$la04future[F+2, ] - ORB
+      # note : if the diff in varpi is greater than pi,
+      # this probably means that we have skipped 2*pi, 
+      # so we need to correct accordingly
+      if (diff$varpi > pi) diff$varpi = diff$varpi - 2*pi
+      if (diff$varpi < -pi) diff$varpi = diff$varpi + 2*pi
+      #
+      ORB <<- ORB + D*diff
     }
    })}
    else
@@ -183,8 +190,16 @@ la04 <- function(t,degree=FALSE)
     F <-  floor(tka)
     ORB <<- .LA04$la04past[-F+1, ]
     if (! (tka == F)) {
-      D  <- tka - floor(tka)
-      ORB <<- ORB + D*(.LA04$la04past[-F+2, ] - ORB)
+      D  <- tka - F
+
+      diff <- .LA04$la04past[-F, ] - ORB
+      # note : if the diff in varpi is greater than pi,
+      # this probably means that we have skipped 2*pi, 
+      # so we need to correct accordingly
+      if (diff$varpi > pi) diff$varpi = diff$varpi - 2*pi
+      if (diff$varpi < -pi) diff$varpi = diff$varpi + 2*pi
+      #
+      ORB <<- ORB + D*diff
     }
    })}
   
