@@ -21,8 +21,6 @@ Milankovitch (orbit, S0=1365, lat=seq(-pi/2, pi/2, l=73),
   \item{deg}{If true : the axes of the Milankovitch object are expressed in degrees. 
   Inputs are always in radiants}
 }
-\details{
-}
 
 \value{
   A object of Milankovitch class, which may be plotted using the regular plot function

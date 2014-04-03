@@ -310,9 +310,9 @@ if (months)
    MM = x[ Col,]
    plot_function(Long, attr(x, "lat"), MM, axes=FALSE,xlab='Month',ylab='Latitude',xaxs='i',yaxs='i',...)
     if(!exists("legend.only"))  {
-   axis (1, at=seq(0,12)*30, lab=rep('',13))
-   axis (3, at=seq(0,12)*30, lab=rep('',13))
-   axis (1, at=seq(0,11)*30+15, lab=c('J','F','M','A','M','J','J','A','S','O','N','D'), tick=FALSE)}
+   axis (1, at=seq(0,12)*30, labels=rep('',13))
+   axis (3, at=seq(0,12)*30, labels=rep('',13))
+   axis (1, at=seq(0,11)*30+15, labels=c('J','F','M','A','M','J','J','A','S','O','N','D'), tick=FALSE)}
  }
  else
  {   plot_function(attr(x, "long"), attr(x, "lat"), x, axes=FALSE, 
@@ -324,8 +324,8 @@ if (months)
 }
  if(!exists("legend.only")) 
  {
- axis(2, at=seq(-90,90,30), lab=c('90S','60S', '30S','Eq.','30N','60N','90S'))
- axis(4, at=seq(-90,90,30), lab=rep('',7))
+ axis(2, at=seq(-90,90,30), labels=c('90S','60S', '30S','Eq.','30N','60N','90S'))
+ axis(4, at=seq(-90,90,30), labels=rep('',7))
  }
 }
 

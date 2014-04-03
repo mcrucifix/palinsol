@@ -6,7 +6,7 @@
 
 \description{plot Milankovitch object}
 \usage{
-plot.Milankovitch (x, months=TRUE, plot_function=image,...)
+\method{plot}{Milankovitch} (x, months=TRUE, plot_function=image,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

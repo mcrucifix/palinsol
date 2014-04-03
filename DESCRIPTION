@@ -4,6 +4,6 @@ Date: 2013-01-30
 Title: Insolation for palaeoclimate studies
 Author: Michel Crucifix 
 Maintainer: Michel Crucifix <michel.crucifix@uclouvain.be>
-Depends: stats, gsl
+Depends: R (>= 2.10), stats, gsl
 Description: 
 License: MIT License

@@ -15,10 +15,6 @@ Berger and Loutre (1990) }
 data(PSeries)
 }
 %- maybe also 'usage' for other objects documented here.
-\arguments{
-}
-\details{
-  }
 
 \value{
   Results are stored in Table2
