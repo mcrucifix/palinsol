@@ -1,3 +1,4 @@
+importFrom("gsl", ellint_F, ellint_E, ellint_P)
 export(Insol)
 export(Insol_l1l2)
 export(Insol_d1d2)

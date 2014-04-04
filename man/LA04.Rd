@@ -1,6 +1,5 @@
 \name{LA04}
-\alias{la04past}
-\alias{la04future}
+\alias{LA04}
 
 \docType{data}
 \title{Astronomical elements supplied by Laskar et al. 2004}
@@ -11,10 +10,14 @@
    + 21Ma.
    }
 \usage{ data(LA04) }
-\format{text files}
-\source{http://www.imcce.fr/Equipes/ASD/insola/earth/earth.html}
+\format{\code{list}, named \code{LA04}, and containing two \code{data.frames}, 
+        with the contents of original sources: \code{la04past} and 
+        \code{la04future} for past and future astronomical elements, 
+        respectively.}
+\source{http://www.imcce.fr/Equipes/ASD/insola/earth/earth.ht.}
 \references{
-  J. Laskar et al., A long-term numerical solution for the insolation quantities of the Earth,  Astron. Astroph., 428, 261-285  200 }
+  J. Laskar et al., A long-term numerical solution for the 
+  insolation quantities of the Earth,  Astron. Astroph., 428, 261-285  200 }
 
 \author{Michel Crucifix, U. catholique de Louvain, Belgium.}
 

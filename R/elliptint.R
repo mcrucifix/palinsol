@@ -45,7 +45,7 @@ SIDERAL_YEAR = 365.25636
 W  <- function (phi, eps, ecc, lambda,S0=1365,n=3)
    {
  
-    require(gsl) ## gnu scientific library ported by Robin Hankin. Thank you Robin !!! 
+    # require(gsl) ## gnu scientific library ported by Robin Hankin. Thank you Robin !!! 
     pi2=pi/2
     H00   = pi2
     seps = sin(eps)

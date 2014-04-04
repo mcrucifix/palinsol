@@ -37,7 +37,7 @@ pp. 65 and 77 (see code for further details).
   }
 
 \references{
-Brouwer D. and G. M. Clemence, (1961),  Methods of celestial mechanics, Academic Press, New York.
+ Brouwer D. and G. M. Clemence, (1961),  Methods of celestial mechanics, Academic Press, New York.
 
  Berger, (1978) Long-term variations of daily insolation and Quaternary climatic changes,  J. Atmos. Sci., 35, 2362-2367  1978
 

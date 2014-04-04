@@ -31,16 +31,18 @@
 # ------------------------------------------------------------------ 
 
 #### load La04 table
+local({
+fpathn <- file.path("..","inst","orig", "INSOLN.LA2004.BTL.ASC.gz")
+fpathp <- file.path("..","inst","orig", "INSOLP.LA2004.BTL.ASC.gz")
 
-fpathn <- file.path('..', 'orig', 'INSOLN.LA2004.BTL.ASC')
-fpathp <- file.path('..', 'orig', 'INSOLP.LA2004.BTL.ASC')
-
-la04past     <<- read.table(fpathn, col.names=c('time','ecc','eps','varpi'))
-la04future   <<- read.table(fpathp, col.names=c('time','ecc','eps','varpi'))
+la04past     <<- read.table(gzfile(fpathn), col.names=c('time','ecc','eps','varpi'))
+la04future   <<- read.table(gzfile(fpathp), col.names=c('time','ecc','eps','varpi'))
 
 
 la04past['varpi'] <- (la04past['varpi'] - pi ) %% (2*pi)
 la04future['varpi'] <- (la04future['varpi'] - pi ) %% (2*pi)
 
+LA04 <<- list(la04past=la04past, la04future = la04future)
+})
 
-rm(list = c('fpathn','fpathp'))
+LA04 <- LA04

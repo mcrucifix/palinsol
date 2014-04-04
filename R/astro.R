@@ -32,6 +32,9 @@
 
  ## calculates astronomical elements according to the solutions given below
  
+# creates new environment to store astronomical solutions
+
+
 astro <- function(t,solution=ber78,degree=FALSE) {solution(t,degree)}
 
  ## Calculates climate orbital elements according to the algorithm given in A. Berger (1978)
@@ -45,13 +48,15 @@ astro <- function(t,solution=ber78,degree=FALSE) {solution(t,degree)}
 ## attach table to ber78 function
 ## Input :  t = time expressed in yr after 1950.0 (reference epoch)
 
+# environment specifically dedicated to get astronomical solution data
+astrodata <- new.env()
+
 ber78 <- function(t,degree=FALSE)
 {
-  if (!exists(".BER78"))
+  if (!exists("BER78", envir=astrodata))
   { 
-     message('load BER78data')
-     .BER78 <<- new.env()
-     data(BER78, envir=.BER78)
+     message("loading BER78 into astrodata environment")
+     data(BER78, envir=astrodata)
   }
 
   
@@ -63,15 +68,15 @@ ber78 <- function(t,degree=FALSE)
  
   sectorad <- pi/(180*60.*60.)
 
-  M <- .BER78$Table4$V2
-  g <- .BER78$Table4$V3*sectorad
-  b <- .BER78$Table4$V4*pi/180
-  F <- .BER78$Table5$V2*sectorad
-  fp <- .BER78$Table5$V3*sectorad
-  d <- .BER78$Table5$V4*pi/180.
-  A <- .BER78$Table1$V2/60./60.
-  f <- .BER78$Table1$V3*sectorad
-  phi<- .BER78$Table1$V4*pi/180.
+  M <-  astrodata$BER78$Table4$Amp
+  g <-  astrodata$BER78$Table4$Rate*sectorad
+  b <-  astrodata$BER78$Table4$Phase*pi/180
+  F <-  astrodata$BER78$Table5$Amp*sectorad
+  fp <- astrodata$BER78$Table5$Rate*sectorad
+  d <-  astrodata$BER78$Table5$Phase*pi/180.
+  A <-  astrodata$BER78$Table1$Amp/60./60.
+  f <-  astrodata$BER78$Table1$Rate*sectorad
+  phi<- astrodata$BER78$Table1$Phase*pi/180.
 
   ## Obliquity
 
@@ -94,9 +99,6 @@ ber78 <- function(t,degree=FALSE)
 
   c(eps=eps,ecc=e,varpi=varpi,epsp=epsp)
 }
- ## Calculates climate orbital elements according to the algorithm given in A. Berger (1978)
- # Berger, A. L. (1978).  Long-term variations of daily insolation and Quaternary climatic changes, 
- # J. Atmos. Sci., 35(), 2362-2367
 
  # This solution is valid for + / - 3e6 years. 
 
@@ -105,12 +107,12 @@ ber78 <- function(t,degree=FALSE)
 
 ber90 <- function(t,degree=FALSE)
 {
-  if (!exists(".BER90"))
-  {
-     message("load BER90 data")
-     .BER90 <<- new.env()
-     data(BER90, envir=.BER90)
+  if (!exists("BER90", envir=astrodata))
+  { 
+     message("loading BER90 into astrodata environment")
+     data(BER90, envir=astrodata)
   }
+
  
   psibar<- 50.3908110/60./60. * pi/180 
   estar <- 23.33340950
@@ -119,15 +121,15 @@ ber90 <- function(t,degree=FALSE)
  
   sectorad <- pi/(180*60.*60.)
 
-  M <- .BER90$Table4_90$V2
-  g <- .BER90$Table4_90$V3*sectorad
-  b <- .BER90$Table4_90$V4*pi/180
-  F <- .BER90$Table5_90$V2*sectorad
-  fp <- .BER90$Table5_90$V3*sectorad
-  d <- .BER90$Table5_90$V4*pi/180.
-  A <- .BER90$Table1_90$V2/60./60.
-  f <- .BER90$Table1_90$V3*sectorad
-  phi<- .BER90$Table1_90$V4*pi/180.
+  M <-  astrodata$BER90$Table4$Amp
+  g <-  astrodata$BER90$Table4$Rate*sectorad
+  b <-  astrodata$BER90$Table4$Phase*pi/180
+  F <-  astrodata$BER90$Table5$Amp*sectorad
+  fp <- astrodata$BER90$Table5$Rate*sectorad
+  d <-  astrodata$BER90$Table5$Phase*pi/180.
+  A <-  astrodata$BER90$Table1$Amp/60./60.
+  f <-  astrodata$BER90$Table1$Rate*sectorad
+  phi<- astrodata$BER90$Table1$Phase*pi/180.
 
   ## Obliquity
 
@@ -157,23 +159,22 @@ ber90 <- function(t,degree=FALSE)
 
 la04 <- function(t,degree=FALSE)
 {
- if (!exists(".LA04"))
-  {
-     .LA04 <<- new.env()
-     data(LA04, envir=.LA04)
-     message("LA04 data loaded")
+  if (!exists("LA04", envir=astrodata))
+  { 
+     message("loading LA04 into astrodata environment")
+     data(LA04, envir=astrodata)
   }
- 
+
   tka = t/1000.
   if (tka>0) 
   {
    local(
    {
     F <-  floor(tka)
-    ORB <<- .LA04$la04future[F+1, ]
+    ORB <<- astrodata$LA04$la04future[F+1, ]
     if (! (tka == F)) {
       D  <- tka - floor(tka)
-      diff <- .LA04$la04future[F+2, ] - ORB
+      diff <- astrodata$LA04$la04future[F+2, ] - ORB
       # note : if the diff in varpi is greater than pi,
       # this probably means that we have skipped 2*pi, 
       # so we need to correct accordingly
@@ -188,11 +189,11 @@ la04 <- function(t,degree=FALSE)
    local(
    {
     F <-  floor(tka)
-    ORB <<- .LA04$la04past[-F+1, ]
+    ORB <<- astrodata$LA04$la04past[-F+1, ]
     if (! (tka == F)) {
       D  <- tka - F
 
-      diff <- .LA04$la04past[-F, ] - ORB
+      diff <- astrodata$LA04$la04past[-F, ] - ORB
       # note : if the diff in varpi is greater than pi,
       # this probably means that we have skipped 2*pi, 
       # so we need to correct accordingly

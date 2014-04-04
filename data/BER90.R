@@ -32,10 +32,23 @@
 
 #### load Berger 1990 table from INSOL file
 
-fpath <- file.path('..', 'orig', 'BER90.IN')
+local({
+fpath <- file.path("..","inst","orig", "BER90.IN.gz")
 
-Table4_90 <- read.table(fpath, skip=1, nrow=80)
-Table1_90 <- read.table(fpath, skip=161, nrow=1000)
-Table5_90 <- read.table(fpath, skip=6481, nrow=1000)
+Table4 <- read.table(gzfile(fpath), skip=1, nrow=80)
+Table1 <- read.table(gzfile(fpath), skip=161, nrow=1000)
+Table5 <- read.table(gzfile(fpath), skip=6481, nrow=1000)
 
-rm(list = c('fpath'))
+# add period
+Table4 <- cbind(Table4, data.frame(V5=360*360 / Table4$V3) )
+
+colnames(Table1) <- c('Term','Amp','Rate','Phase','Period')
+colnames(Table4) <- c('Term','Amp','Rate','Phase','Period')
+colnames(Table5) <- c('Term','Amp','Rate','Phase','Period')
+
+
+
+BER90 <<- list(Table1=Table1, Table4=Table4, Table5=Table5)
+})
+
+BER90 <- BER90
