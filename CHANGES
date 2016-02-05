@@ -1,2 +1,4 @@
+0.93 : bug corrected in computation of precession terms for BER90 +
+       LA04 data loaded only once
 0.92 : bug corrected in La04
 0.91 : initial release

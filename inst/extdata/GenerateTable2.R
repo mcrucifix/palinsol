@@ -29,7 +29,7 @@
 # R Code developed for R version 2.15.2 (2012-10-26) -- "Trick or Treat"
 # ------------------------------------------------------------------ 
 
-GenerateTable2 <- function(Table1, Table4, Table5)
+GenerateTable2 <- function(Table1, Table4, Table5, sol='BER78')
 {
 #
 # Re-Generates the precession amplitudes and frequencies based on 
@@ -42,8 +42,15 @@ GenerateTable2 <- function(Table1, Table4, Table5)
 # Bull. Classe des Sciences, 1-3, 45-106  1990
 #
 
+if (sol == 'BER78')
+{
   P<- 50.439273  
   zeta <- 3.392506
+} else if (sol == 'BER90')
+{
+  P <- 50.41726176   # cf. eq. (31) in BER90
+  zeta <- 1.60075265 # cf. eq. (30) in BER90
+}
   ## PsiBar
 
   g <- Table4$V3

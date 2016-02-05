@@ -19,12 +19,12 @@ Insol (orbit,long=pi/2, lat=65*pi/180,S0=1365)
   \item{S0}{Total solar irradiance}
 }
 \details{
-  True solar longitude is measured in radiants:
+  True solar longitude is measured in radians:
   \tabular{ll}{
-    pi/2 \tab for summer solstice\cr
-    pi \tab   for autumn equinox\cr
-    3 * pi/2 \tab for winter solstice\cr
-    0 \tab for spring equinox\cr
+    pi/2 \tab for June solstice\cr
+    pi \tab   for September equinox\cr
+    3 * pi/2 \tab for December solstice\cr
+    0 \tab for Spring equinox\cr
   }
   It may be obtained for a given day in the year using the function \code{day2l}.
 }

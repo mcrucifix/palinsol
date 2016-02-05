@@ -1,4 +1,0 @@
-local({
-  fpath <- file.path('..', 'orig', 'ODP', 'ODP1143.txt')
-  ODP1143 <<- read.table(fpath,skip=7, header = TRUE)
-})

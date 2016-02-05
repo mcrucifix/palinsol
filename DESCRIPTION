@@ -1,6 +1,6 @@
 Package: palinsol
-Version: 0.92
-Date: 2013-01-30
+Version: 0.93
+Date: 2016-01-30
 Title: Insolation for palaeoclimate studies
 Author: Michel Crucifix 
 Maintainer: Michel Crucifix <michel.crucifix@uclouvain.be>
@@ -8,4 +8,4 @@ Depends: R (>= 2.10), stats, gsl
 Description: R package to compute Incoming Solar Radiation (insolation) for paleoclimate studies. Features three solutions: BER78 (Berger, 1978), BER90 (Berger and Loutre, 1991) and LA04 (Laskar et al. 2004). Computes daily-mean, season-averaged and annual means for all latitudes.
 License: file LICENSE
 URL: https://bitbucket.org/mcrucifix/insol
-
+Packaged: 2014-04-03 18:32:12 UTC; crucifix

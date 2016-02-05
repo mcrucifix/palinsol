@@ -1,6 +1,0 @@
-local({
-  fpath <- file.path('..', 'orig', 'ODP', 'ODP980','odp980-isotope.txt')
-  ODP980 <<- read.table (fpath, skip = 1, header = TRUE,col.names=c("Depth.mcd.","Age.ka.","Cw.d13C","Cw.d18O"))
-})
-
-
