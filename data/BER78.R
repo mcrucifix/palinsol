@@ -32,8 +32,8 @@
 
 #### load Berger 1978 table from INSOL file
 local({
-fpath <- file.path("..","inst","orig", "INSOL.IN.gz")
-fpath_table2 <- file.path("..","inst","orig", "GenerateTable2.R")
+fpath <- file.path("..","inst","extdata", "INSOL.IN.gz")
+fpath_table2 <- file.path("..","inst","extdata", "GenerateTable2.R")
 
 
 Table4 <- read.table(gzfile(fpath), skip=6, nrow=19)
@@ -41,8 +41,8 @@ Table1 <- read.table(gzfile(fpath), skip=25, nrow=47)
 Table5 <- read.table(gzfile(fpath), skip=72, nrow=78)
 
 source(fpath_table2)
-
 Table2 <- GenerateTable2(Table1, Table4, Table5)
+
 Table4 <- data.frame( Term = seq(1, nrow(Table4)), 
                       Amp = Table4$V2,
                       Rate = Table4$V3,
@@ -52,8 +52,17 @@ Table4 <- data.frame( Term = seq(1, nrow(Table4)),
 colnames(Table1) <- c('Term','Amp','Rate','Phase','Period')
 colnames(Table5) <- c('Term','Amp','Rate','Phase','Period')
 
-BER78 <<- list(Table1=Table1, Table2=Table2, Table4=Table4, Table5=Table5)
+#BER78 <<- list(Table1=Table1, Table2=Table2, Table4=Table4, Table5=Table5)
+
+Table1 <<- Table1
+Table2 <<- Table2
+Table4 <<- Table4
+Table5 <<- Table5
 
 })
 
-BER78 <- BER78
+Table1 <- Table1
+Table2 <- Table2
+Table4 <- Table4
+Table5 <- Table5
+#BER78 <- BER78
