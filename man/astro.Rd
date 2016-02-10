@@ -27,15 +27,16 @@ obliquity(t,solution,degree=FALSE)
 }
 \details{
   
-  Both \code{ber78} and  \code{ber90}  compute astronomical elements based on a d'Alembert
+  Both \code{ber78} and  \code{ber90}  compute astronomical elements based on a spectral
   decomposition (sum of sines and cosines) of obliquity and planetary precession parameters.
   \code{ber78} uses the Berger (1978) algorithm and is accurate for +/- 1e6 years about the
   present. \code{ber90} uses the Berger and Loutre (1991) algorithm and is accurate
-  for  +/- 3e6 years   about the present. 
+  for  +/- 3e6 years   about the present (but with a tiny accuracy over the last 50 kyr, 
+  usually negligible for any palaeo application, see example below). 
 
   \code{la04}  interpolates tables provided by Laskar (2004), obtained by a simplectic
   numerical integration of the planetary system, in which the Moon is considered as a planet. 
-  This solution is valide for about 50 Myr around the present. 
+  This solution is valid for about 50 Myr around the present. 
 
   \code{precession} and \code{obliquity} do as \code{astro}, but only return
   precession (e sin varpi) parameter and obliquity, respectively.
@@ -49,7 +50,7 @@ obliquity(t,solution,degree=FALSE)
   }
   \code{ber78} and \code{ber90} also return 
   \code{epsp}, the Hilbert transform of obliquity (sines changed
-  in cosines in the d'Alambert decomposition). 
+  in cosines in the spectral decomposition). 
 
   Angles are returned in radians unless \code{degree=TRUE}
 }
@@ -83,9 +84,23 @@ with(Obls, {
   })
 
 legend('topright', c('ber78','ber90','la04'), col=c('black','red','green'), lty=1)
+
+## same but with a zoom over the last 300 000 years:
+
+T <- which (times > -3e5)
+with(Obls, {
+  plot(times[T]/1e3, ber78.eps[T], type='l', xlab='time (kyr)', 
+                                       ylab='Obliquity (radians)')  
+  lines(times[T]/1e3, ber90.eps[T], type='l', col='red')  
+  lines(times[T]/1e3, la04.eps[T], type='l', col='green')  
+  })
+
+legend('topright', c('ber78','ber90','la04'), col=c('black','red','green'), lty=1)
+
+
+
+
 }
-
-
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{misc}
