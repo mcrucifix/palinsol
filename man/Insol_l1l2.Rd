@@ -38,7 +38,7 @@ Insol_d1d2 (orbit,d1,d2,lat=65*pi/180,avg=FALSE,...)
   }
 
 \references{
-Berger, A., Loutre, M.F. and Yin Q. (2010), Total irradiation during any time interval of the year using elliptic integrals,  Quaternary Science Reviews, 29, 1968 - 1982.
+Berger, A., Loutre, M.F. and Yin Q. (2010), Total irradiation during any time interval of the year using elliptic integrals,  Quaternary Science Reviews, 29, 1968 - 1982, doi:10.1016/j.quascirev.2010.05.007 
 }
   
 \author{Michel Crucifix, U. catholique de Louvain, Belgium.}

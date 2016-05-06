@@ -60,7 +60,7 @@ ber78 <- function(t,degree=FALSE)
   if (!exists(".loaded", envir=.BER78))
   { 
      message('load BER78data')
-     data(BER78, envir=.BER78)
+     data('BER78', envir=.BER78)
      assign('.loaded',  TRUE,  envir = .BER78 )
   }
 
@@ -118,7 +118,7 @@ ber90 <- function(t,degree=FALSE)
   if (!exists(".loaded", envir=.BER90))
   {
      message("load BER90 data")
-     data(BER90, envir=.BER90)
+     data('BER90', envir=.BER90)
      assign('.loaded',  TRUE,  envir = .BER90 )
   }
  
@@ -169,7 +169,7 @@ la04 <- function(t,degree=FALSE)
 {
   if (!exists(".loaded", envir=.LA04))
   {
-     data(LA04, envir=.LA04)
+     data('LA04', envir=.LA04)
      message("LA04 data loaded")
      assign('.loaded',  TRUE,  envir = .LA04 )
   }

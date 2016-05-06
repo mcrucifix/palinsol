@@ -58,11 +58,11 @@ obliquity(t,solution,degree=FALSE)
 \references{
   Berger, A. L. (1978).  Long-term variations of daily
 insolation and Quaternary climatic changes, J. Atmos. Sci., 35,
-2362-2367.
+2362-2367, doi:10.1175/1520-0469(1978)035<2362:LTVODI>2.0.CO;2
 
-  Berger and M.F. Loutre (1991), Insolation values for the climate of the last 10 million years,  Quaternary Science Reviews, 10, 297 - 317.
+  Berger and M.F. Loutre (1991), Insolation values for the climate of the last 10 million years,  Quaternary Science Reviews, 10, 297 - 317, doi:10.1016/0277-3791(91)90033-Q
 
- J. Laskar et al. (2004), A long-term numerical solution for the insolation quantities of the Earth,  Astron. Astroph., 428, 261-285.}
+ J. Laskar et al. (2004), A long-term numerical solution for the insolation quantities of the Earth,  Astron. Astroph., 428, 261-285, doi:10.1051/0004-6361:20041335}
   
 \author{Michel Crucifix, U. catholique de Louvain, Belgium.}
 

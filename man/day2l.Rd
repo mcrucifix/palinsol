@@ -39,9 +39,9 @@ pp. 65 and 77 (see code for further details).
 \references{
 Brouwer D. and G. M. Clemence, (1961),  Methods of celestial mechanics, Academic Press, New York.
 
- Berger, (1978) Long-term variations of daily insolation and Quaternary climatic changes,  J. Atmos. Sci., 35, 2362-2367  1978
+ Berger, (1978) Long-term variations of daily insolation and Quaternary climatic changes,  J. Atmos. Sci., 35, 2362-2367  1978, doi:10.1175/1520-0469(1978)035<2362:LTVODI>2.0.CO;2
 
- Berger, A. Loutre, M.F. and Yin Q. (2010),  Total irradiation during any time interval of the year using elliptic integrals,  Quaternary Science Reviews, 29, 1968 - 1982.
+ Berger, A. Loutre, M.F. and Yin Q. (2010),  Total irradiation during any time interval of the year using elliptic integrals,  Quaternary Science Reviews, 29, 1968 - 1982, doi:10.1016/j.quascirev.2010.05.007
 }
   
 \author{Michel Crucifix, U. catholique de Louvain, Belgium.}
