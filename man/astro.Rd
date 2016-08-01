@@ -17,6 +17,7 @@ ber78(t,degree=FALSE)
 ber90(t,degree=FALSE)
 la04(t,degree=FALSE)
 precession(t,solution)
+coprecession(t,solution)
 obliquity(t,solution,degree=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -38,8 +39,8 @@ obliquity(t,solution,degree=FALSE)
   numerical integration of the planetary system, in which the Moon is considered as a planet. 
   This solution is valid for about 50 Myr around the present. 
 
-  \code{precession} and \code{obliquity} do as \code{astro}, but only return
-  precession (e sin varpi) parameter and obliquity, respectively.
+  \code{precession},  \code{precession},  aand \code{obliquity} do as \code{astro}, but only return
+  precession (e sin varpi), coprecession (e cos varpi) and obliquity, respectively.
 }
 
 \value{

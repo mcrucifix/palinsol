@@ -36,6 +36,7 @@
 .BER78 <- new.env()
 .BER90 <- new.env()
 .LA04  <- new.env()
+.LA93  <- new.env()
 
 astro <- function(t,solution=ber78,degree=FALSE) {solution(t,degree)}
 
@@ -50,10 +51,6 @@ astro <- function(t,solution=ber78,degree=FALSE) {solution(t,degree)}
 ## attach table to ber78 function
 ## Input :  t = time expressed in yr after 1950.0 (reference epoch)
 
-
-.BER78 <- new.env()
-.BER90 <- new.env()
-.LA04  <- new.env()
 
 ber78 <- function(t,degree=FALSE)
 {
@@ -165,6 +162,69 @@ ber90 <- function(t,degree=FALSE)
 
 ## Input :  t = time expressed in yr after 1950.0 (reference epoch)
 
+
+la93 <- function(t,degree=FALSE)
+{
+  if (!exists(".loaded", envir=.LA93))
+  {
+     data('LA93', envir=.LA93)
+     message("LA93 data loaded")
+     assign('.loaded',  TRUE,  envir = .LA93 )
+  }
+ 
+  tka = t/1000.
+  if (tka>0) 
+  {
+   local(
+   {
+    F <-  floor(tka)
+    ORB <<- .LA93$la93future[F+1, ]
+    if (! (tka == F)) {
+      D  <- tka - floor(tka)
+      diff <- .LA93$la93future[F+2, ] - ORB
+      # note : if the diff in varpi is greater than pi,
+      # this probably means that we have skipped 2*pi, 
+      # so we need to correct accordingly
+      if (diff$varpi > pi) diff$varpi = diff$varpi - 2*pi
+      if (diff$varpi < -pi) diff$varpi = diff$varpi + 2*pi
+      #
+      ORB <<- ORB + D*diff
+    }
+   })}
+   else
+   {
+   local(
+   {
+    F <-  floor(tka)
+    ORB <<- .LA93$la93past[-F+1, ]
+    if (! (tka == F)) {
+      D  <- tka - F
+
+      diff <- .LA93$la93past[-F, ] - ORB
+      # note : if the diff in varpi is greater than pi,
+      # this probably means that we have skipped 2*pi, 
+      # so we need to correct accordingly
+      if (diff$varpi > pi) diff$varpi = diff$varpi - 2*pi
+      if (diff$varpi < -pi) diff$varpi = diff$varpi + 2*pi
+      #
+      ORB <<- ORB + D*diff
+    }
+   })}
+  
+  if (degree) {rad2deg <- 180/pi
+               ORB['eps'] <- ORB['eps']*rad2deg
+               ORB['varpi'] <- ORB['varpi']*rad2deg}
+
+
+   # must return a array (0.92 -> 0.93)
+   names <- c('eps','ecc','varpi')
+   OUT = as.numeric(ORB[names]) ; names(OUT) <- names
+   OUT
+
+   }
+
+
+
 la04 <- function(t,degree=FALSE)
 {
   if (!exists(".loaded", envir=.LA04))
@@ -231,6 +291,14 @@ precession <- function(t,solution=ber78)
   O <- astro(t,solution, degree=FALSE)
   O['ecc'] * sin (O['varpi'])
 }
+
+coprecession <- function(t,solution=ber78)
+##  as astro, but returns only precession parameter e sin (varpi)
+{ 
+  O <- astro(t,solution, degree=FALSE)
+  O['ecc'] * cos (O['varpi'])
+}
+
 
 obliquity <- function(t,solution=ber78,degree=FALSE)
 ##  as astro, but returns only obliquity
