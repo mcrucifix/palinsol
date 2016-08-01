@@ -15,4 +15,7 @@ export(ber90)
 export(la04)
 export(date_of_perihelion)
 export(l2day)
+export(precession)
+export(obliquity)
+export(coprecession)
 

@@ -229,9 +229,18 @@ precession <- function(t,solution=ber78)
 ##  as astro, but returns only precession parameter e sin (varpi)
 { 
   O <- astro(t,solution, degree=FALSE)
-  O['ecc'] * sin (O['varpi'])
+  as.numeric(O['ecc'] * sin (O['varpi']))
 }
+
+coprecession <- function(t,solution=ber78)
+##  as astro, but returns only precession parameter e sin (varpi)
+{ 
+  O <- astro(t,solution, degree=FALSE)
+  as.numeric(O['ecc'] * cos (O['varpi']))
+}
+
+
 
 obliquity <- function(t,solution=ber78,degree=FALSE)
 ##  as astro, but returns only obliquity
-{ astro(t,solution, degree=degree)['eps'] }
+{ as.numeric(astro(t,solution, degree=degree)['eps']) }
