@@ -4,7 +4,8 @@ Date: 2016-02-28
 Title: Insolation for Palaeoclimate Studies
 Author: Michel Crucifix 
 Maintainer: Michel Crucifix <michel.crucifix@uclouvain.be>
-Depends: R (>= 2.10), stats, gsl, 
+Depends: R (>= 2.10), stats
+Suggests: gsl
 Description: R package to compute Incoming Solar Radiation (insolation) for palaeoclimate studies. Features three solutions: Berger (1978), Berger and Loutre (1991) and Laskar et al. (2004). Computes daily-mean, season-averaged and annual means for all latitudes.
 License: file LICENSE
 URL: https://bitbucket.org/mcrucifix/insol

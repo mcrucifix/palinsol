@@ -127,8 +127,8 @@ Insol_l1l2 <- function (orbit,l1=0,l2=2*pi,lat=65*pi/180,avg=FALSE,ell=TRUE,...)
     #       rather than trapeze rule integral.  Currently incompatible
     #       with avg=TRUE (this can be fixed later)
 
-     if (ell)
-      ## use elliptic integrals
+     if (ell &&  requireNamespace("gsl", quietly = TRUE))
+      ## use elliptic integrals if required and available
       {
           if (l1 < l2) 
           { 

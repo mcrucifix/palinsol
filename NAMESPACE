@@ -1,4 +1,3 @@
-importFrom("gsl", ellint_F, ellint_E, ellint_P)
 importFrom("graphics", "axis", "image")
 importFrom("utils", "data")
 export(Insol)

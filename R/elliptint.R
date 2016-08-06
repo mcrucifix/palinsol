@@ -62,12 +62,12 @@ W  <- function (phi, eps, ecc, lambda,S0=1365,n=3)
     sesl   = seps*slambda
     tdelta = sesl / sqrt(1-sesl*sesl)
     H0    = acos(-tphi*tdelta)
-    Flk   = ellint_F(lambda,k)
-    Elk   = ellint_E(lambda,k)
+    Flk   = gsl::ellint_F(lambda,k)
+    Elk   = gsl::ellint_E(lambda,k)
 
     sphi*seps*(H00-clambda*H0) + cphi*Elk +
         sphi*tphi*Flk - sphi*tphi*ceps*ceps*
-        ellint_P(lambda, k, -seps*seps)
+        gsl::ellint_P(lambda, k, -seps*seps)
     }
 #
 
@@ -88,9 +88,9 @@ W  <- function (phi, eps, ecc, lambda,S0=1365,n=3)
     sesl   = seps*slambda
     tdelta = sesl / sqrt(1-sesl*sesl)
     H0    = acos(max(-1,min(1,-tphi*tdelta)))
-    Fpk   = ellint_F(psi,k1)
-    Epk   = ellint_E(psi,k1)
-    Pipk  = ellint_P(psi,k1, -cphi*cphi)
+    Fpk   = gsl::ellint_F(psi,k1)
+    Epk   = gsl::ellint_E(psi,k1)
+    Pipk  = gsl::ellint_P(psi,k1, -cphi*cphi)
 
     ( sphi*seps*(H00-clambda*H0) + seps*Epk +
         ceps* ceps/seps * Fpk - sphi*sphi*ceps*ceps/seps*
