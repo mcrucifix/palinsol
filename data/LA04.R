@@ -35,6 +35,14 @@ local({
 fpathn <- file.path("..","inst","extdata", "INSOLN.LA2004.BTL.ASC.gz")
 fpathp <- file.path("..","inst","extdata", "INSOLP.LA2004.BTL.ASC.gz")
 
+if (! file.exists(fpathn)) # mmm. maybe the packages is already installed
+{
+fpathn <- system.file("extdata", "INSOLN.LA2004.BTL.ASC.gz", package="palinsol")
+fpathp <- system.file("extdata", "INSOLP.LA2004.BTL.ASC.gz", package="palinsol")
+}
+
+
+
 la04past     <<- read.table(gzfile(fpathn), col.names=c('time','ecc','eps','varpi'))
 la04future   <<- read.table(gzfile(fpathp), col.names=c('time','ecc','eps','varpi'))
 

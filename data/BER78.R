@@ -1,4 +1,4 @@
-# Copyright (c) 2012 Michel Crucifix <michel.crucifix@uclouvain.be>
+#Copyright (c) 2012 Michel Crucifix <michel.crucifix@uclouvain.be>
 
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -32,9 +32,15 @@
 
 #### load Berger 1978 table from INSOL file
 local({
+
 fpath <- file.path("..","inst","extdata", "INSOL.IN.gz")
 fpath_table2 <- file.path("..","inst","extdata", "GenerateTable2.R")
 
+if (! file.exists(fpath)) # mmm. maybe the packages is already installed
+{
+fpath <- system.file("extdata", "INSOL.IN.gz", package="palinsol")
+fpath_table2 <- system.file("extdata", "GenerateTable2.R", package="palinsol")
+}
 
 Table4 <- read.table(gzfile(fpath), skip=6, nrow=19)
 Table1 <- read.table(gzfile(fpath), skip=25, nrow=47)

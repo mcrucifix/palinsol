@@ -52,7 +52,9 @@
  # S0 : Total solar irradiance (default : 1365 W/m^2)
  # returns : daily mean incoming solar radiation at the top of the atmosphere
  #           in the same unit as S0. 
- Insol <- function (orbit,long=pi/2, lat=65*pi/180,S0=1365)
+ # H : if NULL (default): compute daily mean insolation
+ # else: hour angle (in radians) at which insolation is being computed
+ Insol <- function (orbit,long=pi/2, lat=65*pi/180,S0=1365, H=NULL)
  {
   varpi <- NULL
   eps <- NULL
@@ -62,12 +64,20 @@
   rho <- (1-ecc^2)/(1+ecc*cos(nu))
   sindelta <- sin(eps)*sin(long)
   cosdelta <- sqrt(1-sindelta^2)
-  sinlatsindelta = sin(lat)*sindelta
-  coslatcosdelta = cos(lat)*cosdelta
-  cosH0 <- min(max(-1,-sinlatsindelta/coslatcosdelta),1)
-  sinH0 <- sqrt(1-cosH0^2)
-  H0 <- acos(cosH0)
-  S0/(pi*rho^2)*(H0*sinlatsindelta+coslatcosdelta*sinH0)
+  sinlatsindelta <- sin(lat)*sindelta
+  coslatcosdelta <- cos(lat)*cosdelta
+  if (is.null(H))
+  {
+    cosH0 <- min(max(-1,-sinlatsindelta/coslatcosdelta),1)
+    sinH0 <- sqrt(1-cosH0^2)
+    H0 <- acos(cosH0)
+    insol <- S0/(pi*rho^2)*(H0*sinlatsindelta+coslatcosdelta*sinH0)
+  }
+  else 
+  {
+    insol <- max(0, S0/(rho^2)*(sinlatsindelta+coslatcosdelta*cos(H)))
+  }
+  return(insol)
   }
  
  ## time increment corresponding a tsl increment

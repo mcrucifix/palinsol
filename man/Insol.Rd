@@ -9,7 +9,7 @@ Computes incoming solar radiation (insolation) for a given astronomical configur
  true solar longitude and latitude}
 
 \usage{
-Insol (orbit,long=pi/2, lat=65*pi/180,S0=1365)
+Insol (orbit,long=pi/2, lat=65*pi/180,S0=1365, H=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -17,6 +17,7 @@ Insol (orbit,long=pi/2, lat=65*pi/180,S0=1365)
   \item{long}{true solar longitude}
   \item{lat}{latitude}
   \item{S0}{Total solar irradiance}
+  \item{H}{Sun hour angle, in radians}
 }
 \details{
   True solar longitude is measured in radians:
@@ -30,7 +31,8 @@ Insol (orbit,long=pi/2, lat=65*pi/180,S0=1365)
 }
 
 \value{
-  Daily-mean insolation (assuming fixed astronomical parameters during a true solar day)
+  Daily-mean insolation (assuming fixed astronomical parameters during a true solar day) if `H` is null. 
+  Otherwise, insolation at specified hour angle (H = 0 at noon, H = pi at midnight). 
   }
 
 \references{

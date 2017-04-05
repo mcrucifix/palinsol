@@ -36,6 +36,14 @@ local({
 fpath <- file.path("..","inst","extdata", "BER90.IN.gz")
 fpath_table2 <- file.path("..","inst","extdata", "GenerateTable2.R")
 
+if (! file.exists(fpath)) # mmm. maybe the packages is already installed
+{
+fpath <- system.file("extdata", "BER90.IN.gz", package="palinsol")
+fpath_table2 <- system.file("extdata", "GenerateTable2.R", package="palinsol")
+}
+
+
+
 Table4 <- read.table(gzfile(fpath), skip=1, nrow=80)
 Table1 <- read.table(gzfile(fpath), skip=161, nrow=1000)
 Table5 <- read.table(gzfile(fpath), skip=6481, nrow=1000)
