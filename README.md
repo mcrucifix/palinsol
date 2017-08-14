@@ -1,3 +1,5 @@
+[![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/palinsol)](https://www.r-pkg.org/pkg/palinsol)
+
 # Palinsol
 
 R package to compute Incoming Solar Radiation (insolation) for paleoclimate studies.

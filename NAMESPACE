@@ -1,5 +1,6 @@
 importFrom("graphics", "axis", "image")
 importFrom("utils", "data")
+export(.onAttach)
 export(Insol)
 export(Insol_l1l2)
 export(Insol_d1d2)
