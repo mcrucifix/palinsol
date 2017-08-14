@@ -1,3 +1,4 @@
+[![](https://www.r-pkg.org/badges/version/palinsol)](https://www.r-pkg.org/pkg/palinsol)
 [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/palinsol)](https://www.r-pkg.org/pkg/palinsol)
 
 # Palinsol
