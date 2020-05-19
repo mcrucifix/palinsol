@@ -1,7 +1,8 @@
-
+0.96 : bug corrected : min/man -> pmin/pmax in Insol.
 0.95 : add possibility to compute insolation at any given hour angle
 0.94 : add precession / coprecession support
 0.93 : bug corrected in computation of precession terms for BER90 +
        LA04 data loaded only once
 0.92 : bug corrected in La04
 0.91 : initial release
+

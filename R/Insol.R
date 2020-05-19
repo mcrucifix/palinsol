@@ -68,7 +68,7 @@
   coslatcosdelta <- cos(lat)*cosdelta
   if (is.null(H))
   {
-    cosH0 <- min(max(-1,-sinlatsindelta/coslatcosdelta),1)
+    cosH0 <- pmin(pmax(-1,-sinlatsindelta/coslatcosdelta),1)
     sinH0 <- sqrt(1-cosH0^2)
     H0 <- acos(cosH0)
     insol <- S0/(pi*rho^2)*(H0*sinlatsindelta+coslatcosdelta*sinH0)
