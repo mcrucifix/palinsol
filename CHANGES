@@ -1,3 +1,4 @@
+0.97 : bug corrected : calinsol was wrong in the southern hemisphere. Small changes may also occur in the northern hemisphere
 0.96 : bug corrected : min/man -> pmin/pmax in Insol.
 0.95 : add possibility to compute insolation at any given hour angle
 0.94 : add precession / coprecession support

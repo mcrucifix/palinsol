@@ -81,8 +81,7 @@
   }
  
  ## time increment corresponding a tsl increment
- .dtdnu <- function (orbit,long=pi/2)
- {
+ .dtdnu <- function (orbit,long=pi/2) {
   nu <- long - orbit['varpi']
   ecc <- orbit['ecc']
   xec <- ecc*ecc
@@ -98,18 +97,19 @@
 
  ## caloric_insolation
  ## integrated insolation over the 180 days receiving above median insolation
- calins <- function (orbit,lat=65*pi/180,...)
-   {
+ calins <- function (orbit,lat=65*pi/180,...) {
     ins   <- sapply(seq(1:360)*pi/180, function(x) Insol(orbit,long=x, lat=lat,...))
     dt    <- sapply(seq(1:360)*pi/180, function(x) .dtdnu (orbit,long=x))
    
     is    <- sort(ins,decreasing=TRUE,index.return=TRUE)$ix
     cs    <- cumsum(dt[is])
-    is    <- which(cs <= 180)           ## the 180 days whose cumulative length is half total
+    ### BUG FIX ON 20.05.2021
+    ## is    <- which(cs <= 180)           ## the 180 days whose cumulative length is half total
+    i_halfyear   <- is[which(cs <= 180)]           ## the 180 days whose cumulative length is half total
                                         ## year length, picking days by decreasing order of 
                                         ## insolation. 
     XCORR = 86.4 *  YEAR / 360
-    sum(ins[is]*dt[is])* XCORR    ## result in kJ
+    sum(ins[i_halfyear]*dt[i_halfyear])* XCORR    ## result in kJ
    }
 
 
