@@ -33,9 +33,9 @@
  ## calculates astronomical elements according to the solutions given below
  
 
-.BER78 <- new.env()
-.BER90 <- new.env()
-.LA04  <- new.env()
+data_BER78 <- new.env()
+data_BER90 <- new.env()
+data_LA04  <- new.env()
 
 astro <- function(t,solution=ber78,degree=FALSE) {solution(t,degree)}
 
@@ -51,17 +51,13 @@ astro <- function(t,solution=ber78,degree=FALSE) {solution(t,degree)}
 ## Input :  t = time expressed in yr after 1950.0 (reference epoch)
 
 
-.BER78 <- new.env()
-.BER90 <- new.env()
-.LA04  <- new.env()
-
 ber78 <- function(t,degree=FALSE)
 {
-  if (!exists(".loaded", envir=.BER78))
+  if (!exists(".loaded", envir=data_BER78))
   { 
-     message('load BER78data')
-     data('BER78', envir=.BER78)
-     assign('.loaded',  TRUE,  envir = .BER78 )
+     message('load BER78 data')
+     data('BER78', envir=data_BER78)
+     assign('.loaded',  TRUE,  envir = data_BER78 )
   }
 
   
@@ -73,15 +69,15 @@ ber78 <- function(t,degree=FALSE)
  
   sectorad <- pi/(180*60.*60.)
 
-  M <- .BER78$Table4$Amp
-  g <- .BER78$Table4$Rate*sectorad
-  b <- .BER78$Table4$Phase*pi/180
-  F <- .BER78$Table5$Amp*sectorad
-  fp <- .BER78$Table5$Rate*sectorad
-  d <- .BER78$Table5$Phase*pi/180.
-  A <- .BER78$Table1$Amp/60./60.
-  f <- .BER78$Table1$Rate*sectorad
-  phi<- .BER78$Table1$Phase*pi/180.
+  M <- data_BER78$Table4$Amp
+  g <- data_BER78$Table4$Rate*sectorad
+  b <- data_BER78$Table4$Phase*pi/180
+  F <- data_BER78$Table5$Amp*sectorad
+  fp <- data_BER78$Table5$Rate*sectorad
+  d <- data_BER78$Table5$Phase*pi/180.
+  A <- data_BER78$Table1$Amp/60./60.
+  f <- data_BER78$Table1$Rate*sectorad
+  phi<- data_BER78$Table1$Phase*pi/180.
 
   ## Obliquity
 
@@ -115,11 +111,11 @@ ber78 <- function(t,degree=FALSE)
 
 ber90 <- function(t,degree=FALSE)
 {
-  if (!exists(".loaded", envir=.BER90))
+  if (!exists(".loaded", envir=data_BER90))
   {
-     message("load BER90 data")
-     data('BER90', envir=.BER90)
-     assign('.loaded',  TRUE,  envir = .BER90 )
+     message('load BER90 data')
+     data('BER90', envir=data_BER90)
+     assign('.loaded',  TRUE,  envir = data_BER90 )
   }
  
   psibar<- 50.41726176/60./60. * pi/180 
@@ -129,15 +125,15 @@ ber90 <- function(t,degree=FALSE)
  
   sectorad <- pi/(180*60.*60.)
 
-  M <- .BER90$Table4$Amp
-  g <- .BER90$Table4$Rate*sectorad
-  b <- .BER90$Table4$Phase*pi/180
-  F <- .BER90$Table5$Amp*sectorad
-  fp <- .BER90$Table5$Rate*sectorad
-  d <- .BER90$Table5$Phase*pi/180.
-  A <- .BER90$Table1$Amp/60./60.
-  f <- .BER90$Table1$Rate*sectorad
-  phi<- .BER90$Table1$Phase*pi/180.
+  M <- data_BER90$Table4$Amp
+  g <- data_BER90$Table4$Rate*sectorad
+  b <- data_BER90$Table4$Phase*pi/180
+  F <- data_BER90$Table5$Amp*sectorad
+  fp <- data_BER90$Table5$Rate*sectorad
+  d <- data_BER90$Table5$Phase*pi/180.
+  A <- data_BER90$Table1$Amp/60./60.
+  f <- data_BER90$Table1$Rate*sectorad
+  phi<- data_BER90$Table1$Phase*pi/180.
 
   ## Obliquity
 
@@ -167,11 +163,11 @@ ber90 <- function(t,degree=FALSE)
 
 la04 <- function(t,degree=FALSE)
 {
-  if (!exists(".loaded", envir=.LA04))
+  if (!exists(".loaded", envir=data_LA04))
   {
-     data('LA04', envir=.LA04)
-     message("LA04 data loaded")
-     assign('.loaded',  TRUE,  envir = .LA04 )
+     message('load LA04 data')
+     data('LA04', envir=data_LA04)
+     assign('.loaded',  TRUE,  envir = data_LA04 )
   }
  
   tka = t/1000.
@@ -180,10 +176,10 @@ la04 <- function(t,degree=FALSE)
    local(
    {
     F <-  floor(tka)
-    ORB <<- .LA04$la04future[F+1, ]
+    ORB <<- data_LA04$la04future[F+1, ]
     if (! (tka == F)) {
       D  <- tka - floor(tka)
-      diff <- .LA04$la04future[F+2, ] - ORB
+      diff <- data_LA04$la04future[F+2, ] - ORB
       # note : if the diff in varpi is greater than pi,
       # this probably means that we have skipped 2*pi, 
       # so we need to correct accordingly
@@ -198,11 +194,11 @@ la04 <- function(t,degree=FALSE)
    local(
    {
     F <-  floor(tka)
-    ORB <<- .LA04$la04past[-F+1, ]
+    ORB <<- data_LA04$la04past[-F+1, ]
     if (! (tka == F)) {
       D  <- tka - F
 
-      diff <- .LA04$la04past[-F, ] - ORB
+      diff <- data_LA04$la04past[-F, ] - ORB
       # note : if the diff in varpi is greater than pi,
       # this probably means that we have skipped 2*pi, 
       # so we need to correct accordingly
