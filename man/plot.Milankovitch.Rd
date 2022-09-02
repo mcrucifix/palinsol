@@ -6,7 +6,7 @@
 
 \description{plot Milankovitch object}
 \usage{
-\method{plot}{Milankovitch} (x, months=TRUE, plot_function=image,...)
+\method{plot}{Milankovitch} (x, months=TRUE, polar_night=TRUE, plot_function=image,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -14,6 +14,7 @@
   \item{months}{if true : x-axis of the plot indicates months
   conventionnally defined with the true solar longitude; x-axis is simply the true solar longitude
   otherwise}
+  \item{polar_night}{if true : the polar night zone will be hashed}
   \item{...}{Other arguments passed to plotting function}
  \item{plot_function}{function used to plot the matrix. Typically
   \code{contour} or \code{image} but may also be \code{image.plot} if using the \code{fields} package.}

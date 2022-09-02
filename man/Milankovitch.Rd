@@ -34,6 +34,8 @@ insolation and Quaternary climatic changes, J. Atmos. Sci., 35,
   
 \author{Michel Crucifix, U. catholique de Louvain, Belgium.}
 
+\note{The polar night option may not be bullet-proof for exotic obliquities}
+
 \examples{
 orbit <- c(eps=0.409214, ecc=0.01672393, varpi=4.92251)
 M <- Milankovitch(orbit)

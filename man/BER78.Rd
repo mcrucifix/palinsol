@@ -32,10 +32,10 @@ insolation and Quaternary climatic changes, J. Atmos. Sci., 35,
   Berger and M.F. Loutre (1991), Insolation values for the climate of the last 10 million years,  Quaternary Science Reviews, 10, 297 - 317, doi:10.1016/0277-3791(91)90033-Q
 
 }
-\author{Michel Crucifix, U. catholique de Louvain, Belgium.}
+\author{Michel Crucifix, UCLouvain, Belgium.}
 
-\source{ftp://ftp.elic.ucl.ac.be/berger/berger78/ 
-        ftp://ftp.elic.ucl.ac.be/loutre/QSR/ }
+\source{https://nextcloud.cism.ucl.ac.be/s/CmPTjPc063uKzyE and 
+https://nextcloud.cism.ucl.ac.be/s/G9i1CxBbyyB2JMV}
 
 \examples{ 
 data(BER78)
