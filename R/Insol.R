@@ -56,6 +56,7 @@
  # else: hour angle (in radians) at which insolation is being computed
  Insol <- function (orbit,long=pi/2, lat=65*pi/180,S0=1365, H=NULL)
  {
+  # orbit is a list that contains the following variables: varpi, eps, and ecc
   varpi <- NULL
   eps <- NULL
   ecc <- NULL
@@ -303,14 +304,15 @@ attr(M,  "class") <- 'Milankovitch'
 attr(M,  "lat") <- lat * CONVERT
 attr(M,  "long") <- long * CONVERT
 attr(M,  "deg") <- deg
+attr(M,  "polar_nights") <- .polar_night_curves(orbit)
 M
 }
 
-plot.Milankovitch <- function(x, months=TRUE, plot_function=image,...)
+plot.Milankovitch <- function(x, months=TRUE, polar_night=TRUE, plot_function=contour, col="black",...)
 {
    long = attr(x, "long")
    if( ! attr(x,  "deg")) 
-    {stop ('plot Milankovitch only when longitude in degrees')
+    {stop ("plot Milankovitch only when longitude in degrees")
     }
 if (months)
  { 
@@ -318,25 +320,155 @@ if (months)
    Col = c(Col, Col[1])
    Long = c(long, long[1]+360)
    MM = x[ Col,]
-   plot_function(Long, attr(x, "lat"), MM, axes=FALSE,xlab='Month',ylab='Latitude',xaxs='i',yaxs='i',...)
+   if (length(which(x < -1))) ## this is a diff plot
+   {
+     levels <- pretty(range(x), 8)
+     cols <- rep("red", length( levels) )
+     cols[which(levels < 0)] <- "blue"
+     cols[which(levels == 0)] <- "black"
+     plot_function(Long, attr(x, "lat"), MM, axes=FALSE,xlab="Month",ylab="Latitude",xaxs="i",yaxs="i",col=cols, levels=levels,...)
+     polar_night <- FALSE
+   } else {
+   plot_function(Long, attr(x, "lat"), MM, axes=FALSE,xlab="Month",ylab="Latitude",xaxs="i",yaxs="i",col=col,...)
+   }
     if(!exists("legend.only"))  {
-   axis (1, at=seq(0,12)*30, labels=rep('',13))
-   axis (3, at=seq(0,12)*30, labels=rep('',13))
-   axis (1, at=seq(0,11)*30+15, labels=c('J','F','M','A','M','J','J','A','S','O','N','D'), tick=FALSE)}
+   axis (1, at=seq(0,12)*30, labels=rep("",13))
+   axis (3, at=seq(0,12)*30, labels=rep("",13))
+   axis (1, at=seq(0,11)*30+15, labels=c("J","F","M","A","M","J","J","A","S","O","N","D"), tick=FALSE)}
+   if (polar_night)
+   {
+   polar_night_curves <- attr(x, ".polar_nights")
+   if (!is.null (polar_night_curves))
+   {
+   lapply(polar_night_curves, function(p) {
+      polygon(p[[1]], p[[2]], density=12, col=col)
+      polygon(p[[1]], p[[2]], density=12, angle=-45, border=NA, col=col) })
+   }
+   }
  }
- else
- {   plot_function(attr(x, "long"), attr(x, "lat"), x, axes=FALSE, 
+ else { 
+ plot_function(attr(x, "long"), attr(x, "lat"), x, axes=FALSE, 
       xlab='True solar Longitude',ylab='Latitude',xaxs='i',yaxs='i',...)
-      if(!exists("legend.only")) 
-       {axis (1, at=seq(0,360,30))
+   if(!exists("legend.only")) {
+       axis (1, at=seq(0,360,30))
        axis (3, at=seq(0,360,30))
-       }
+    }
 }
- if(!exists("legend.only")) 
- {
- axis(2, at=seq(-90,90,30), labels=c('90S','60S', '30S','Eq.','30N','60N','90S'))
- axis(4, at=seq(-90,90,30), labels=rep('',7))
+ if(!exists("legend.only")) {
+ axis(2, at = seq(-90,90,30), labels = c('90S','60S', '30S','Eq.','30N','60N','90N'))
+ axis(4, at = seq(-90,90,30), labels = rep('',7))
  }
 }
 
 
+AnnualMean <- function(orbit, S0 = 1365, lats = seq(-90, 90, 1), degree = TRUE) {
+  if (degree) {
+    conv <- pi/180; rconv <- 1} 
+  else {
+    conv <- 1. ; rconv <- 180/pi}
+  # colats <- cos(lats)
+  A <- as.numeric(sapply(conv*lats, function(l) Insol_l1l2(orbit, lat = l, avg = TRUE)))
+  attr(A,  "class") <- "AnnualMean"
+  attr(A,  "lats")  <- lats * rconv
+  return(A)
+}
+
+
+plot.AnnualMean <- function(a, vertical = TRUE, yaxs='i',add=FALSE,...) {
+  lats <- attr(a, "lats")
+  if (!add)
+  {
+  plot(as.numeric(a), lats, type = "l", axes = FALSE, xlab = "Annual Mean [W/m2]", ylab = "Latitude", 
+       yaxs = yaxs, ...)
+  axis(1)
+  axis(2, at = seq(-90, 90, 30), labels = c("90S", "60S", "30S", "Eq.", "30N", "60N", "90N"))
+  } else  {
+  lines(as.numeric(a), lats, type = "l",...)
+  }
+}
+
+polar_night <- function(lat, orbit) {
+  if (is.null(orbit["eps"])) stop("provided orbit does not include obliquity")
+  eps <- orbit["eps"]
+  if (eps == 0) return("no polar night/day on a zero-obliquity planet")
+  lam <- asin(cos(abs(lat)) / sin(eps))
+  if (abs(lat) < abs(pi / 2 - eps))
+    return("no polar night / day at this latitude")
+  pn <- c(2 * pi - lam, lam) * 360 / (2 * pi)
+  # if latitude and obliquity of opposite sign...
+  if (lat * eps < 0)  pn <- rev(pn)
+  return(pn)
+}
+     
+
+
+
+.polar_night_curves <- function(orbit) {
+   pi2 <- pi / 2
+   eps <- orbit['eps']
+   if (eps < 0.001) return(NULL)  # no polar night
+   lam <- function(phi) asin ( - cos (phi) / sin (eps) ) 
+   sections <- list( seq(pi/2, pi/2 - eps, -0.005),
+                     seq(-pi/2, -pi/2+eps-0.0001, 0.005), 
+                     seq(-pi/2+eps-0.0001, -pi/2, -0.005))
+
+   curves <- list( 
+      list(c(sections[[1]]),
+             c(pi-lam(sections[[1]]))),
+      list(c(sections[[1]]),
+             (c(lam(sections[[1]])))),
+      list(c(sections[[2]],sections[[3]]),
+            - c(lam(sections[[2]]), pi-lam(sections[[3]]))))
+   curves_degree <- lapply ( curves,  function(l) {
+             list(l[[1]] * 180 / pi,
+             (l[[2]] * 180 / pi + 360 + 80 ) %% 360 )} ) 
+
+   i <<- which(curves_degree [[2]][[2]] > 180 )
+   # will not work for exotic obliquities; this needs more work
+   if (length(i)) {
+   polygon_degree <- list(
+     list ( 
+                    c( curves_degree[[1]][[2]], 
+                      curves_degree[[2]][[2]][(i):length(curves_degree[[2]][[2]])],
+                      360, 
+                      360, 
+                      curves_degree[[1]][[2]][1] ),
+                    c( curves_degree[[1]][[1]], 
+                      curves_degree[[2]][[1]][(i):length(curves_degree[[2]][[1]])],
+                      curves_degree[[2]][[1]][length(curves_degree[[2]][[1]])],
+                      90 , 90 ))  ,
+     list ( 
+                    c( curves_degree[[2]][[2]][1:(i-1)], 0 , 0, 
+                      curves_degree[[2]][[2]][1] ),
+                    c( curves_degree[[2]][[1]][1:(i-1)], 
+                       curves_degree[[2]][[1]][(i-1)], 
+                      90 , 90 ))  ,
+     list ( 
+                    c( curves_degree[[3]][[2]][1] , curves_degree[[3]][[2]], 
+                      curves_degree[[3]][[2]][length(curves_degree[[3]][[2]])],  
+                      curves_degree[[3]][[2]][1] ),
+                    c( -90, curves_degree[[3]][[1]], -90 , -90 ) ))
+   } else  { 
+   polygon_degree <- list(
+     list ( 
+                    c( curves_degree[[1]][[2]], 
+                      360, 
+                      360, 
+                      curves_degree[[1]][[2]][1] ),
+                    c( curves_degree[[1]][[1]], 
+                      curves_degree[[1]][[1]][length(curves_degree[[1]][[1]])],
+                      90 , 90 ))  ,
+     list ( 
+                    c( curves_degree[[2]][[2]], 0 , 0, 
+                      curves_degree[[2]][[2]][1] ),
+                    c( curves_degree[[2]][[1]], 
+                       curves_degree[[2]][[1]][length(curves_degree[[2]][[1]])], 
+                      90 , 90 ))  ,
+     list ( 
+                    c( curves_degree[[3]][[2]][1] , curves_degree[[3]][[2]], 
+                      curves_degree[[3]][[2]][length(curves_degree[[3]][[2]])],  
+                      curves_degree[[3]][[2]][1] ),
+                    c( -90, curves_degree[[3]][[1]], -90 , -90 ) ))
+   }
+   polygon_degree
+}

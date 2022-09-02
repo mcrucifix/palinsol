@@ -41,8 +41,15 @@ SIDERAL_YEAR = 365.25636
  TROPIC_YEAR  = 365.24219876
  YEAR = SIDERAL_YEAR
 
-
 W  <- function (phi, eps, ecc, lambda,S0=1365,n=3)
+{
+  # generalisation of W that will cope with negative Lambda or several rotations
+  nrot <- floor(lambda / (2*pi))
+  return (  W_(phi,eps,ecc, lambda %% (2*pi), S0, n) + 
+                            nrot * W_(phi,eps,ecc, 2*pi, S0, n)  )
+}
+
+W_  <- function (phi, eps, ecc, lambda,S0=1365,n=3)
    {
  
     # require(gsl) ## gnu scientific library ported by Robin Hankin. Thank you Robin !!! 
@@ -114,6 +121,10 @@ W  <- function (phi, eps, ecc, lambda,S0=1365,n=3)
     lambda4 = 2*pi - lambda1
   
     WW=0
+
+
+    ## THERE IS A BUG HERE. HAPPY HUNTING !!!
+    ## ref. is p. 1974 of Berger et al. 2010
 
     if (lambda > 0)         WW = WW + eq40(min(lambda,lambda1))
     if (lambda > lambda2)   WW = WW + eq40(min(lambda,lambda3)) - eq40(lambda2)
