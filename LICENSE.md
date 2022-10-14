@@ -1,6 +1,6 @@
-MIT License
+# MIT License
 
-Copyright (c) 2016 Michel Crucifix
+Copyright (c) 2022 palinsol authors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

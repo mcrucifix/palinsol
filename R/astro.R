@@ -1,4 +1,4 @@
-# Copyright (c) 2012 Michel Crucifix <michel.crucifix@uclouvain.be>
+# Copyright (c) 2022 Michel Crucifix <michel.crucifix@uclouvain.be>
 
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
