@@ -170,7 +170,7 @@ la04 <- function(t,degree=FALSE)
      assign('.loaded',  TRUE,  envir = data_LA04 )
   }
  
-  tka = t/1000.
+  tka = t/1000. - 0.050  # time elapsed since 1950.0
   if (tka>0) 
   {
    local(
