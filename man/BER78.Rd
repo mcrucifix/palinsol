@@ -34,8 +34,7 @@ insolation and Quaternary climatic changes, J. Atmos. Sci., 35,
 }
 \author{Michel Crucifix, UCLouvain, Belgium.}
 
-\source{https://nextcloud.cism.ucl.ac.be/s/CmPTjPc063uKzyE and 
-https://nextcloud.cism.ucl.ac.be/s/G9i1CxBbyyB2JMV}
+\source{dx.doi.org/10.5281/zenodo.7198111 and 10.5281/zenodo.7198109}
 
 \examples{ 
 data(BER78)

@@ -39,3 +39,5 @@ add Michel's orcid: Michel Crucifix (0000-0002-3437-4911)
 test La04 50a shift
 test reproduction of Ber90
 verify Ber90 uses the right constants
+
+verify compatibility with insolation values provided by https://doi.pangaea.de/10.1594/PANGAEA.56040
