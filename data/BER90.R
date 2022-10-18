@@ -44,12 +44,12 @@ fpath_table2 <- system.file("extdata", "GenerateTable2.R", package="palinsol")
 
 
 
-Table4 <- read.table(gzfile(fpath), skip=1, nrow=80)
-Table1 <- read.table(gzfile(fpath), skip=161, nrow=1000)
-Table5 <- read.table(gzfile(fpath), skip=6481, nrow=1000)
+Table4 <- utils::read.table(gzfile(fpath), skip=1, nrow=80)
+Table1 <- utils::read.table(gzfile(fpath), skip=161, nrow=1000)
+Table5 <- utils::read.table(gzfile(fpath), skip=6481, nrow=1000)
 
 source(fpath_table2)
-Table2 <- GenerateTable2(Table1, Table4, Table5, sol="BER90")
+Table2 <- .GlobalEnv$GenerateTable2(Table1, Table4, Table5, sol="BER90")
 
 # add period
 Table4 <- cbind(Table4, data.frame(V5=360*360 / Table4$V3) )
@@ -65,8 +65,8 @@ Table5 <<- Table5
 
 })
 
-Table1 <- Table1
-Table2 <- Table2
-Table4 <- Table4
-Table5 <- Table5
+Table1 <- .GlobalEnv$Table1
+Table2 <- .GlobalEnv$Table2
+Table4 <- .GlobalEnv$Table4
+Table5 <- .GlobalEnv$Table5
 #

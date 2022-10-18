@@ -1,14 +1,15 @@
 check inputs for Insol (latitude within -pi/2 - pi/2)
 check caloric insolation calculation -> done
-change references to ftp sites and put warning that these sources are unstable
+change references to ftp sites and put warning that these sources are unstable -> done
 check documentation annual mean insolation and its plotting function
 double check Milankovitch works with polar night
 add polar_night option in the Milankovitch plot documentation
 
 takahito : give longitude of perihelion
-takahito : fix 50yr lag in Laskar
+takahito : fix 50yr lag in Laskar   -> done
 takahito : explain doc long perihelion wrt to vernal equinox
 
+fix obliquity function
 
 Please always read the CRAN policies first. This document gives some additional hints for a useful CRAN submission, especially for new submissions.
 

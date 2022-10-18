@@ -42,12 +42,12 @@ fpath <- system.file("extdata", "INSOL.IN.gz", package="palinsol")
 fpath_table2 <- system.file("extdata", "GenerateTable2.R", package="palinsol")
 }
 
-Table4 <- read.table(gzfile(fpath), skip=6, nrow=19)
-Table1 <- read.table(gzfile(fpath), skip=25, nrow=47)
-Table5 <- read.table(gzfile(fpath), skip=72, nrow=78)
+Table4 <- utils::read.table(gzfile(fpath), skip=6, nrow=19)
+Table1 <- utils::read.table(gzfile(fpath), skip=25, nrow=47)
+Table5 <- utils::read.table(gzfile(fpath), skip=72, nrow=78)
 
 source(fpath_table2)
-Table2 <- GenerateTable2(Table1, Table4, Table5)
+Table2 <- .GlobalEnv$GenerateTable2(Table1, Table4, Table5)
 
 Table4 <- data.frame( Term = seq(1, nrow(Table4)), 
                       Amp = Table4$V2,
@@ -67,8 +67,8 @@ Table5 <<- Table5
 
 })
 
-Table1 <- Table1
-Table2 <- Table2
-Table4 <- Table4
-Table5 <- Table5
+Table1 <- .GlobalEnv$Table1
+Table2 <- .GlobalEnv$Table2
+Table4 <- .GlobalEnv$Table4
+Table5 <- .GlobalEnv$Table5
 #BER78 <- BER78

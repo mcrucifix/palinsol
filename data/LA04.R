@@ -43,8 +43,8 @@ fpathp <- system.file("extdata", "INSOLP.LA2004.BTL.ASC.gz", package="palinsol")
 
 
 
-la04past     <<- read.table(gzfile(fpathn), col.names=c('time','ecc','eps','varpi'))
-la04future   <<- read.table(gzfile(fpathp), col.names=c('time','ecc','eps','varpi'))
+la04past     <- utils::read.table(gzfile(fpathn), col.names=c('time','ecc','eps','varpi'))
+la04future   <- utils::read.table(gzfile(fpathp), col.names=c('time','ecc','eps','varpi'))
 
 
 la04past['varpi'] <- (la04past['varpi'] - pi ) %% (2*pi)
@@ -56,5 +56,5 @@ la04past <<- la04past
 la04future <<- la04future
 })
 
-la04past <- la04past
-la04future <- la04future
+la04past <- .GlobalEnv$la04past
+la04future <- .GlobalEnv$la04future
