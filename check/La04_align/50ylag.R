@@ -1,0 +1,5 @@
+Ber78Obl <- sapply(times, function(t) obliquity(t, ber78))
+La04Obl <- sapply(times, function(t) obliquity(t, la04))
+lot(times, Ber78Obl)
+lines(times, La04Obl)
+plot(times, (Ber78Obl - La04Obl)*180/pi)
