@@ -1,2 +1,5 @@
 .gitignore
 check
+man_old
+^data-raw$
+.Rprofile

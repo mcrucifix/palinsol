@@ -1,4 +1,4 @@
-# Copyright (c) 2012 Michel Crucifix <michel.crucifix@uclouvain.be>
+#Copyright (c) 2012 Michel Crucifix <michel.crucifix@uclouvain.be>
 
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -30,31 +30,47 @@
 # R Code developed for R version 2.15.2 (2012-10-26) -- "Trick or Treat"
 # ------------------------------------------------------------------ 
 
-#### load La04 table
+#### load Berger 1978 table from INSOL file
 local({
-fpathn <- file.path("..","inst","extdata", "INSOLN.LA2004.BTL.ASC.gz")
-fpathp <- file.path("..","inst","extdata", "INSOLP.LA2004.BTL.ASC.gz")
 
-if (! file.exists(fpathn)) # mmm. maybe the packages is already installed
+fpath <- file.path("..","inst","extdata", "INSOL.IN.gz")
+fpath_table2 <- file.path("..","inst","extdata", "GenerateTable2.R")
+
+if (! file.exists(fpath)) # mmm. maybe the packages is already installed
 {
-fpathn <- system.file("extdata", "INSOLN.LA2004.BTL.ASC.gz", package="palinsol")
-fpathp <- system.file("extdata", "INSOLP.LA2004.BTL.ASC.gz", package="palinsol")
+fpath <- system.file("extdata", "INSOL.IN.gz", package="palinsol")
+fpath_table2 <- system.file("extdata", "GenerateTable2.R", package="palinsol")
 }
 
+Table4 <- utils::read.table(gzfile(fpath), skip=6, nrow=19)
+Table1 <- utils::read.table(gzfile(fpath), skip=25, nrow=47)
+Table5 <- utils::read.table(gzfile(fpath), skip=72, nrow=78)
 
+source(fpath_table2)
+Table2 <- .GlobalEnv$GenerateTable2(Table1, Table4, Table5)
 
-la04past     <- utils::read.table(gzfile(fpathn), col.names=c('time','ecc','eps','varpi'))
-la04future   <- utils::read.table(gzfile(fpathp), col.names=c('time','ecc','eps','varpi'))
+Table4 <- data.frame( Term = seq(1, nrow(Table4)), 
+                      Amp = Table4$V2,
+                      Rate = Table4$V3,
+                      Phase = Table4$V4,
+                      Period = 360 * 360 / Table4$V3)
 
+colnames(Table1) <- c('Term','Amp','Rate','Phase','Period')
+colnames(Table5) <- c('Term','Amp','Rate','Phase','Period')
 
-la04past['varpi'] <- (la04past['varpi'] - pi ) %% (2*pi)
-la04future['varpi'] <- (la04future['varpi'] - pi ) %% (2*pi)
+#BER78 <<- list(Table1=Table1, Table2=Table2, Table4=Table4, Table5=Table5)
 
-#LA04 <<- list(la04past=la04past, la04future = la04future)
+Table1 <<- Table1
+Table2 <<- Table2
+Table4 <<- Table4
+Table5 <<- Table5
 
-la04past <<- la04past
-la04future <<- la04future
 })
 
-la04past <- .GlobalEnv$la04past
-la04future <- .GlobalEnv$la04future
+Table1 <- .GlobalEnv$Table1
+Table2 <- .GlobalEnv$Table2
+Table4 <- .GlobalEnv$Table4
+Table5 <- .GlobalEnv$Table5
+BER78 <- list(Table1=Table1, Table2=Table2, Table4=Table4, Table5=Table5)
+
+usethis::use_data(BER78)

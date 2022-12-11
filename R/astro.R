@@ -33,31 +33,106 @@
  ## calculates astronomical elements according to the solutions given below
  
 
-data_BER78 <- new.env()
-data_BER90 <- new.env()
-data_LA04  <- new.env()
+#BER78 <- new.env()
+#BER90 <- new.env()
+#LA04  <- new.env()
 
+
+
+#' Compute astronomical parameters in the past or in the future
+#' 
+#' --
+#' 
+#' 
+#' Both \code{ber78} and \code{ber90} compute astronomical elements based on a
+#' spectral decomposition (sum of sines and cosines) of obliquity and planetary
+#' precession parameters.  \code{ber78} uses the Berger (1978) algorithm and is
+#' accurate for +/- 1e6 years about the present. \code{ber90} uses the Berger
+#' and Loutre (1991) algorithm and is accurate for +/- 3e6 years about the
+#' present (but with a tiny accuracy over the last 50 kyr, usually negligible
+#' for any palaeo application, see example below).
+#' 
+#' \code{la04} interpolates tables provided by Laskar (2004), obtained by a
+#' simplectic numerical integration of the planetary system, in which the Moon
+#' is considered as a planet.  This solution is valid for about 50 Myr around
+#' the present.
+#' 
+#' \code{precession}, \code{coprecession} and \code{obliquity} do as
+#' \code{astro}, but only return precession (e sin varpi), coprecession (e cos
+#' varpi) and obliquity, respectively.
+#' 
+#' @aliases astro ber78 ber90 la04 precession coprecession obliquity
+#' @param t Time, years after 1950
+#' @param solution solution used. One of \code{ber78}, \code{ber90} or
+#' \code{la04}
+#' @param degree returns angles in degrees if \code{TRUE}
+#' @return A vector of 3 (la04) or 4 (\code{ber78} and \code{ber90})
+#' astronomical elements \tabular{ll}{ \code{eps} \tab obliquity, \cr
+#' \code{ecc}\tab eccentricity and \cr \code{varpi} true solar longitude of the
+#' perihelion. \cr } \code{ber78} and \code{ber90} also return \code{epsp}, the
+#' Hilbert transform of obliquity (sines changed in cosines in the spectral
+#' decomposition).
+#' 
+#' Angles are returned in radians unless \code{degree=TRUE}
+#' @author Michel Crucifix, U. catholique de Louvain, Belgium.
+#' @references Berger, A. L. (1978).  Long-term variations of daily insolation
+#' and Quaternary climatic changes, J. Atmos. Sci., 35, 2362-2367,
+#' doi:10.1175/1520-0469(1978)035<2362:LTVODI>2.0.CO;2
+#' 
+#' Berger and M.F. Loutre (1991), Insolation values for the climate of the last
+#' 10 million years, Quaternary Science Reviews, 10, 297 - 317,
+#' doi:10.1016/0277-3791(91)90033-Q
+#' 
+#' J. Laskar et al. (2004), A long-term numerical solution for the insolation
+#' quantities of the Earth, Astron. Astroph., 428, 261-285,
+#' doi:10.1051/0004-6361:20041335
+#' @keywords misc
+#' @examples
+#' 
+#' 
+#' ## compare the obliquity over the last 2 Myr with the three solutions
+#' 
+#' times <- seq(-2e6,0,1e3)
+#' Obl <- function(t) {c(time=t,ber78=ber78(t)['eps'],
+#'        ber90=ber90(t)['eps'], la04=la04(t)['eps'])}
+#' 
+#' Obls <- data.frame(t(sapply(times,Obl)))
+#' ## may take about 10 seconds to run
+#' with(Obls, {
+#'   plot(times/1e3, ber78.eps, type='l', xlab='time (kyr)', 
+#'                                        ylab='Obliquity (radians)')  
+#'   lines(times/1e3, ber90.eps, type='l', col='red')  
+#'   lines(times/1e3, la04.eps, type='l', col='green')  
+#'   })
+#' 
+#' legend('topright', c('ber78','ber90','la04'), col=c('black','red','green'), lty=1)
+#' 
+#' ## same but with a zoom over the last 300 000 years:
+#' 
+#' T <- which (times > -3e5)
+#' with(Obls, {
+#'   plot(times[T]/1e3, ber78.eps[T], type='l', xlab='time (kyr)', 
+#'                                        ylab='Obliquity (radians)')  
+#'   lines(times[T]/1e3, ber90.eps[T], type='l', col='red')  
+#'   lines(times[T]/1e3, la04.eps[T], type='l', col='green')  
+#'   })
+#' 
+#' legend('topright', c('ber78','ber90','la04'), col=c('black','red','green'), lty=1)
+#' 
+#' 
+#' 
+#' 
+#' 
+#' @export astro
 astro <- function(t,solution=ber78,degree=FALSE) {solution(t,degree)}
-
- ## Calculates climate orbital elements according to the algorithm given in A. Berger (1978)
- # Berger, A. L. (1978).  Long-term variations of daily insolation and Quaternary climatic changes, 
- # J. Atmos. Sci., 35(), 2362-2367
-
- # This solution is valid for + / - 1e6 years. 
- # uses MBCS_BER78 provided by A. Berger, available on
- # ftp://ftp.astr.ucl.ac.be/pub/berger/berger78/INSOL.IN
-
-## attach table to ber78 function
-## Input :  t = time expressed in yr after 1950.0 (reference epoch)
 
 
 ber78 <- function(t,degree=FALSE)
 {
-  if (!exists(".loaded", envir=data_BER78))
+  if (!exists("BER78"))
   { 
      message('load BER78 data')
-     data('BER78', envir=data_BER78)
-     assign('.loaded',  TRUE,  envir = data_BER78 )
+     data('BER78')
   }
 
   
@@ -69,15 +144,15 @@ ber78 <- function(t,degree=FALSE)
  
   sectorad <- pi/(180*60.*60.)
 
-  M <- data_BER78$Table4$Amp
-  g <- data_BER78$Table4$Rate*sectorad
-  b <- data_BER78$Table4$Phase*pi/180
-  F <- data_BER78$Table5$Amp*sectorad
-  fp <- data_BER78$Table5$Rate*sectorad
-  d <- data_BER78$Table5$Phase*pi/180.
-  A <- data_BER78$Table1$Amp/60./60.
-  f <- data_BER78$Table1$Rate*sectorad
-  phi<- data_BER78$Table1$Phase*pi/180.
+  M <- BER78$Table4$Amp
+  g <- BER78$Table4$Rate*sectorad
+  b <- BER78$Table4$Phase*pi/180
+  F <- BER78$Table5$Amp*sectorad
+  fp <- BER78$Table5$Rate*sectorad
+  d <- BER78$Table5$Phase*pi/180.
+  A <- BER78$Table1$Amp/60./60.
+  f <- BER78$Table1$Rate*sectorad
+  phi<- BER78$Table1$Phase*pi/180.
 
   ## Obliquity
 
@@ -111,11 +186,10 @@ ber78 <- function(t,degree=FALSE)
 
 ber90 <- function(t,degree=FALSE)
 {
-  if (!exists(".loaded", envir=data_BER90))
+  if (!exists("BER90"))
   {
      message('load BER90 data')
-     data('BER90', envir=data_BER90)
-     assign('.loaded',  TRUE,  envir = data_BER90 )
+     data('BER90')
   }
  
   psibar<- 50.41726176/60./60. * pi/180 
@@ -125,15 +199,15 @@ ber90 <- function(t,degree=FALSE)
  
   sectorad <- pi/(180*60.*60.)
 
-  M <- data_BER90$Table4$Amp
-  g <- data_BER90$Table4$Rate*sectorad
-  b <- data_BER90$Table4$Phase*pi/180
-  F <- data_BER90$Table5$Amp*sectorad
-  fp <- data_BER90$Table5$Rate*sectorad
-  d <- data_BER90$Table5$Phase*pi/180.
-  A <- data_BER90$Table1$Amp/60./60.
-  f <- data_BER90$Table1$Rate*sectorad
-  phi<- data_BER90$Table1$Phase*pi/180.
+  M <- BER90$Table4$Amp
+  g <- BER90$Table4$Rate*sectorad
+  b <- BER90$Table4$Phase*pi/180
+  F <- BER90$Table5$Amp*sectorad
+  fp <- BER90$Table5$Rate*sectorad
+  d <- BER90$Table5$Phase*pi/180.
+  A <- BER90$Table1$Amp/60./60.
+  f <- BER90$Table1$Rate*sectorad
+  phi<- BER90$Table1$Phase*pi/180.
 
   ## Obliquity
 
@@ -163,11 +237,9 @@ ber90 <- function(t,degree=FALSE)
 
 la04 <- function(t,degree=FALSE)
 {
-  if (!exists(".loaded", envir=data_LA04))
+  if (!exists("LA04"))
   {
-     message('load LA04 data')
-     data('LA04', envir=data_LA04)
-     assign('.loaded',  TRUE,  envir = data_LA04 )
+     data('LA04')
   }
  
   tka = t/1000. - 0.050  # time elapsed since 1950.0
@@ -176,10 +248,10 @@ la04 <- function(t,degree=FALSE)
    local(
    {
     F <-  floor(tka)
-    ORB <<- data_LA04$la04future[F+1, ]
+    ORB <<- LA04$la04future[F+1, ]
     if (! (tka == F)) {
       D  <- tka - floor(tka)
-      diff <- data_LA04$la04future[F+2, ] - ORB
+      diff <- LA04$la04future[F+2, ] - ORB
       # note : if the diff in varpi is greater than pi,
       # this probably means that we have skipped 2*pi, 
       # so we need to correct accordingly
@@ -194,11 +266,11 @@ la04 <- function(t,degree=FALSE)
    local(
    {
     F <-  floor(tka)
-    ORB <<- data_LA04$la04past[-F+1, ]
+    ORB <<- LA04$la04past[-F+1, ]
     if (! (tka == F)) {
       D  <- tka - F
 
-      diff <- data_LA04$la04past[-F, ] - ORB
+      diff <- LA04$la04past[-F, ] - ORB
       # note : if the diff in varpi is greater than pi,
       # this probably means that we have skipped 2*pi, 
       # so we need to correct accordingly

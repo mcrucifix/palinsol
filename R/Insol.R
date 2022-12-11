@@ -54,6 +54,45 @@
  #           in the same unit as S0. 
  # H : if NULL (default): compute daily mean insolation
  # else: hour angle (in radians) at which insolation is being computed
+
+
+#' Computes incoming solar radiation (insolation)
+#' 
+#' Computes incoming solar radiation (insolation) for a given astronomical
+#' configuration, true solar longitude and latitude
+#' 
+#' True solar longitude is measured in radians: \tabular{ll}{ pi/2 \tab for
+#' June solstice\cr pi \tab for September equinox\cr 3 * pi/2 \tab for December
+#' solstice\cr 0 \tab for Spring equinox\cr } It may be obtained for a given
+#' day in the year using the function \code{day2l}.
+#' 
+#' @param orbit Output from a solution, such as \code{ber78}, \code{ber90} or
+#' \code{la04}
+#' @param long true solar longitude
+#' @param lat latitude
+#' @param S0 Total solar irradiance
+#' @param H Sun hour angle, in radians
+#' @return Daily-mean insolation (assuming fixed astronomical parameters during
+#' a true solar day) if `H` is null.  Otherwise, insolation at specified hour
+#' angle (H = 0 at noon, H = pi at midnight).
+#' @author Michel Crucifix, U. catholique de Louvain, Belgium.
+#' @references Berger, A. L. (1978).  Long-term variations of daily insolation
+#' and Quaternary climatic changes, J. Atmos. Sci., 35, 2362-2367.
+#' @keywords misc
+#' @examples
+#' 
+#' 
+#' ## make a little wrapper, with all default values
+#' 
+#' insolation <- function(times, astrosol=ber78,...)
+#'   sapply(times, function(tt) Insol(orbit=astrosol(tt)))
+#' 
+#' tts <- seq(from = -400e3, to = 0, by = 1e3)
+#' isl <- insolation(tts, ber78)
+#' plot(tts, isl, typ='l')
+#' 
+#' 
+#' @export Insol
  Insol <- function (orbit,long=pi/2, lat=65*pi/180,S0=1365, H=NULL)
  {
   # orbit is a list that contains the following variables: varpi, eps, and ecc
@@ -98,6 +137,46 @@
 
  ## caloric_insolation
  ## integrated insolation over the 180 days receiving above median insolation
+
+
+#' Caloric insolation
+#' 
+#' Computes caloric summer insolation for a given astronomical configuration
+#' and latitude.
+#' 
+#' The caloric summer is a notion introduced by M. Milankovitch. It is defined
+#' as the halve of the tropical year during for which daily mean insolation are
+#' greater than all days of the other halves. The algorithm is an original
+#' algorithm by M. Crucifix, but consistent with earlier definitions and
+#' algorithms by A. Berger (see examples). Do not confuse this Berger (1978)
+#' reference with the Berger (1978), J. Atm. Sci. of the astronomical solution.
+#' 
+#' @param orbit Output from a solution, such as \code{ber78}, \code{ber90} or
+#' \code{la04}
+#' @param lat latitude
+#' @param ... Other arguments passed to Insol
+#' @return Time-integrated insolation in kJ/m2 during the caloric summer.
+#' @author Michel Crucifix, U. catholique de Louvain, Belgium.
+#' @references Berger (1978) Long-term variations of caloric insolation
+#' resulting from the earth's orbital elements, Quaternary Research, 9, 139 -
+#' 167.
+#' @examples
+#' 
+#' ## reproduces Table 2 of Berger 1978
+#' lat <- seq(90, 0, -10) * pi/180. ## angles in radiants. 
+#' orbit_1 = ber78(0)
+#' orbit_2 = orbit_1
+#' orbit_2 ['eps'] = orbit_2['eps'] + 1*pi/180.
+#' 
+#' T <-  sapply(lat, function(x) c(lat = x * 180/pi, 
+#'                           calins(orbit_2, lat=x, S0=1365) / (4.18 * 1e1)
+#'                         - calins(orbit_1, lat=x, S0=1365) / (4.18 * 1e1) ) )
+#' data.frame(t(T))
+#' # there are still some differences, of the order of 0.3 %, that are probably related to
+#' # the slightly different methods. 
+#' # 41.8 is the factor from cal/cm2 to  kJ/m2
+#' 
+#' @export calins
  calins <- function (orbit,lat=65*pi/180,...) {
     ins   <- sapply(seq(1:360)*pi/180, function(x) Insol(orbit,long=x, lat=lat,...))
     dt    <- sapply(seq(1:360)*pi/180, function(x) .dtdnu (orbit,long=x))
@@ -115,6 +194,29 @@
 
 
  ## integrated insolation over the 360 days receiving insolation above a threshold
+
+
+#' Integrated insolation for all days exceeding a threshold
+#' 
+#' Integrated insolation over the part during which daily-mean insolation
+#' exceeds a threshold, expressed in W/m2
+#' 
+#' Algorithm is by M. Crucifix, but the idea of thresholded insolation is due
+#' to Huybers and Tziperman (2008), reference below.
+#' 
+#' @param lat latitude
+#' @param orbit Output from a solution, such as \code{ber78}, \code{ber90} or
+#' \code{la04}
+#' @param threshold threshold insolation ,in W/m2
+#' @param ... other arguments to be passed to Insol
+#' @return Time-integrated insolation in kJ/m2 . The quantity is calculated by
+#' brute-force integration with a 1-degree time-step in true solar longitude
+#' and this can be quite slow if long series are to be calculated.
+#' @author Michel Crucifix, U. catholique de Louvain, Belgium.
+#' @references P. Huybers and E. Tziperman (2008), Integrated summer insolation
+#' forcing and 40,000-year glacial cycles: The perspective from an
+#' ice-sheet/energy-balance model, Paleoceanography, 23.
+#' @export thrins
  thrins <- function (lat=65*pi/180,orbit,threshold=400,...)
    {
     ins   <- sapply(seq(1:360)*pi/180, function(x) Insol(orbit,long=x, lat=lat,...))
@@ -128,6 +230,72 @@
 
 
  ## time-integrated between two true solar longitude bounds
+
+
+#' Time-integrated insolation
+#' 
+#' Computes time-integrated incoming solar radiation (Insol) either between
+#' given true solar longitudes (\code{Insol_l1l2}) or days of year
+#' (\code{Insol_d1d2}) for a given orbit and latitude
+#' 
+#' All angles input measured in radiants.
+#' 
+#' Note that in contrast to Berger (2010) we consider the tropic year as the
+#' reference, rather than the sideral year, which partly explains some of the
+#' small differences with the original publication
+#' 
+#' @aliases Insol_l1l2 Insol_d1d2
+#' @param orbit Output from a solution, such as \code{ber78}, \code{ber90} or
+#' \code{la04}
+#' @param lat latitude
+#' @param l1 lower true solar longitude bound of the time-integral
+#' @param l2 upper true solar longitude bound of the time-integral
+#' @param d1 lower calendar day (360-day-year) of the time-integral
+#' @param d2 upper calendar day (360-day-year) of the time-integral
+#' @param avg performs a time-average.
+#' @param ell uses elliptic integrals for the calculation (much faster)
+#' @param ... other arguments to be passed to \code{Insol}
+#' @return Time-integrated insolation in kJ/m2 if \code{avg=TRUE}, else
+#' time-average in W/m2
+#' @author Michel Crucifix, U. catholique de Louvain, Belgium.
+#' @references Berger, A., Loutre, M.F. and Yin Q. (2010), Total irradiation
+#' during any time interval of the year using elliptic integrals, Quaternary
+#' Science Reviews, 29, 1968 - 1982, doi:10.1016/j.quascirev.2010.05.007
+#' @examples
+#' 
+#' ## reproduces Table 1a of Berger et al. 2010:
+#' lat <- seq(85, -85, -10) * pi/180. ## angles in radiants. 
+#' orbit=c(eps=  23.446 * pi/180., ecc= 0.016724, varpi= (102.04 - 180)* pi/180. )
+#' T <-  sapply(lat, function(x) c(lat = x * 180/pi, 
+#'         m1 =  Insol_l1l2(orbit, 0, 70 * pi/180, lat=x, ell= TRUE, S0=1368) / 1e3,
+#'         m2 =  Insol_l1l2(orbit, 0, 70 * pi/180, lat=x, ell=FALSE, S0=1368) / 1e3) ) 
+#' data.frame(t(T))
+#'  ## reproduces Table 1b of Berger et al. 2010:
+#' lat <- c(85, 55, 0, -55, -85) * pi/180. ## angles in radiants. 
+#' T <-  sapply(lat, function(x) c(lat = x * 180/pi, 
+#'          m1 =  Insol_l1l2(orbit, 30 * pi/180. , 75 * pi/180, 
+#'                lat=x, ell= TRUE, S0=1368) / 1e3,
+#'          m2 =  Insol_l1l2(orbit, 30 * pi/180. , 75 * pi/180, 
+#'                lat=x, ell=FALSE, S0=1368) / 1e3) ) 
+#'  ## reproduces Table 2a of Berger et al. 2010:
+#' lat <- seq(85, -85, -10) * pi/180. ## angles in radiants. 
+#' 
+#' ## 21 march in a 360-d year. By definition : day 80 = 21 march at 12u
+#' d1 = 79.5 
+#' d2 = 79.5 + (10 + 30 + 30 ) * 360/365.2425 ## 30th May in a 360-d year
+#' 
+#' T <-  sapply(lat, function(x) c(lat = x * 180/pi, 
+#'         m1 =  Insol_d1d2(orbit, d1,d2, lat=x, ell= TRUE, S0=1368) / 1e3,
+#'         m2 =  Insol_d1d2(orbit, d1,d2, lat=x, ell= FALSE, S0=1368) / 1e3))
+#'                           
+#' ## I did not quite get the same results as on the table 
+#' ## on this one; probably a matter of calendar
+#' ## note : the authors in fact used S0=1368 (pers. comm.) 
+#' ## 1366 in the paper is a misprint
+#' 
+#' data.frame(t(T))
+#' 
+#' @export Insol_l1l2
 Insol_l1l2 <- function (orbit,l1=0,l2=2*pi,lat=65*pi/180,avg=FALSE,ell=TRUE,...)
    {
     # parameters: orbit : supplied by orbit calculator; e.g. : ber78 or ber90
@@ -182,6 +350,50 @@ Insol_l1l2 <- function (orbit,l1=0,l2=2*pi,lat=65*pi/180,avg=FALSE,ell=TRUE,...)
       INT
     }
 
+
+
+#' Converts calendar day into true solar longitude and vice-versa
+#' 
+#' Converts calendar day into true solar longitude for a given astronomical
+#' configuration and vice-versa
+#' 
+#' The 360-d calendar is a conventional calendar, for which day 80 is the day
+#' of NH spring equinoxe. The tropic year, which in reality is 365.24219876 *
+#' 86400 seconds was the practical reference to define the Gregorian Calendar
+#' since this is the time needed to go through all the seasons. More discussion
+#' of calendars and conversions in Berger et al. (2010) appendix D.
+#' 
+#' The \code{day2l} and \code{l2day} is based on algoritms given in Berger
+#' (1978), but which can be traced back to expansions of the mean and true
+#' anomaly by Brouwer and Clemente (1961), pp. 65 and 77 (see code for further
+#' details).
+#' 
+#' @aliases day2l l2day date_of_perihelion
+#' @param orbit Output from a solution, such as \code{ber78}, \code{ber90} or
+#' \code{la04}
+#' @param l true solar longitude, in radiants
+#' @param day calendar day, in a 360-d year
+#' @return day of year (360-d cal.) or true solar longitude (in radiants).
+#' @author Michel Crucifix, U. catholique de Louvain, Belgium.
+#' @references Brouwer D. and G. M. Clemence, (1961), Methods of celestial
+#' mechanics, Academic Press, New York.
+#' 
+#' Berger, (1978) Long-term variations of daily insolation and Quaternary
+#' climatic changes, J. Atmos. Sci., 35, 2362-2367 1978,
+#' doi:10.1175/1520-0469(1978)035<2362:LTVODI>2.0.CO;2
+#' 
+#' Berger, A. Loutre, M.F. and Yin Q. (2010), Total irradiation during any time
+#' interval of the year using elliptic integrals, Quaternary Science Reviews,
+#' 29, 1968 - 1982, doi:10.1016/j.quascirev.2010.05.007
+#' @examples
+#' 
+#' ## date of perihelion throughout today
+#' orbit=c(eps=0.409214, ecc=0.01672393, varpi=4.92251)
+#' date_of_perihelion(orbit)
+#' ## date of winter solstice)
+#' l2day(orbit, 270*pi/180.)
+#' 
+#' @export day2l
 day2l  <- function (orbit,day)
    { 
     ## converts day to longitude.
@@ -291,6 +503,37 @@ Insol_d1d2 <- function (orbit,d1,d2,lat=65*pi/180,avg=FALSE,...)
 # { t <- seq(-1e6,0,by=1e3)
 #   F <- InsolWrapper(t)
 
+
+
+#' Milankovitch graph for a given astronomical configuration
+#' 
+#' Computes the distrubition in latitude and longitude of incoming solar
+#' radiation, known as a Milankovitch graph, with possibility of plotting with
+#' a dedicated plot function
+#' 
+#' 
+#' @param orbit Output from a solution, such as \code{ber78}, \code{ber90} or
+#' \code{la04}
+#' @param S0 Total solar irradiance
+#' @param lat latitudes, passed as an array
+#' @param long true solar longitudes, passed as an array
+#' @param deg If true : the axes of the Milankovitch object are expressed in
+#' degrees.  Inputs are always in radiants
+#' @return A object of Milankovitch class, which may be plotted using the
+#' regular plot function
+#' @note The polar night option may not be bullet-proof for exotic obliquities
+#' @author Michel Crucifix, U. catholique de Louvain, Belgium.
+#' @references Berger, A. L. (1978).  Long-term variations of daily insolation
+#' and Quaternary climatic changes, J. Atmos. Sci., 35, 2362-2367.
+#' @keywords misc
+#' @examples
+#' 
+#' orbit <- c(eps=0.409214, ecc=0.01672393, varpi=4.92251)
+#' M <- Milankovitch(orbit)
+#' plot(M, plot=contour)
+#' plot(M, plot=contour, month=FALSE)
+#' 
+#' @export Milankovitch
 Milankovitch <- function(orbit, S0=1365, lat=seq(-pi/2, pi/2, l=73), long=seq(0, 2*pi, l=145), deg=TRUE)
 
 {
@@ -308,6 +551,24 @@ attr(M,  "polar_nights") <- .polar_night_curves(orbit)
 M
 }
 
+
+
+#' plot Milankovitch graph
+#' 
+#' plot Milankovitch object
+#' 
+#' 
+#' @param x Milankovitch object
+#' @param months if true : x-axis of the plot indicates months conventionnally
+#' defined with the true solar longitude; x-axis is simply the true solar
+#' longitude otherwise
+#' @param polar_night if true : the polar night zone will be hashed
+#' @param ... Other arguments passed to plotting function
+#' @param plot_function function used to plot the matrix. Typically
+#' \code{contour} or \code{image} but may also be \code{image.plot} if using
+#' the \code{fields} package.
+#' @author Michel Crucifix, U. catholique de Louvain, Belgium.
+#' @keywords misc
 plot.Milankovitch <- function(x, months=TRUE, polar_night=TRUE, plot_function=contour, col="black",...)
 {
    long = attr(x, "long")
@@ -327,6 +588,8 @@ if (months)
      cols[which(levels < 0)] <- "blue"
      cols[which(levels == 0)] <- "black"
      plot_function(Long, attr(x, "lat"), MM, axes=FALSE,xlab="Month",ylab="Latitude",xaxs="i",yaxs="i",col=cols, levels=levels,...)
+
+
      polar_night <- FALSE
    } else {
    plot_function(Long, attr(x, "lat"), MM, axes=FALSE,xlab="Month",ylab="Latitude",xaxs="i",yaxs="i",col=col,...)
@@ -386,6 +649,37 @@ plot.AnnualMean <- function(a, vertical = TRUE, yaxs='i',add=FALSE,...) {
   lines(as.numeric(a), lats, type = "l",...)
   }
 }
+
+#' Begin and end of the polar night
+#' 
+#' Provides the true solar longitude (in degrees) of the beginning and end of
+#' the polar night for a given latitude and orbit
+#' 
+#' 
+#' @param lat latitude
+#' @param orbit Output from a solution, such as \code{ber78}, \code{ber90} or
+#' \code{la04}
+#' @return Either a message about the absence of polar night (for specified
+#' reasons), or the true solar longitude, in degrees, of the beginning and end
+#' of the polar night.
+#' @author Michel Crucifix, U. catholique de Louvain, Belgium.
+#' @references any standard text book of spherical astronomy
+#' @examples
+#' 
+#' 
+#' current_orbit <- la04(0)
+#' 
+#' # polar night at the equator ? 
+#' polar_night (0, current_orbit)
+#' 
+#' # polar night at 80 N ? 
+#' polar_night (80*pi/180, current_orbit)
+#' 
+#' # polar nights expressed as day of year 
+#' l2day(current_orbit, polar_night (80*pi/180, current_orbit))
+#' 
+#' 
+#' @export polar_night
 
 polar_night <- function(lat, orbit) {
   if (is.null(orbit["eps"])) stop("provided orbit does not include obliquity")

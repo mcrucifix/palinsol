@@ -70,3 +70,8 @@ Table2 <- .GlobalEnv$Table2
 Table4 <- .GlobalEnv$Table4
 Table5 <- .GlobalEnv$Table5
 #
+BER90 <- list(Table1=Table1, Table2=Table2, Table4=Table4, Table5=Table5)
+
+usethis::use_data(BER90)
+
+#
