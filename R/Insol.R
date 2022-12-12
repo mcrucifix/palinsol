@@ -460,7 +460,7 @@ l2day <- function (orbit,l)
 
    }
 
-
+#' @export 
 date_of_perihelion <- function(orbit)
  {
     ecc = orbit['ecc']
@@ -489,6 +489,7 @@ date_of_perihelion <- function(orbit)
 
 
 
+#' @export Insol_d1d2
 Insol_d1d2 <- function (orbit,d1,d2,lat=65*pi/180,avg=FALSE,...)
 ## as insol but given days rather than longitudes
 
@@ -569,6 +570,8 @@ M
 #' the \code{fields} package.
 #' @author Michel Crucifix, U. catholique de Louvain, Belgium.
 #' @keywords misc
+#' @importFrom graphics axis
+#' @export
 plot.Milankovitch <- function(x, months=TRUE, polar_night=TRUE, plot_function=contour, col="black",...)
 {
    long = attr(x, "long")
@@ -624,6 +627,7 @@ if (months)
 }
 
 
+#' @export AnnualMean
 AnnualMean <- function(orbit, S0 = 1365, lats = seq(-90, 90, 1), degree = TRUE) {
   if (degree) {
     conv <- pi/180; rconv <- 1} 
@@ -637,6 +641,7 @@ AnnualMean <- function(orbit, S0 = 1365, lats = seq(-90, 90, 1), degree = TRUE) 
 }
 
 
+#' @export 
 plot.AnnualMean <- function(a, vertical = TRUE, yaxs='i',add=FALSE,...) {
   lats <- attr(a, "lats")
   if (!add)

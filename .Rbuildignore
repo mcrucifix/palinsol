@@ -1,5 +1,5 @@
 .gitignore
-check
+test
 man_old
 ^data-raw$
 .Rprofile

@@ -123,17 +123,20 @@
 #' 
 #' 
 #' 
+
 #' @export astro
 astro <- function(t,solution=ber78,degree=FALSE) {solution(t,degree)}
 
 
+#' @export ber78
 ber78 <- function(t,degree=FALSE)
 {
-  if (!exists("BER78"))
-  { 
-     message('load BER78 data')
-     data('BER78')
-  }
+ # if (!exists("BER78", envir=parent.env(environment())))
+ # { 
+ #    message('load BER78 data')
+ #    print(parent.env(environment()))
+ #    data("BER78", package = "palinsol", envir = parent.env(environment()))
+ # }
 
   
   psibar<- 50.439273/60./60. * pi/180 
@@ -144,15 +147,15 @@ ber78 <- function(t,degree=FALSE)
  
   sectorad <- pi/(180*60.*60.)
 
-  M <- BER78$Table4$Amp
-  g <- BER78$Table4$Rate*sectorad
-  b <- BER78$Table4$Phase*pi/180
-  F <- BER78$Table5$Amp*sectorad
-  fp <- BER78$Table5$Rate*sectorad
-  d <- BER78$Table5$Phase*pi/180.
-  A <- BER78$Table1$Amp/60./60.
-  f <- BER78$Table1$Rate*sectorad
-  phi<- BER78$Table1$Phase*pi/180.
+  M <-  palinsol::BER78$Table4$Amp
+  g <-  palinsol::BER78$Table4$Rate*sectorad
+  b <-  palinsol::BER78$Table4$Phase*pi/180
+  F <-  palinsol::BER78$Table5$Amp*sectorad
+  fp <- palinsol::BER78$Table5$Rate*sectorad
+  d <-  palinsol::BER78$Table5$Phase*pi/180.
+  A <-  palinsol::BER78$Table1$Amp/60./60.
+  f <-  palinsol::BER78$Table1$Rate*sectorad
+  phi<- palinsol::BER78$Table1$Phase*pi/180.
 
   ## Obliquity
 
@@ -184,12 +187,13 @@ ber78 <- function(t,degree=FALSE)
 ## attach table to ber90 function
 ## Input :  t = time expressed in yr after 1950.0 (reference epoch)
 
+#' @export ber90
 ber90 <- function(t,degree=FALSE)
 {
-  if (!exists("BER90"))
+  if (!exists("BER90", envir=parent.env(environment())))
   {
      message('load BER90 data')
-     data('BER90')
+     data('BER90', package='palinsol', envir=parent.env(environment()))
   }
  
   psibar<- 50.41726176/60./60. * pi/180 
@@ -199,15 +203,15 @@ ber90 <- function(t,degree=FALSE)
  
   sectorad <- pi/(180*60.*60.)
 
-  M <- BER90$Table4$Amp
-  g <- BER90$Table4$Rate*sectorad
-  b <- BER90$Table4$Phase*pi/180
-  F <- BER90$Table5$Amp*sectorad
-  fp <- BER90$Table5$Rate*sectorad
-  d <- BER90$Table5$Phase*pi/180.
-  A <- BER90$Table1$Amp/60./60.
-  f <- BER90$Table1$Rate*sectorad
-  phi<- BER90$Table1$Phase*pi/180.
+  M <-  palinsol::BER90$Table4$Amp
+  g <-  palinsol::BER90$Table4$Rate*sectorad
+  b <-  palinsol::BER90$Table4$Phase*pi/180
+  F <-  palinsol::BER90$Table5$Amp*sectorad
+  fp <- palinsol::BER90$Table5$Rate*sectorad
+  d <-  palinsol::BER90$Table5$Phase*pi/180.
+  A <-  palinsol::BER90$Table1$Amp/60./60.
+  f <-  palinsol::BER90$Table1$Rate*sectorad
+  phi<- palinsol::BER90$Table1$Phase*pi/180.
 
   ## Obliquity
 
@@ -235,11 +239,14 @@ ber90 <- function(t,degree=FALSE)
 
 ## Input :  t = time expressed in yr after 1950.0 (reference epoch)
 
-la04 <- function(t,degree=FALSE)
+#' @export la04
+la04 <- function(t,degree=FALSE) 
 {
+  if (!exists("LA04", envir=parent.env(environment())))
   if (!exists("LA04"))
   {
-     data('LA04')
+     message("load LA04 data")
+     data("LA04", envir=parent.env(environment()))
   }
  
   tka = t/1000. - 0.050  # time elapsed since 1950.0
@@ -248,10 +255,10 @@ la04 <- function(t,degree=FALSE)
    local(
    {
     F <-  floor(tka)
-    ORB <<- LA04$la04future[F+1, ]
+    ORB <<- palinsol::LA04$la04future[F+1, ]
     if (! (tka == F)) {
       D  <- tka - floor(tka)
-      diff <- LA04$la04future[F+2, ] - ORB
+      diff <- palinsol::LA04$la04future[F+2, ] - ORB
       # note : if the diff in varpi is greater than pi,
       # this probably means that we have skipped 2*pi, 
       # so we need to correct accordingly
@@ -266,11 +273,11 @@ la04 <- function(t,degree=FALSE)
    local(
    {
     F <-  floor(tka)
-    ORB <<- LA04$la04past[-F+1, ]
+    ORB <<- palinsol::LA04$la04past[-F+1, ]
     if (! (tka == F)) {
       D  <- tka - F
 
-      diff <- LA04$la04past[-F, ] - ORB
+      diff <- palinsol::LA04$la04past[-F, ] - ORB
       # note : if the diff in varpi is greater than pi,
       # this probably means that we have skipped 2*pi, 
       # so we need to correct accordingly
@@ -293,6 +300,7 @@ la04 <- function(t,degree=FALSE)
 
    }
 
+#' @export precession
 precession <- function(t,solution=ber78)
 ##  as astro, but returns only precession parameter e sin (varpi)
 { 
@@ -300,6 +308,7 @@ precession <- function(t,solution=ber78)
   as.numeric(O['ecc'] * sin (O['varpi']))
 }
 
+#' @export coprecession
 coprecession <- function(t,solution=ber78)
 ##  as astro, but returns only precession parameter e sin (varpi)
 { 
@@ -309,6 +318,7 @@ coprecession <- function(t,solution=ber78)
 
 
 
+#' @export obliquity
 obliquity <- function(t,solution=ber78,degree=FALSE)
 ##  as astro, but returns only obliquity
 { as.numeric(astro(t,solution, degree=degree)['eps']) }
