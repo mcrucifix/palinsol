@@ -428,6 +428,7 @@ day2l  <- function (orbit,day)
     L
    }
 
+#' export
 l2day <- function (orbit,l)
     ## converts true solar longitude to day
     ## source :  Brouwer and Clemence
