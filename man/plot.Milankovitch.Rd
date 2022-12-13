@@ -26,6 +26,8 @@ longitude otherwise}
 \code{contour} or \code{image} but may also be \code{image.plot} if using
 the \code{fields} package.}
 
+\item{col}{main color for positive contours (negative contours are in red)}
+
 \item{...}{Other arguments passed to plotting function}
 }
 \description{

@@ -7,6 +7,10 @@
 \title{Converts calendar day into true solar longitude and vice-versa}
 \usage{
 day2l(orbit, day)
+
+l2day(orbit, l)
+
+date_of_perihelion(orbit)
 }
 \arguments{
 \item{orbit}{Output from a solution, such as \code{ber78}, \code{ber90} or
@@ -35,6 +39,13 @@ The \code{day2l} and \code{l2day} is based on algoritms given in Berger
 anomaly by Brouwer and Clemente (1961), pp. 65 and 77 (see code for further
 details).
 }
+\section{Functions}{
+\itemize{
+\item \code{l2day()}: Converts true solar longitude into calendar day
+
+\item \code{date_of_perihelion()}: Returns date of perihelion
+
+}}
 \examples{
 
 ## date of perihelion throughout today

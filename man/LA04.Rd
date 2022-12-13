@@ -1,6 +1,5 @@
 \name{LA04}
-\alias{la04past}
-\alias{la04future}
+\alias{LA04}
 
 \docType{data}
 \title{Astronomical elements supplied by Laskar et al. 2004}

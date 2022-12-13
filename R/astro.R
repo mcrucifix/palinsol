@@ -33,12 +33,6 @@
  ## calculates astronomical elements according to the solutions given below
  
 
-#BER78 <- new.env()
-#BER90 <- new.env()
-#LA04  <- new.env()
-
-
-
 #' Compute astronomical parameters in the past or in the future
 #' 
 #' --
@@ -190,11 +184,6 @@ ber78 <- function(t,degree=FALSE)
 #' @export ber90
 ber90 <- function(t,degree=FALSE)
 {
-  if (!exists("BER90", envir=parent.env(environment())))
-  {
-     message('load BER90 data')
-     data('BER90', package='palinsol', envir=parent.env(environment()))
-  }
  
   psibar<- 50.41726176/60./60. * pi/180 
   estar <- 23.33340950
@@ -242,12 +231,6 @@ ber90 <- function(t,degree=FALSE)
 #' @export la04
 la04 <- function(t,degree=FALSE) 
 {
-  if (!exists("LA04", envir=parent.env(environment())))
-  if (!exists("LA04"))
-  {
-     message("load LA04 data")
-     data("LA04", envir=parent.env(environment()))
-  }
  
   tka = t/1000. - 0.050  # time elapsed since 1950.0
   if (tka>0) 

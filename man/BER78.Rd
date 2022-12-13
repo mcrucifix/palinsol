@@ -1,10 +1,6 @@
 \name{BER78}
-\alias{Table4}
-\alias{Table2}
-\alias{Table1}
-\alias{Table5}
+\alias{BER78}
 \alias{BER90}
-\alias{.loaded}
 
 \docType{data}
 \title{Tables supplied by BER78 and BER90}

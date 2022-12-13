@@ -14,6 +14,8 @@ Insol_l1l2(
   ell = TRUE,
   ...
 )
+
+Insol_d1d2(orbit, d1, d2, lat = 65 * pi/180, avg = FALSE, ...)
 }
 \arguments{
 \item{orbit}{Output from a solution, such as \code{ber78}, \code{ber90} or
@@ -31,9 +33,9 @@ Insol_l1l2(
 
 \item{...}{other arguments to be passed to \code{Insol}}
 
-\item{d1}{lower calendar day (360-day-year) of the time-integral}
+\item{d1}{lower calendar day (360-day year) of the time-integral}
 
-\item{d2}{upper calendar day (360-day-year) of the time-integral}
+\item{d2}{upper calendar day (360-day year) of the time-integral}
 }
 \value{
 Time-integrated insolation in kJ/m2 if \code{avg=TRUE}, else
@@ -51,6 +53,11 @@ Note that in contrast to Berger (2010) we consider the tropic year as the
 reference, rather than the sideral year, which partly explains some of the
 small differences with the original publication
 }
+\section{Functions}{
+\itemize{
+\item \code{Insol_d1d2()}: Mean and integrated insolation over an interval bounded by calendar days
+
+}}
 \examples{
 
 ## reproduces Table 1a of Berger et al. 2010:

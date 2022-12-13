@@ -244,14 +244,14 @@
 #' reference, rather than the sideral year, which partly explains some of the
 #' small differences with the original publication
 #' 
-#' @aliases Insol_l1l2 Insol_d1d2
+#' @aliases Insol_l1l2 
 #' @param orbit Output from a solution, such as \code{ber78}, \code{ber90} or
 #' \code{la04}
 #' @param lat latitude
 #' @param l1 lower true solar longitude bound of the time-integral
 #' @param l2 upper true solar longitude bound of the time-integral
-#' @param d1 lower calendar day (360-day-year) of the time-integral
-#' @param d2 upper calendar day (360-day-year) of the time-integral
+#' @param d1 lower calendar day (360-day year) of the time-integral
+#' @param d2 upper calendar day (360-day year) of the time-integral
 #' @param avg performs a time-average.
 #' @param ell uses elliptic integrals for the calculation (much faster)
 #' @param ... other arguments to be passed to \code{Insol}
@@ -296,6 +296,7 @@
 #' data.frame(t(T))
 #' 
 #' @export Insol_l1l2
+
 Insol_l1l2 <- function (orbit,l1=0,l2=2*pi,lat=65*pi/180,avg=FALSE,ell=TRUE,...)
    {
     # parameters: orbit : supplied by orbit calculator; e.g. : ber78 or ber90
@@ -368,7 +369,7 @@ Insol_l1l2 <- function (orbit,l1=0,l2=2*pi,lat=65*pi/180,avg=FALSE,ell=TRUE,...)
 #' anomaly by Brouwer and Clemente (1961), pp. 65 and 77 (see code for further
 #' details).
 #' 
-#' @aliases day2l l2day date_of_perihelion
+#' @aliases day2l 
 #' @param orbit Output from a solution, such as \code{ber78}, \code{ber90} or
 #' \code{la04}
 #' @param l true solar longitude, in radiants
@@ -428,9 +429,9 @@ day2l  <- function (orbit,day)
     L
    }
 
-#' export
+#' @describeIn day2l Converts true solar longitude into calendar day
+#' @export
 l2day <- function (orbit,l)
-    ## converts true solar longitude to day
     ## source :  Brouwer and Clemence
    { 
     ecc = orbit['ecc']
@@ -461,6 +462,8 @@ l2day <- function (orbit,l)
 
    }
 
+
+#' @describeIn day2l Returns date of perihelion
 #' @export 
 date_of_perihelion <- function(orbit)
  {
@@ -489,8 +492,10 @@ date_of_perihelion <- function(orbit)
    }
 
 
-
+#' @describeIn Insol_l1l2 Mean and integrated insolation over an interval bounded by calendar days
+#' @aliases Insol_d1d2
 #' @export Insol_d1d2
+
 Insol_d1d2 <- function (orbit,d1,d2,lat=65*pi/180,avg=FALSE,...)
 ## as insol but given days rather than longitudes
 
@@ -565,13 +570,14 @@ M
 #' defined with the true solar longitude; x-axis is simply the true solar
 #' longitude otherwise
 #' @param polar_night if true : the polar night zone will be hashed
+#' @param col main color for positive contours (negative contours are in red)
 #' @param ... Other arguments passed to plotting function
 #' @param plot_function function used to plot the matrix. Typically
 #' \code{contour} or \code{image} but may also be \code{image.plot} if using
 #' the \code{fields} package.
 #' @author Michel Crucifix, U. catholique de Louvain, Belgium.
 #' @keywords misc
-#' @importFrom graphics axis
+#' @importFrom graphics axis contour polygon
 #' @export
 plot.Milankovitch <- function(x, months=TRUE, polar_night=TRUE, plot_function=contour, col="black",...)
 {
@@ -627,7 +633,15 @@ if (months)
  }
 }
 
-
+#' Annual Mean insolation
+#'
+#' Compute annual mean insolation for a given orbit and solar constant
+#' @param  orbit Output from a solution, such as \code{ber78}, \code{ber90} or 
+#' \code{la04}
+#' @param  S0   Total solar irradiance
+#' @param  lats  list of latitudes at which annual mean is computed
+#' @param  degree true if latitudes are provided in degrees
+#' @return an object of class "AnnualMean" with annual mean insolations
 #' @export AnnualMean
 AnnualMean <- function(orbit, S0 = 1365, lats = seq(-90, 90, 1), degree = TRUE) {
   if (degree) {
@@ -642,17 +656,18 @@ AnnualMean <- function(orbit, S0 = 1365, lats = seq(-90, 90, 1), degree = TRUE) 
 }
 
 
+#' @importFrom graphics lines
 #' @export 
-plot.AnnualMean <- function(a, vertical = TRUE, yaxs='i',add=FALSE,...) {
-  lats <- attr(a, "lats")
+plot.AnnualMean <- function(x, vertical = TRUE, yaxs='i',add=FALSE,...) {
+  lats <- attr(x, "lats")
   if (!add)
   {
-  plot(as.numeric(a), lats, type = "l", axes = FALSE, xlab = "Annual Mean [W/m2]", ylab = "Latitude", 
+  plot(as.numeric(x), lats, type = "l", axes = FALSE, xlab = "Annual Mean [W/m2]", ylab = "Latitude", 
        yaxs = yaxs, ...)
   axis(1)
   axis(2, at = seq(-90, 90, 30), labels = c("90S", "60S", "30S", "Eq.", "30N", "60N", "90N"))
   } else  {
-  lines(as.numeric(a), lats, type = "l",...)
+  lines(as.numeric(x), lats, type = "l",...)
   }
 }
 
@@ -723,7 +738,7 @@ polar_night <- function(lat, orbit) {
              list(l[[1]] * 180 / pi,
              (l[[2]] * 180 / pi + 360 + 80 ) %% 360 )} ) 
 
-   i <<- which(curves_degree [[2]][[2]] > 180 )
+   i <- which(curves_degree [[2]][[2]] > 180 )
    # will not work for exotic obliquities; this needs more work
    if (length(i)) {
    polygon_degree <- list(

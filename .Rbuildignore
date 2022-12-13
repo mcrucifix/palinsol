@@ -3,3 +3,6 @@ test
 man_old
 ^data-raw$
 .Rprofile
+TODO
+^LICENSE\.md$
+.Renviron
