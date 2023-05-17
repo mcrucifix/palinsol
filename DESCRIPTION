@@ -1,8 +1,8 @@
 Package: palinsol
 Version: 1.0
-Date: 2022-12-13
+Date: 2023-05-14
 Title: Insolation for Palaeoclimate Studies
-Author: Michel Crucifix [aut, cre]
+Author: Michel Crucifix [aut, cre] (<https://orcid.org/0000-0002-3437-4911>)
 Authors@R: person("Michel", "Crucifix",
                   email = "michel.crucifix@uclouvain.be",
                   comment = c(ORCID= "0000-0002-3437-4911"), 

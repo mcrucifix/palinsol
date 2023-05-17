@@ -117,7 +117,7 @@
   {
     insol <- max(0, S0/(rho^2)*(sinlatsindelta+coslatcosdelta*cos(H)))
   }
-  return(insol)
+  return(as.numeric(insol))
   }
  
  ## time increment corresponding a tsl increment
@@ -163,7 +163,7 @@
 #' @examples
 #' 
 #' ## reproduces Table 2 of Berger 1978
-#' lat <- seq(90, 0, -10) * pi/180. ## angles in radiants. 
+#' lat <- seq(90, 0, -10) * pi/180. ## angles in radians. 
 #' orbit_1 = ber78(0)
 #' orbit_2 = orbit_1
 #' orbit_2 ['eps'] = orbit_2['eps'] + 1*pi/180.
@@ -238,7 +238,7 @@
 #' given true solar longitudes (\code{Insol_l1l2}) or days of year
 #' (\code{Insol_d1d2}) for a given orbit and latitude
 #' 
-#' All angles input measured in radiants.
+#' All angles input measured in radians.
 #' 
 #' Note that in contrast to Berger (2010) we consider the tropic year as the
 #' reference, rather than the sideral year, which partly explains some of the
@@ -264,21 +264,21 @@
 #' @examples
 #' 
 #' ## reproduces Table 1a of Berger et al. 2010:
-#' lat <- seq(85, -85, -10) * pi/180. ## angles in radiants. 
+#' lat <- seq(85, -85, -10) * pi/180. ## angles in radians. 
 #' orbit=c(eps=  23.446 * pi/180., ecc= 0.016724, varpi= (102.04 - 180)* pi/180. )
 #' T <-  sapply(lat, function(x) c(lat = x * 180/pi, 
 #'         m1 =  Insol_l1l2(orbit, 0, 70 * pi/180, lat=x, ell= TRUE, S0=1368) / 1e3,
 #'         m2 =  Insol_l1l2(orbit, 0, 70 * pi/180, lat=x, ell=FALSE, S0=1368) / 1e3) ) 
 #' data.frame(t(T))
 #'  ## reproduces Table 1b of Berger et al. 2010:
-#' lat <- c(85, 55, 0, -55, -85) * pi/180. ## angles in radiants. 
+#' lat <- c(85, 55, 0, -55, -85) * pi/180. ## angles in radians. 
 #' T <-  sapply(lat, function(x) c(lat = x * 180/pi, 
 #'          m1 =  Insol_l1l2(orbit, 30 * pi/180. , 75 * pi/180, 
 #'                lat=x, ell= TRUE, S0=1368) / 1e3,
 #'          m2 =  Insol_l1l2(orbit, 30 * pi/180. , 75 * pi/180, 
 #'                lat=x, ell=FALSE, S0=1368) / 1e3) ) 
 #'  ## reproduces Table 2a of Berger et al. 2010:
-#' lat <- seq(85, -85, -10) * pi/180. ## angles in radiants. 
+#' lat <- seq(85, -85, -10) * pi/180. ## angles in radians. 
 #' 
 #' ## 21 march in a 360-d year. By definition : day 80 = 21 march at 12u
 #' d1 = 79.5 
@@ -300,7 +300,7 @@
 Insol_l1l2 <- function (orbit,l1=0,l2=2*pi,lat=65*pi/180,avg=FALSE,ell=TRUE,...)
    {
     # parameters: orbit : supplied by orbit calculator; e.g. : ber78 or ber90
-    # l1 and l2 : longitudes bonds in radiants. Defaults to annual average.
+    # l1 and l2 : longitudes bonds in radians. Defaults to annual average.
     # discretize longitude intreval in N intervals
     # avg : supplies an average insolation
     # ell : defaults to TRUE, use elliptic integrals for calculation (much faster)
@@ -348,7 +348,7 @@ Insol_l1l2 <- function (orbit,l1=0,l2=2*pi,lat=65*pi/180,avg=FALSE,ell=TRUE,...)
          INT = INT / DT ## result in W/m2
          }
       }
-      INT
+      as.numeric(INT)
     }
 
 
@@ -372,9 +372,9 @@ Insol_l1l2 <- function (orbit,l1=0,l2=2*pi,lat=65*pi/180,avg=FALSE,ell=TRUE,...)
 #' @aliases day2l 
 #' @param orbit Output from a solution, such as \code{ber78}, \code{ber90} or
 #' \code{la04}
-#' @param l true solar longitude, in radiants
+#' @param l true solar longitude, in radians
 #' @param day calendar day, in a 360-d year
-#' @return day of year (360-d cal.) or true solar longitude (in radiants).
+#' @return day of year (360-d cal.) or true solar longitude (in radians).
 #' @author Michel Crucifix, U. catholique de Louvain, Belgium.
 #' @references Brouwer D. and G. M. Clemence, (1961), Methods of celestial
 #' mechanics, Academic Press, New York.
@@ -525,7 +525,7 @@ Insol_d1d2 <- function (orbit,d1,d2,lat=65*pi/180,avg=FALSE,...)
 #' @param lat latitudes, passed as an array
 #' @param long true solar longitudes, passed as an array
 #' @param deg If true : the axes of the Milankovitch object are expressed in
-#' degrees.  Inputs are always in radiants
+#' degrees.  Inputs are always in radians
 #' @return A object of Milankovitch class, which may be plotted using the
 #' regular plot function
 #' @note The polar night option may not be bullet-proof for exotic obliquities
