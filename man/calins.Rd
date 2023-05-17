@@ -32,7 +32,7 @@ reference with the Berger (1978), J. Atm. Sci. of the astronomical solution.
 \examples{
 
 ## reproduces Table 2 of Berger 1978
-lat <- seq(90, 0, -10) * pi/180. ## angles in radiants. 
+lat <- seq(90, 0, -10) * pi/180. ## angles in radians. 
 orbit_1 = ber78(0)
 orbit_2 = orbit_1
 orbit_2 ['eps'] = orbit_2['eps'] + 1*pi/180.

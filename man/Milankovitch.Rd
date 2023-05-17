@@ -23,7 +23,7 @@ Milankovitch(
 \item{long}{true solar longitudes, passed as an array}
 
 \item{deg}{If true : the axes of the Milankovitch object are expressed in
-degrees.  Inputs are always in radiants}
+degrees.  Inputs are always in radians}
 }
 \value{
 A object of Milankovitch class, which may be plotted using the

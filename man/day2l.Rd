@@ -18,10 +18,10 @@ date_of_perihelion(orbit)
 
 \item{day}{calendar day, in a 360-d year}
 
-\item{l}{true solar longitude, in radiants}
+\item{l}{true solar longitude, in radians}
 }
 \value{
-day of year (360-d cal.) or true solar longitude (in radiants).
+day of year (360-d cal.) or true solar longitude (in radians).
 }
 \description{
 Converts calendar day into true solar longitude for a given astronomical

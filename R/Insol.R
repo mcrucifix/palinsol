@@ -295,6 +295,16 @@
 #' 
 #' data.frame(t(T))
 #' 
+#' ## annual mean insolation at 65N North, as a function of the longitude of the perihelion
+#' ## (expected to be invariant)
+#'
+#' varpis <- seq(0,360,10)*pi/180.  
+#' sapply(varpis, function(varpi)
+#'    {   orbit=c(eps=  23.446 * pi/180., ecc= 0.016724, varpi= varpi )
+#'        amean <- Insol_l1l2 (orbit, lat=65*pi/180., avg=TRUE)
+#'        return(amean)
+#'    })
+
 #' @export Insol_l1l2
 
 Insol_l1l2 <- function (orbit,l1=0,l2=2*pi,lat=65*pi/180,avg=FALSE,ell=TRUE,...)

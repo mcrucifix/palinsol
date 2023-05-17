@@ -1,5 +1,7 @@
 1.00 : new function: polar night
-     : Insol_l1l2 nows deals with unwrapped longitudes
+     : Insol_l1l2 nows deals with unwrapped longitudes (one more example added)
+     : some tidying up and misprints in examples
+     : code modernized for compatibility with Astrochron
 0.97 : bug corrected : calinsol was wrong in the southern hemisphere. Small changes may also occur in the northern hemisphere
 0.96 : bug corrected : min/man -> pmin/pmax in Insol.
 0.95 : add possibility to compute insolation at any given hour angle
