@@ -19,3 +19,14 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+When using insolation solutions such as BER78, BER90 and La04, refer to the original authors of these solutions such as:
+
+A. L. Berger, Long-term variations of daily insolation and Quaternary climatic changes,  J. Atmos. Sci., 35, 2362-2367  1978
+
+A. Berger and M.F. Loutre, Insolation values for the climate of the last 10 million years,  Quaternary Science Reviews, 10, 297 - 317  1991
+
+J. Laskar et al., A long-term numerical solution for the insolation quantities of the Earth,  Astronomy and Astrophysics, 428, 261-285  2004
+
+
+
