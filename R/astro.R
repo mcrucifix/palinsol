@@ -124,7 +124,7 @@ astro <- function(t, solution = ber78, degree = FALSE) {
 
 
 #' @export ber78
-ber78 <- function(t, degree = FALSE) {
+ber78 <- function(t, degree = FALSE, kshift=0.) {
 
   psibar <- 50.439273 / 60. / 60. * pi / 180
   estar <- 23.320556
@@ -143,15 +143,16 @@ ber78 <- function(t, degree = FALSE) {
   A <-  palinsol::BER78$Table1$Amp/60./60.
   f <-  palinsol::BER78$Table1$Rate * sectorad
   phi <- palinsol::BER78$Table1$Phase * pi/180.
+  Sorder <- palinsol::BER78$Table4$Sorder
 
   ## Obliquity
 
-  eps <- estar + sum(A * cos(f * t + phi))
-  epsp <- estar + sum(A * sin(f * t + phi))
+  eps <- estar + sum(A * cos(f * t + phi + kshift*Sorder))
+  epsp <- estar + sum(A * sin(f * t + phi + kshift*Sorder))
 
   esinpi <- sum(M * sin(g * t+b))
   ecospi <- sum(M * cos(g * t+b))
-  psi    <- psibar*t + zeta + sum(F * sin(fp * t + d))
+  psi    <- (psibar+kshift)*t + zeta + sum(F * sin(fp * t + d))
 
   e <- sqrt(esinpi^2 + ecospi^2)
   Pi <- atan(esinpi/ecospi) + pi *( ecospi < 0)

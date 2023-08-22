@@ -33,13 +33,13 @@
 #### load Berger 1978 table from INSOL file
 local({
 
-fpath <- file.path("..","inst","extdata", "INSOL.IN.gz")
-fpath_table2 <- file.path("..","inst","extdata", "GenerateTable2.R")
+  fpath <- file.path("..","inst","extdata", "INSOL.IN.gz")
+  fpath_table2 <- file.path("..","inst","extdata", "GenerateTable2.R")
 
-if (! file.exists(fpath)) # mmm. maybe the packages is already installed
-{
-fpath <- system.file("extdata", "INSOL.IN.gz", package="palinsol")
-fpath_table2 <- system.file("extdata", "GenerateTable2.R", package="palinsol")
+  if (! file.exists(fpath)) # mmm. maybe the packages is already installed
+  {
+    fpath <- system.file("extdata", "INSOL.IN.gz", package="palinsol")
+    fpath_table2 <- system.file("extdata", "GenerateTable2.R", package="palinsol")
 }
 
 Table4 <- utils::read.table(gzfile(fpath), skip=6, nrow=19)
@@ -53,7 +53,8 @@ Table4 <- data.frame( Term = seq(1, nrow(Table4)),
                       Amp = Table4$V2,
                       Rate = Table4$V3,
                       Phase = Table4$V4,
-                      Period = 360 * 360 / Table4$V3)
+                      Period = 360 * 360 / Table4$V3, 
+                      Sorder = Table4$V5)
 
 colnames(Table1) <- c('Term','Amp','Rate','Phase','Period')
 colnames(Table5) <- c('Term','Amp','Rate','Phase','Period')
