@@ -122,27 +122,23 @@ astro <- function(t, solution = ber78, degree = FALSE) {
   solution(t, degree)
 }
 
-
-#' @export ber78
-ber78 <- function(t, degree = FALSE) {
-
-  psibar <- 50.439273 / 60. / 60. * pi / 180
-  estar <- 23.320556
+table_based_solution <- function(t, tab_solution = palinsol::BER78, degree = FALSE)
+{
+  psibar <- tab_soluton$psibar / 60. / 60. * pi / 180
+  estar <-  tab_soluton$estar
   ##  e0    <- 0.028707
-  zeta  <- 3.392506 * pi / 180.
+  zeta  <- tab_solution$zeta * pi / 180.
   twopi <- 2*pi
-
   sectorad <- pi / (180*60.*60.)
-
-  M <-  palinsol::BER78$Table4$Amp
-  g <-  palinsol::BER78$Table4$Rate * sectorad
-  b <-  palinsol::BER78$Table4$Phase * pi /180
-  F <-  palinsol::BER78$Table5$Amp * sectorad
-  fp <- palinsol::BER78$Table5$Rate * sectorad
-  d <-  palinsol::BER78$Table5$Phase * pi /180.
-  A <-  palinsol::BER78$Table1$Amp/60./60.
-  f <-  palinsol::BER78$Table1$Rate * sectorad
-  phi <- palinsol::BER78$Table1$Phase * pi/180.
+  M <-   tab_solution$Table4$Amp
+  g <-   tab_solution$Table4$Rate * sectorad
+  b <-   tab_solution$Table4$Phase * pi /180
+  F <-   tab_solution$Table5$Amp * sectorad
+  fp <-  tab_solution$Table5$Rate * sectorad
+  d <-   tab_solution$Table5$Phase * pi /180.
+  A <-   tab_solution$Table1$Amp/60./60.
+  f <-   tab_solution$Table1$Rate * sectorad
+  phi <- tab_solution$Table1$Phase * pi/180.
 
   ## Obliquity
 
@@ -167,6 +163,17 @@ ber78 <- function(t, degree = FALSE) {
 
   c(eps = eps, ecc = e, varpi = varpi, epsp = epsp)
 }
+
+#'  @export ber78
+ber78 <- function(t, degree=FALSE) { 
+  table_based_solution (t, palinsol::BER78, degree) } 
+
+
+#' @export ber90
+ber90 <- function(t, degree=FALSE) { 
+  table_based_solution (t, palinsol::BER90, degree) } 
+
+
  ## Calculates climate orbital elements according to the algorithm given in A. Berger (1978)
  # Berger, A. L. (1978).  Long-term variations of daily insolation and Quaternary climatic changes,
  # J. Atmos. Sci., 35(), 2362-2367
@@ -174,53 +181,6 @@ ber78 <- function(t, degree = FALSE) {
  # This solution is valid for + / - 3e6 years.
 
 ## attach table to ber90 function
-## Input :  t = time expressed in yr after 1950.0 (reference epoch)
-
-#' @export ber90
-ber90 <- function(t,degree=FALSE)
-{
-
-  psibar<- 50.41726176/60./60. * pi/180
-  estar <- 23.33340950
-  zeta  <- 1.60075265 * pi/180.
-  twopi <- 2*pi
-
-  sectorad <- pi/(180*60.*60.)
-
-  M <-  palinsol::BER90$Table4$Amp
-  g <-  palinsol::BER90$Table4$Rate*sectorad
-  b <-  palinsol::BER90$Table4$Phase*pi/180
-  F <-  palinsol::BER90$Table5$Amp*sectorad
-  fp <- palinsol::BER90$Table5$Rate*sectorad
-  d <-  palinsol::BER90$Table5$Phase*pi/180.
-  A <-  palinsol::BER90$Table1$Amp/60./60.
-  f <-  palinsol::BER90$Table1$Rate*sectorad
-  phi<- palinsol::BER90$Table1$Phase*pi/180.
-
-  ## Obliquity
-
-  eps <- estar + sum(A*cos(f*t+phi))
-  epsp <- estar + sum(A*sin(f*t+phi))
-
-  esinpi <- sum(M*sin(g*t+b))
-  ecospi <- sum(M*cos(g*t+b))
-  psi    <- psibar*t + zeta + sum(F*sin(fp*t +d))
-
-  e <- sqrt(esinpi^2+ecospi^2)
-  Pi <-atan(esinpi/ecospi)+pi*(ecospi<0)
-  eps <- eps * pi/180.
-  epsp <- epsp * pi/180.
-  varpi <- (Pi+psi+pi) %% (twopi)
-
-  if (degree) {rad2deg <- 180/pi
-               eps <- eps*rad2deg
-               varpi <- varpi*rad2deg}
-
-  c(eps=eps,ecc=e,varpi=varpi,epsp=epsp)
-}
-
- # This solution is valid for 50e6 years
-
 ## Input :  t = time expressed in yr after 1950.0 (reference epoch)
 
 #' @export la04
