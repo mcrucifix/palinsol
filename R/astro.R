@@ -124,8 +124,8 @@ astro <- function(t, solution = ber78, degree = FALSE) {
 
 table_based_solution <- function(t, tab_solution = palinsol::BER78, degree = FALSE)
 {
-  psibar <- tab_soluton$psibar / 60. / 60. * pi / 180
-  estar <-  tab_soluton$estar
+  psibar <- tab_solution$psibar / 60. / 60. * pi / 180
+  estar <-  tab_solution$estar
   ##  e0    <- 0.028707
   zeta  <- tab_solution$zeta * pi / 180.
   twopi <- 2*pi
