@@ -72,6 +72,6 @@ Table5 <- .GlobalEnv$Table5
 #
 BER90 <- list(Table1=Table1, Table2=Table2, Table4=Table4, Table5=Table5, psibar =50.41726176, estar = 23.33340950, zeta = 1.60075265)
 
-usethis::use_data(BER90)
+usethis::use_data(BER90, overwrite=TRUE)
 
 #

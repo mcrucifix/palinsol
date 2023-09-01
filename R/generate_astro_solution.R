@@ -24,9 +24,29 @@ degtorad <- pi/(180.)
 #   
 #   e_ber90 <- ORB['ecc',]
  
- #' @useDynLib palinsol
-compute_constants <- function(bea = 23.44579, prea = 50.273147, prega = -2514.27, ala = 54.9066, apoa = 17.3919 ) {
+
+# dyn.load('../src/palinsol.so') 
+
+#' @useDynLib palinsol
+#' @export compute_tables
+compute_tables <- function(bea = 23.44579, prea = 50.273147, prega = -2514.27, ala = 54.9066, apoa = 17.3919 ) {
+#                             bea = 23.44579
+#                             prea = 50.273147 
+#                             prega = -2514.27 
+#                             ala = 54.9066 
+#                             apoa = 17.3919 
+
+ # path to the mythic ioepl data file 
+ ioeplfile <- file.path(path.package("palinsol"),"extdata","ioepl.data")
+ ic <- nchar(ioeplfile)
+
+
+  # call Andre Berger's historical subroutine
   result <- .Fortran("berger",
+                   ia = as.integer ( 0 ), 
+                   ib = as.integer ( 0 ), 
+                   ic = as.integer ( 0 ), 
+                   id = as.integer ( 0 ), 
                    bea = as.double ( bea ), 
                    prea = as.double ( prea ), 
                    prega = as.double ( prega ), 
@@ -47,19 +67,42 @@ compute_constants <- function(bea = 23.44579, prea = 50.273147, prega = -2514.27
                    dpf = as.double(rep(0,10000)), 
                    sa = as.double(rep(0,10000)), 
                    ddr = as.double(rep(0,10000)), 
-                   PACKAGE = "palinsol")
+                   qaa = as.double(rep(0,12900)), 
+                   qa = as.double(rep(0,12900)), 
+                   qc = as.double(rep(0,12900)), 
+                   filename = ioeplfile,
+                   PACKAGE = "palinsol", ic)
 
-  computed_constants = with(result, c(ktilde=pprma, eps=ha, k=prma, sigma=tseta) ) 
-  return(list(computed_constants=computed_constants, full_results=result))
+  result2 <- .Fortran("berger75133f", 
+                   ia = result$ia, 
+                   ib = result$ib, 
+                   ic = result$ic, 
+                   id = result$id, 
+                   ha = result$ha, 
+                   prma = result$prma, 
+                   pprma = result$pprma, 
+                   tseta = result$tseta, 
+                   aa = result$aa, 
+                   a = result$a, 
+                   c = result$c, 
+                   bb = result$bb, 
+                   b = result$b, 
+                   d = result$d, 
+                   bf = result$bf, 
+                   pf = result$pf,
+                   sa = result$sa, 
+                   ddr = result$ddr, 
+                   baf = as.double(rep(0,9640)), 
+                   s = as.double(rep(0,9640)), 
+                   d11 = as.double(rep(0,9640)), 
+                   paf = as.double(rep(0,9640)), 
+                   ss = as.double(rep(0,9640)), 
+                   d111 = as.double(rep(0,9640)))
 
-}
-
-
-compute_solution <- function(result) {
   
   estar = result$ha
-  psibar = result$prma * sectorad
-  zeta   = result$tseta * degtorad
+  psibar = result$prma
+  zeta   = result$tseta 
   
   ECC <- data.frame(
     V1 = seq(length(result$aa)),
@@ -68,13 +111,21 @@ compute_solution <- function(result) {
     V4 = result$c )
   
   EW <- data.frame(
-    V1 = seq(length(result$aa)), 
-    V2 = result$aa,
-    V3 = result$a + result$prma,
-    V4 = result$c + result$tseta)
+    V1 = seq(length(result$qaa)),
+    V2 = c(result$qaa), 
+    V3 = c(result$qa),
+    V4 = c(result$qc))
   
   EW$V5 = 360*60*60 / EW$V3
   
+  EPI <- data.frame(
+   V1 = seq(length(result$a)), 
+   V2 = result$aa, 
+   V3 = result$a,
+   V4 = result$c)
+
+  EPI$V5 = 360*60*60 / EPI$V3
+
   I2 <- data.frame( 
     V1 = seq(length(result$bb)), 
     V2 = result$bb,
@@ -88,9 +139,25 @@ compute_solution <- function(result) {
     V4 = result$dpf / pirr,    # 10000 rows
     V5 = result$sa / pirr,     # 10000 rows
     V6 = result$ddr / pir)     # 10000 rows
-  tables = list(I2=I2, OBL=OBL, ECC=ECC, EW=EW, estar=estar, psibar=psibar, zeta=zeta)
-  return(tables)
-} 
+
+  PSI <- data.frame(
+    V1 = seq(length(result2$paf)), 
+    V2 = result2$paf, 
+    V3 = result2$ss, 
+    V4 = result2$d111) 
+                    
+  PSI$V5 = 360*60*60 / PSI$V3
+
+
+  Dummy <- OBL[1+seq(3000),]
+  with(Dummy, Table1 <<- data.frame(Term=V1-1, Amp=V2, Rate=V5, Phase=V6, Period=360*3600/V5))
+  with(EW, Table2 <<- data.frame(Term=V1, Amp=V2, Rate=V3, Phase=V4, Period=V5))
+  with(EPI, Table4 <<- data.frame(Term=V1, Amp=V2, Rate=V3, Phase=V4, Period=V5))
+  with(PSI, Table5 <<- data.frame(Term=V1, Amp=V2, Rate=V3, Phase=V4, Period=V5))
+
+  return(list(Table1=Table1, Table2=Table2, Table4=Table4, Table5=Table5, zeta=zeta, psibar=psibar, estar=estar))
+
+}  # end compute_tables
 
 
 # pour retrouver exactement les parametres publies dans ber90
@@ -161,7 +228,12 @@ compute_solution <- function(result) {
 ### #   obl = sapply(times, function(t)  estar + sum(OBL$V2/3600*cos(OBL$V5*sectorad*t + OBL$V6*degtorad)))
 ###   
 ###   
-###   psi = zeta +  psibar*times + sapply(times, function(t)  sum(OBL$V3*sectorad*sin(I2$V3*sectorad*t + I2$V6*degtorad)))
+###   
+
+#BUG BUG BUG !!!!!!!!!!!
+# corriger PSI. Essayer de comprendre ce qui ne va pas. 
+# psi = zeta +  psibar*times + sapply(times, function(t)  sum(OBL$V3*sectorad*sin(I2$V3*sectorad*t + I2$V6*degtorad)))
+
 ### 
 ### # zeta = 0.02793538
 ### # psibar = 0.0002443016
@@ -244,4 +316,11 @@ compute_solution <- function(result) {
 #  print(to_optim())
 #  
 #  O = optim(u, to_optim)
-#  
+#
+
+
+
+
+
+
+

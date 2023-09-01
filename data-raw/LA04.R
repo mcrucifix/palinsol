@@ -61,4 +61,4 @@ la04future <- .GlobalEnv$la04future
 
 LA04 <- list(la04past=la04past, la04future=la04future)
 
-usethis::use_data(LA04)
+usethis::use_data(LA04, overwrite=True)

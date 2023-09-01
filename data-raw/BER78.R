@@ -73,4 +73,4 @@ Table4 <- .GlobalEnv$Table4
 Table5 <- .GlobalEnv$Table5
 BER78 <- list(Table1=Table1, Table2=Table2, Table4=Table4, Table5=Table5, psibar=50.439273, estar=23.320556, zeta=3.392506)
 
-usethis::use_data(BER78)
+usethis::use_data(BER78, overwrite=TRUE)

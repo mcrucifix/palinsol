@@ -1,7 +1,12 @@
       subroutine berger(
+     +  ia, ib, ic, id, 
      +  bea, prea, prega, ala, apoa, 
-     +  prma,pprma, ha, tseta,aa,a,c,bb,b,d,bf,pf,dpf,sa,ddr)
-      implicit double precision (a-h,p-z)                               p7500030
+     +  prma,pprma, ha, tseta,aa,a,c,bb,b,d,bf,pf,dpf,sa,ddr, 
+     +  qaa,qa,qc,
+     +  filename, icl)
+      implicit double precision (a-h,p-z)                        
+      integer, intent(in) :: icl
+      character(len=icl), intent(in) :: filename
       dimension aa(80),a(80),c(80),
      *bbt(80),bt(80),dt(80),                                            p7500040
      1ar(80),cr(80),br(500),dr(500),bb(500),b(500),d(500),              p7500050
@@ -9,7 +14,9 @@
      2ca(9),cb(3),cbb(3),zeb(3)                                         p7500070
      *,qaa(12900),qa(12900),qc(12900),ind(12900)                        p7500080
       intent(in)  :: bea,prea, prega, ala, apoa
-      intent(out) :: prma,pprma,ha,tseta,aa,a,c,bb,b,d,bf,pf,dpf,sa,ddr
+      intent(out) :: ia,ib,ic,id
+      intent(out) :: prma,pprma,ha,tseta,
+     *               aa,a,c,bb,b,d,bf,pf,dpf,sa,ddr,qaa,qa,qc
        common kktilde
 c                                                                       p7500090
 c       pal7505ee modifie   data a1                                     p7500100
@@ -75,7 +82,7 @@ c
 ***************************************************************************
 ***************************************************************************
 *c pour une solution laskar
- 	open(unit=10,file='ioepl.data',status='old')
+ 	open(unit=10,file=filename,status='old')
         read(10,*)
  	read(10,1001)ia
  	do 1 i=1,ia

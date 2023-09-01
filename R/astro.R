@@ -118,11 +118,11 @@
 #'
 
 #' @export astro
-astro <- function(t, solution = ber78, degree = FALSE) {
+astro <- function(t, solution = ber78, degree = FALSE){
   solution(t, degree)
 }
 
-table_based_solution <- function(t, tab_solution = palinsol::BER78, degree = FALSE)
+table_based_solution <- function(t, tab_solution = palinsol::BER78, degree = FALSE, compute_esinw_from_table2 = FALSE)
 {
   psibar <- tab_solution$psibar / 60. / 60. * pi / 180
   estar <-  tab_solution$estar
@@ -140,6 +140,11 @@ table_based_solution <- function(t, tab_solution = palinsol::BER78, degree = FAL
   f <-   tab_solution$Table1$Rate * sectorad
   phi <- tab_solution$Table1$Phase * pi/180.
 
+
+  M2 <-  tab_solution$Table2$Amp 
+  g2 <-  tab_solution$Table2$Rate * sectorad
+  b2 <-  tab_solution$Table2$Phase * pi /180.
+ 
   ## Obliquity
 
   eps <- estar + sum(A * cos(f * t + phi))
@@ -155,23 +160,33 @@ table_based_solution <- function(t, tab_solution = palinsol::BER78, degree = FAL
   epsp <- epsp * pi / 180.
   varpi <- (Pi+psi+pi) %% (twopi)
 
+if (compute_esinw_from_table2)
+{
+  print('yes')
+  esinw <- -sum(M2 * sin(g2 * t+b2))
+} else {
+  esinw <- e * sin(varpi)
+}
+
+
+
   if (degree) {
     rad2deg <- 180 / pi
     eps <- eps * rad2deg
     varpi <- varpi * rad2deg
   }
 
-  c(eps = eps, ecc = e, varpi = varpi, epsp = epsp)
+ c(eps = eps, ecc = e, varpi = varpi, epsp = epsp, esinw=esinw)
 }
 
 #'  @export ber78
-ber78 <- function(t, degree=FALSE) { 
-  table_based_solution (t, palinsol::BER78, degree) } 
+ber78 <- function(t, degree = FALSE) { 
+  table_based_solution (t, palinsol::BER78, degree, compute_esinw_from_table2) } 
 
 
 #' @export ber90
-ber90 <- function(t, degree=FALSE) { 
-  table_based_solution (t, palinsol::BER90, degree) } 
+ber90 <- function(t, degree = FALSE) { 
+  table_based_solution (t, palinsol::BER90, degree, compute_esinw_from_table2) } 
 
 
  ## Calculates climate orbital elements according to the algorithm given in A. Berger (1978)
