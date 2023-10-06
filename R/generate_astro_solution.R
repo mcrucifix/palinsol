@@ -104,12 +104,9 @@ compute_tables <- function(bea = 23.44579, prea = 50.273147, prega = -2514.27, a
   psibar = result$prma
   zeta   = result$tseta 
   
-  ECC <- data.frame(
-    V1 = seq(length(result$aa)),
-    V2 = result$aa,
-    V3 = result$a,
-    V4 = result$c )
   
+  ECC$V5 = 360*60*60 / ECC$V3
+
   EW <- data.frame(
     V1 = seq(length(result$qaa)),
     V2 = c(result$qaa), 

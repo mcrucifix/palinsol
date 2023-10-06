@@ -181,12 +181,12 @@ if (compute_esinw_from_table2)
 
 #'  @export ber78
 ber78 <- function(t, degree = FALSE) { 
-  table_based_solution (t, palinsol::BER78, degree, compute_esinw_from_table2) } 
+  table_based_solution (t, palinsol::BER78, degree) }
 
 
 #' @export ber90
 ber90 <- function(t, degree = FALSE) { 
-  table_based_solution (t, palinsol::BER90, degree, compute_esinw_from_table2) } 
+  table_based_solution (t, palinsol::BER90, degree) } 
 
 
  ## Calculates climate orbital elements according to the algorithm given in A. Berger (1978)
