@@ -105,7 +105,7 @@ compute_tables <- function(bea = 23.44579, prea = 50.273147, prega = -2514.27, a
   zeta   = result$tseta 
   
   
-  ECC$V5 = 360*60*60 / ECC$V3
+#   ECC$V5 = 360*60*60 / ECC$V3
 
   EW <- data.frame(
     V1 = seq(length(result$qaa)),
@@ -145,8 +145,9 @@ compute_tables <- function(bea = 23.44579, prea = 50.273147, prega = -2514.27, a
                     
   PSI$V5 = 360*60*60 / PSI$V3
 
+  order_obl <- 1+order(OBL[-1,2], decreasing=TRUE)
+  Dummy <- OBL[order_obl[seq(3000)],]
 
-  Dummy <- OBL[1+seq(3000),]
   with(Dummy, Table1 <<- data.frame(Term=V1-1, Amp=V2, Rate=V5, Phase=V6, Period=360*3600/V5))
   with(EW, Table2 <<- data.frame(Term=V1, Amp=V2, Rate=V3, Phase=V4, Period=V5))
   with(EPI, Table4 <<- data.frame(Term=V1, Amp=V2, Rate=V3, Phase=V4, Period=V5))
