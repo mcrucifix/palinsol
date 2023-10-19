@@ -95,6 +95,6 @@ if (sol == 'BER78')
   Fre <- Fre[Order]
   Pha <- (Pha[Order]+180)%%360.
   Per <- 360*60*60/Fre
-  Table2 <<- data.frame(Index=seq(1,length(Amp)),Amp=Amp,Rate=Fre,Pha=Pha,Per=abs(Per[Order])) 
+  Table2 <<- data.frame(Index=seq(1,length(Amp)),Amp=Amp,Rate=Fre,Phase=Pha,Period=abs(Per[Order])) 
 
 }
