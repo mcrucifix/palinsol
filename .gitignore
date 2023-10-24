@@ -6,3 +6,4 @@
 *.o
 *.so
 *.pdf
+src/palinsol.so
