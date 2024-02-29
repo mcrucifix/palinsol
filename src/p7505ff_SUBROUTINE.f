@@ -4,24 +4,38 @@
      +  prma,pprma, ha, tseta,aa,a,c,bb,b,d,bf,pf,dpf,sa,ddr, 
      +  qaa,qa,qc,
      +  filename, icl)
-      implicit double precision (a-h,p-z)                        
-      integer, intent(in) :: icl
-      character(len=icl), intent(in) :: filename
-      dimension aa(80),a(80),c(80),
+        implicit double precision (a-h,p-z)                        
+        integer, intent(in) :: icl
+        character(len=icl), intent(in) :: filename
+        dimension aa(80),a(80),c(80),
      *bbt(80),bt(80),dt(80),                                            p7500040
      1ar(80),cr(80),br(500),dr(500),bb(500),b(500),d(500),              p7500050
      *bf(65000),pf(10000),dpf(10000),sa(10000),ddr(10000),              p7500060
      2ca(9),cb(3),cbb(3),zeb(3)                                         p7500070
      *,qaa(12900),qa(12900),qc(12900),ind(12900)                        p7500080
-      intent(in)  :: bea,prea, prega, ala, apoa
-      intent(out) :: ia,ib,ic,id
-      intent(out) :: prma,pprma,ha,tseta,
+        intent(in)  :: bea,prea, prega, ala, apoa
+        intent(out) :: ia,ib,ic,id
+        intent(inout) :: prma, ha, tseta
+        intent(out) :: pprma,
      *               aa,a,c,bb,b,d,bf,pf,dpf,sa,ddr,qaa,qa,qc
-       common kktilde
+        common kktilde
 c                                                                       p7500090
 c       pal7505ee modifie   data a1                                     p7500100
 c                                                                       p7500110
 c                                                                       p7500120
+c  ----
+c  comments my mc
+c  summary of the constants that we provide
+c  - ala is the "newcomb" contant, which berger (or sharaf budnikova?)
+c    redined as 'l0'. see attached "explanation_of_constants.R" 
+c  - apoa is P0, and is defined as dl/de^2
+c    prea is, I am reasnoably confident, the dpsi/dt given in his eq. 66
+c             which will be used to cemptue psi_bar (still need to
+c             undrestand, this)
+c   - prega is I guess the zeta, but exprssed in seconds. /
+c             t
+c    prega=5025.74d0                                                   p7500880
+c
 c                                                                       p7500490
 c                                                                       p7500500
 c     pal 7505ee   calcul precession 2d degre                           p7500510
@@ -185,9 +199,14 @@ c                                                                       p7501250
 ! 6003 format(1h1,///,1x,'calcul iteration h  prm  tset',//)             p7501270
       ic=ib*(ib+1)                                                      p7501280
       id=ic+((ia-1)*ia)/2                                               p7501290
-      ha=23.4d0                                                         p7501300
-      prma=50.44d0                                                      p7501310
-      tseta=1.964d0                                                     p7501320
+! first guesses for epsilonbar, psibar, et zeta_bar (that he spells
+! tseta)
+
+! commented out for being called in R.
+
+      !ha=23.4d0            ! value of epsilon used in eq. 67
+      !prma=50.44d0         
+!tseta=1.964d0                                                     p7501320
       h=ha*pir                                                          p7501330
       prm=prma*pirr                                                     p7501340
       tset=tseta*pir                                                    p7501350
@@ -531,7 +550,7 @@ c                                                                       p7504110
 c                                                                       p7504390
 c   test e*sin(xl)                                                      p7504400
 c                                                                       p7504410
-      write(6,6504)                                                     p7504420
+!      write(6,6504)                                                     p7504420
  6504 format(1h1,///,1x,'test valeurs exc  long per mob for dates from  p7504430
      *1950',//)                                                         p7504440
 !      write(7,9502) jk                                                  p7504450
@@ -643,7 +662,7 @@ c si periode infinie j'ecris 0.0                                        p7505130
       l=ib+1                                                            p7505480
 !      write(6,6020)(i,aa(i),a(i),c(i),cyc1(i),i=l,ia)                   p7505490
  6020 format(i6,f14.8,f14.7,f14.6,42x,f14.1)                            p7505500
-   11 write(6,*)
+   11 continue
  6007 format(/)                                                         p7505520
       aim=aim*anumi                                                     p7505530
       ain=ain*anumi                                                     p7505540
@@ -1114,9 +1133,11 @@ c                                                                       p7509720
       st2=bc*dsin(dww)                                                  p7509970
       ct1=bb(i)*dcos(dw)                                                p7509980
       ct2=bc*dcos(dww)                                                  p7509990
-c                                                                       p7510000
+c
       xw=br(i)+prm                                                      p7510010
       ai=prm/xw                                                         p7510020
+      ! MC dans sommes au bas de la p. 113 dans la these
+      ! MC les ai sont les Ci dans la these
       x=ai*ai                                                           p7510030
       aii=0.25d0*t*ai*(x-un)+0.25d0*tw*x                                p7510040
       bi=t*ai*(ai-un)+tw*ai                                             p7510050
@@ -1163,7 +1184,12 @@ c
           endif
 c
 c prn .ne. pprn
+c     MC this is equation 66.5 p. 114 of the thesis
+c     tt is tan2 epsilon; t is tan epslion. epsilon is "h" is this code
+c     and given the value of 23.4 (hardwired, se above)
 c
+c     x is ci2
+
       if (kktilde.eq.0)then
        sdpfh=sdpfh+gih*xw*ct1+giih*de*xw*ct2
      $    +prm*bc*ai*(ai-un)*tut*t

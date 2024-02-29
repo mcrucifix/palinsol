@@ -162,7 +162,6 @@ table_based_solution <- function(t, tab_solution = palinsol::BER78, degree = FAL
 
 if (compute_esinw_from_table2)
 {
-  print('yes')
   esinw <- -sum(M2 * sin(g2 * t+b2))
 } else {
   esinw <- e * sin(varpi)

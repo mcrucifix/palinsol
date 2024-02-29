@@ -29,7 +29,8 @@ degtorad <- pi/(180.)
 
 #' @useDynLib palinsol
 #' @export compute_tables
-compute_tables <- function(bea = 23.44579, prea = 50.273147, prega = -2514.27, ala = 54.9066, apoa = 17.3919 ) {
+compute_tables <- function(bea = 23.44579, prea = 50.273147, prega = -2514.27, ala = 54.9066, apoa = 17.3919, 
+                           prma = 50.44, ha=23.4, tseta=1.964) {
 #                             bea = 23.44579
 #                             prea = 50.273147 
 #                             prega = -2514.27 
@@ -52,10 +53,10 @@ compute_tables <- function(bea = 23.44579, prea = 50.273147, prega = -2514.27, a
                    prega = as.double ( prega ), 
                    ala = as.double ( ala ), 
                    apoa = as.double ( apoa ), 
-                   prma = as.double(0),
+                   prma = as.double(prma),
                    pprma = as.double(0),
-                   ha = as.double(0), 
-                   tseta = as.double(0), 
+                   ha = as.double(ha), 
+                   tseta = as.double(tseta), 
                    aa = as.double(rep(0,80)), 
                    a = as.double(rep(0,80)), 
                    c = as.double(rep(0,80)), 
@@ -162,6 +163,8 @@ compute_tables <- function(bea = 23.44579, prea = 50.273147, prega = -2514.27, a
 
 # pour retrouver exactement les parametres publies dans ber90
 # et egalement encodes dans palinsol il faudrait utiliser: 
+# apoa est trop grand par grand par rapport a sa definition (ala est ok), mais 
+# je doute que le resultat y soit tres senseble. 
 #        bea        prea       prega         ala        apoa
 #     23.44580    50.27251 -2464.25259    54.88959    18.12131
 # valeeurs originelles

@@ -123,10 +123,10 @@ c                                                                       p7501330
       paff(k)=paf(i)                                                    p7501460
       baff(k)=baf(i)                                                    p7501470
       d111(k)=d11(i)                                                    p7501480
-      write(6,6101) k,i,baff(k),paff(k),ss(k),d111(k)                   p7501490
+!      write(6,6101) k,i,baff(k),paff(k),ss(k),d111(k)                   p7501490
   201 continue                                                          p7501500
-      write(6,6010)                                                     p7501510
-      write(6,6010)                                                     p7501520
+!      write(6,6010)                                                     p7501510
+!      write(6,6010)                                                     p7501520
       ih(jj)=k                                                          p7501530
   200 continue                                                          p7501540
       icc=il(5)                                                         p7501550
@@ -139,8 +139,8 @@ c                                                                       p7501330
       if (ad.ne.d111(j)) go to 212                                      p7501620
       paff(j)=paff(j)+paf(i)                                            p7501630
       iz=0                                                              p7501640
-      write(6,6102) j,iz,paff(j),ss(j),d111(j)                          p7501650
-      write(6,6102) iz,i,paf(i),s(i),d11(i)                             p7501660
+!      write(6,6102) j,iz,paff(j),ss(j),d111(j)                          p7501650
+!      write(6,6102) iz,i,paf(i),s(i),d11(i)                             p7501660
  6102 format(1x,i4,2x,i4,19x,4x,f15.7,4x,f13.6,4x,f13.5)                p7501670
       go to 210                                                         p7501680
   212 continue                                                          p7501690
@@ -148,7 +148,7 @@ c                                                                       p7501330
       ss(k)=s(i)                                                        p7501710
       paff(k)=paf(i)                                                    p7501720
       d111(k)=d11(i)                                                    p7501730
-      write(6,6102) k,i,paff(k),ss(k),d111(k)                           p7501740
+!      write(6,6102) k,i,paff(k),ss(k),d111(k)                           p7501740
   210 continue                                                          p7501750
       ih(5)=k                                                           p7501760
 c                                                                       p7501770
@@ -174,13 +174,13 @@ c                                                                       p7501890
 c                                                                       p7501970
 c   obliquity and precession print                                      p7501980
 c                                                                       p7501990
-      write(6,6005)                                                     p7502000
+!      write(6,6005)                                                     p7502000
  6005 format(1h1,///,1x,'table 3  obliquity and precession relative to',p7502010
      */,1x,9x,'mean ecliptic and mean equinox of date',/)               p7502020
-      write(6,6006)                                                     p7502030
+!      write(6,6006)                                                     p7502030
  6006 format(4x,'i','   obliquity',3x,'precession',3x,'mean  rate ',4x,2p7502040
      *x,'phase',3x,4x,2x,'period',/)                                    p7502050
-      write(6,6106)                                                     p7502060
+!      write(6,6106)                                                     p7502060
  6106 format(11x,'('''')',9x,'('''')',6x,'(''''/year)',6x,'(degree)',7x,p7502070
      *'(years)',/)                                                      p7502080
       k=0                                                               p7502090
@@ -199,13 +199,13 @@ c                                                                       p7501990
   101 continue                                                          p7502220
       call subxy(k,ax,ay,as,ad,ac)                                      p7502230
    58 continue                                                          p7502240
-      write(6,6010)                                                     p7502250
+!      write(6,6010)                                                     p7502250
  6010 format(1x)                                                        p7502260
    57 continue                                                          p7502270
 c                                                                       p7502280
 c   precession                                                          p7502290
 c                                                                       p7502300
-      write(6,6012)                                                     p7502310
+!      write(6,6012)                                                     p7502310
  6012 format(8x,'additional terms for precession',/)                    p7502320
       icc=il(5)                                                         p7502330
       iccc=ih(5)                                                        p7502340
@@ -222,7 +222,7 @@ c                                                                       p7502300
       if (ayy.ge.atp) go to 62                                          p7502450
       go to 63                                                          p7502460
    62 k=k+1                                                             p7502470
-      write(6,6011) k,ay,as,ad,ac                                       p7502480
+!      write(6,6011) k,ay,as,ad,ac                                       p7502480
  6011 format(1x,i4,16x,f8.2,4x,f10.6,4x,f10.5,4x,f10.0)                 p7502490
    63 continue                                                          p7502500
 c                                                                       p7502510
@@ -240,47 +240,49 @@ c                                                                       p7502580
   900 continue                                                          p7502630
       iab=ih(4)                                                         p7502640
       call clase(baf,s,d11,iab)                                         p7502650
-      write(6,6500)                                                     p7502660
+!      write(6,6500)                                                     p7502660
  6500 format(1h1,///,1x,'table    obliquity relative to mean ecliptic ofp7502670
      * date',/)                                                         p7502680
  6550 format(1h1,///,1x,'table   precession relative to mean ecliptic ofp7502690
      * date',/)                                                         p7502700
-      write(6,6501)                                                     p7502710
+!      write(6,6501)                                                     p7502710
  6501 format(4x,'i','   obliquity',4x,'mean  rate',8x,'phase',9x,'periodp7502720
      *',/)                                                              p7502730
  6551 format(4x,'i','  precession',4x,'mean  rate',8x,'phase',9x,'periodp7502740
      *',/)                                                              p7502750
-      write(6,6502)                                                     p7502760
+!      write(6,6502)                                                     p7502760
  6502 format(9x,'('''')',9x,'(''''/year)',6x,'(degree)',7x,'(years)',/) p7502770
       m=0                                                               p7502780
       mm=0                                                              p7502790
       do 500 i=1,iab                                                    p7502800
-      write (*,*) 'i=',iab
+!      write (*,*) 'i=',iab
       wxa=dabs(baf(i))                                                  p7502810
       if(wxa.le.atb) go to 500                                          p7502820
       if(s(i).eq.0.0d0) go to 501                                       p7502830
       ac=360.0d0*3600.0d0/s(i)                                          p7502840
       go to 502                                                         p7502850
   501 ac=0.0d0                                                          p7502860
-  502 write(6,6505) i,baf(i),s(i),d11(i),ac                             p7502870
+!  502 write(6,6505) i,baf(i),s(i),d11(i),ac                             p7502870
+  502 continue
  6505 format(1x,i4,4x,f8.2,4x,f10.6,4x,f10.4,4x,f10.0)                  p7502880
  7000 format(i5,2x,f13.7,2x,f10.6,2x,f10.4,2x,f10.0)                    p7502900
       m=m+1                                                             p7502910
       mm=mm+1                                                           p7502920
       if(m.eq.10) go to 505                                             p7502930
       go to 500                                                         p7502940
-  505 write(6,6010)                                                     p7502950
+!  505 write(6,6010)                                                     p7502950
+  505 continue
       m=0                                                               p7502960
   500 continue                                                          p7502970
       act=atb                                                           p7502980
       xct=ha                                                            p7502990
-      write(*,*) 'calling control'
+!      write(*,*) 'calling control'
       call cntrol(baf,s,d11,iab,xct,act)                                p7503000
       iac=ih(5)                                                         p7503010
       call clase(paf,ss,d111,iac)                                       p7503020
-      write(6,6550)                                                     p7503030
-      write(6,6551)                                                     p7503040
-      write(6,6502)                                                     p7503050
+!      write(6,6550)                                                     p7503030
+!      write(6,6551)                                                     p7503040
+!      write(6,6502)                                                     p7503050
       m=0                                                               p7503060
       mn=0                                                              p7503070
       do 550 i=1,iac                                                    p7503080
@@ -290,17 +292,19 @@ c                                                                       p7502580
       ac=360.0d0*3600.0d0/ss(i)                                         p7503120
       go to 552                                                         p7503130
   551 ac=0.0d0                                                          p7503140
-  552 write(6,6505) i,paf(i),ss(i),d111(i),ac                           p7503150
-      write(*,*) 'm=',m 
+!  552 write(6,6505) i,paf(i),ss(i),d111(i),ac                           p7503150
+  552 continue
+!      write(*,*) 'm=',m 
       m=m+1                                                             p7503170
       mn=mn+1                                                           p7503180
       if(m.eq.10) go to 555                                             p7503190
       go to 550                                                         p7503200
-  555 write(6,6010)                                                     p7503210
+  555 continue
+!  555 write(6,6010)                                                     p7503210
       m=0                                                               p7503220
   550 continue                                                          p7503230
 c                                                                       p7503240
-      write(6,6666) mm,mn                                               p7503250
+!      write(6,6666) mm,mn                                               p7503250
  6666 format(//,1x,2i6)                                                 p7503260
  7777 format(2i6)                                                       p7503280
       end                                                               p7503300
@@ -331,16 +335,16 @@ c                                                                       p7503240
       if (ic1.eq.0) go to 2                                             p7503550
       if (ic2.eq.0) go to 3                                             p7503560
       k=k+1                                                             p7503570
-      write (6,6001) k,ax,ay,as,ad,ac                                   p7503580
+!      write (6,6001) k,ax,ay,as,ad,ac                                   p7503580
  6001 format(1x,i4,4x,f8.2,4x,f8.2,4x,f10.6,4x,f10.5,4x,f10.0)          p7503590
       return                                                            p7503600
     1 return                                                            p7503610
     2 k=k+1                                                             p7503620
-      write(6,6002) k,ay,as,ad,ac                                       p7503630
+!      write(6,6002) k,ay,as,ad,ac                                       p7503630
  6002 format(1x,i4,12x,4x,f8.2,4x,f10.6,4x,f10.5,4x,f10.0)              p7503640
       return                                                            p7503650
     3 k=k+1                                                             p7503660
-      write(6,6003) k,ax,as,ad,ac                                       p7503670
+!      write(6,6003) k,ax,as,ad,ac                                       p7503670
  6003 format(1x,i4,4x,f8.2,12x,4x,f10.6,4x,f10.5,4x,f10.0)              p7503680
       return                                                            p7503690
       end                                                               p7503700
@@ -401,7 +405,7 @@ c                                                                       p7503240
       implicit double precision(a-h,p-z)                                p7504250
       dimension xx(9640),x(9640),y(9640)                                p7504260
       pir=dacos(-1.0d0)                                                 p7504270
-      write(6,6001)                                                     p7504280
+!      write(6,6001)                                                     p7504280
  6001 format(1h1,///,' control',//)                                     p7504290
       do 2 j=1,11                                                       p7504300
       t=-(j-1)*1000.0d0*100.0d0                                         p7504310
@@ -415,7 +419,7 @@ c                                                                       p7503240
       xp=(x(i)*t/3600.0d0+y(i))*pir                                     p7504390
       xctt=xctt+xa*dcos(xp)                                             p7504400
     1 continue                                                          p7504410
-      write(6,6000) t,xctt                                              p7504420
+!      write(6,6000) t,xctt                                              p7504420
  6000 format(1x,f10.0,f15.7)                                            p7504430
     2 continue                                                          p7504440
       return                                                            p7504450
