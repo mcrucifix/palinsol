@@ -3,14 +3,15 @@
 
 # we take information from 
 
-sideralyear = 365*24*3600 + 6*3600 + 9*60 + 10
-tropicalyear = 365.2422*24*60*60
+# sideralyear = 365*24*3600 + 6*3600 + 9*60 + 10
 #n=2*pi/sideralyear
+tropicalyear = 365.2422*24*60*60
 n=2*pi/tropicalyear
-CAC_ref <- 0.00326742
+CAC_ref <- 0.00326742   # Earth oblateness 
 # e_ref <- 0.017
-e_ref <- 0.0
-ece_ref <- 0.055
+e_ref <- 0.0      # earth orbit reference excentricity, used as a basis for 
+                  # the Taylor development in Berger's codes
+ece_ref <- 0.055  # moon orbit excentricity
 
 # i think we kind find arguments for using solar day rather than sideral day
 # because the rotation of the Earth around the sun is indeed part of its angular momentum
@@ -66,19 +67,19 @@ ala <- function(CAC=CAC_ref, alpha = alpha_ref, e = e_ref, ece=ece_ref , c=c_ref
   ala
 }
 
-# tests
-
-print ('apo : Berger reference is 17.3919')
-print ( apo())
-
-# the closest value ot Berger is found for usig sideralyear, solar day (!) 
-# and e_ref = 0. 
-# the difference I have with him is one precession cycle over 20e6 se we are
-# clearly within the error bar. 
-
-print ('ala : Berger reference is 54.9066')
-print ( ala() )
-
+## # tests
+## 
+## print ('apo : Berger reference is 17.3919')
+## print ( apo())
+## 
+## # the closest value ot Berger is found for usig sideralyear, solar day (!) 
+## # and e_ref = 0. 
+## # the difference I have with him is one precession cycle over 20e6 se we are
+## # clearly within the error bar. 
+## 
+## print ('ala : Berger reference is 54.9066')
+## print ( ala() )
+## 
 
 
 
