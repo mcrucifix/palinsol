@@ -30,7 +30,7 @@ c  - ala is the "newcomb" contant, which berger (or sharaf budnikova?)
 c    redined as 'l0'. see attached "explanation_of_constants.R" 
 c  - apoa is P0, and is defined as dl/de^2
 c    prea is, I am reasnoably confident, the dpsi/dt given in his eq. 66
-c             which will be used to cemptue psi_bar (still need to
+c             which will be used to compute psi_bar (still need to
 c             undrestand, this)
 c   - prega is I guess the zeta, but exprssed in seconds. /
 c             t
