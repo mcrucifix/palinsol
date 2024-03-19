@@ -27,6 +27,13 @@ degtorad <- pi/(180.)
 
 # dyn.load('../src/palinsol.so') 
 
+
+# to do here: 
+# ---
+# document ala and apoa and say they come directly form the Poisson / precession model
+# explain what are bea, prea, prega, prma, ha and tseta and their influences on the final result
+# they are initial conditions
+# ---
 #' @useDynLib palinsol
 #' @export compute_tables
 compute_tables <- function(bea = 23.44579, prea = 50.273147, prega = -2514.27, ala = 54.9066, apoa = 17.3919, 
