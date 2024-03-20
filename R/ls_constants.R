@@ -35,10 +35,43 @@ omega_solar=2*pi/(24*60*60)
 # apo is the variable called P0 in Berger's thesis  and
 # is referred to as a Newcomb constant
 # 
+# alpha is the mass ratio multiplied by the semi-great axes ratios of moon and earth. It is 
+#       considered to be constant. 
 # 
 
-apo <- function(CAC=CAC_ref, e=e_ref) {
-  apo <- n*n/omega_solar*CAC*1.5*(1-e^2)^(-1.5)
+# - this is the public handle 
+
+#' Compute the Newcomb constant and its sensitivity to e^, according to the Sharav-Budnikova model featured by Berger 1973. 
+#'
+#' -- 
+#' 
+#' Implementation of expressions for "ell" and "P0" p. 112 of Berger 1973. These variables
+#' are fundamental in the computation of the luni-solar precession (also called axial precession)
+#' In first approximation, the precession frequency (the term k) appearing in astronomical developments
+#' is equal to "ell"*cos(e_bar), where e_bar is the reference value for obliquity. 
+#' d(ell)/d(e^2) = 3/2 P0, where "e" is the obliquity. All parameters are given default values
+#' coresponding to the present-day state. 
+#' 
+#' @param CAC is (C-A)/C where A and C are Earth's moments of inertia aroud the plora and equatioral axis of inertia
+#' @param omega is the rotational angular velocity of the Earth, measured in a geocentric framework
+#' @param c is the inclination of the  lunar orbit on the ecliptic
+#' @param alpha is the ratio of moon over earth's masses, multiplied by the ration of earth over moon's semi-major axis, at power 3. It is generally considered to be constant 
+#' @return a list with "ell" and "P0", ready for use in `compute_tables`
+#' @author Michel Crucifix, UC Louvain, Belgium
+#' @references Berger, A. L. (1973)
+#' Berger A. L. (1973), The astronomical theory of paleoclimates, Theses, UCLouvain, 1973. Currently not available in digital version. 
+#' Berger A., M. Loutre and V. Dehant (1989), Astronomical frequencies for pre-Quaternary palaeoclimate studies, Terra Nova, (1) 474–479 doi:10.1111/j.1365-3121.1989.tb00413.x
+#' @export newcomb_parameters
+newcomb_parameters <- function(CAC=CAC_ref, omega = omega_solar, c=c_ref, ece = ece_ref, alpha=alpha_ref){
+  apo_parameter <- ala(CAC, 0., omega)
+  ala_parameter <- ala(CAC, alpha, 0., ece, c, omega)
+  return (list(ala = ala_parameter, apo = apo_parameter))
+}
+
+# - the latter two functions remain internal. 
+
+apo <- function(CAC=CAC_ref, e=e_ref, omega = omega_solar) {
+  apo <- n*n/omega*CAC*1.5*(1-e^2)^(-1.5)
   apo <- apo*60*60* tropicalyear *(180/pi)
   apo 
 }
@@ -48,7 +81,7 @@ apo <- function(CAC=CAC_ref, e=e_ref) {
 # not entirely clear which one to use. For me it should be the sideral day. 
 # so there may be an error, here
 
-ala <- function(CAC=CAC_ref, alpha = alpha_ref, e = e_ref, ece=ece_ref , c=c_ref){
+ala <- function(CAC=CAC_ref, alpha = alpha_ref, e = e_ref, ece=ece_ref , c=c_ref, omega = omega_solar){
   # e_ref = 0.017
   # ece = 0.055
   # I am not sure these are the values used by Berger in his thesis
@@ -62,7 +95,7 @@ ala <- function(CAC=CAC_ref, alpha = alpha_ref, e = e_ref, ece=ece_ref , c=c_ref
   # it comes out that, p. 112, d\ell/de^2 = -3/2*a*(-5/2)
   # 
   moonfactor = 1-1.5*sin(c)*sin(c)
-  ala <-  1.5*n*n/omega_solar * CAC * (alpha*(1-ece^2)^(-1.5)*moonfactor + (1-e^2)^(-1.5) )
+  ala <-  1.5*n*n/omega * CAC * (alpha*(1-ece^2)^(-1.5)*moonfactor + (1-e^2)^(-1.5) )
   ala <- ala*60*60* tropicalyear *(180/pi)
   ala
 }
