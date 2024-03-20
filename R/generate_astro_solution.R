@@ -32,11 +32,46 @@ degtorad <- pi/(180.)
 # ---
 # document ala and apoa and say they come directly form the Poisson / precession model
 # explain what are bea, prea, prega, prma, ha and tseta and their influences on the final result
-# they are initial conditions
+# 
+#  - ala is the "newcomb" contant, which berger (or sharaf budnikova?)
+#    redined as 'l0'. see more info in R/ls_constants
+#  - apoa is P0, and is defined as dl/de^2 
+#    if my understading of  the code below is correct, both l0 and p0
+#    are defined (and have to be defined for) zero earch eccentricity
+#    both ala and apoa have to be defined consistently for a given
+#    Earth-Moon distance, etc. 
+#    prea is, I am reasnoably confident, the dpsi/dt given in his eq. 66
+#             p. 114
+#             which will be used to compute psi_bar (still need to
+#             this).  This is an initial condition at time t-0. 
+#              it is important to get it right for realistic solutions
+#              over the latest 2 Myr. But for a speculative solution far
+#              back in time this should be sampled 
+#             a reasonable first  guess is ala*cos(epsilon_mean)
+#   - prega is I is the "psi_0", that is , the value of "psi" at the 
+#              time=0 (the reference time). THis again should be sampled
+#              for far-back-in-time solutions. ATTENTION: as it is it is expressed
+#              in seconds. TODO: CONVERT THIS IN DEGREES [NOT DONE, YET]
+#              Psi  est la longitude du noeud gamma (de la date), tel
+#                   que ramene sur l'eclipitique de reference
+#                   voir Fig. 3 de Berger et Loutre 1990 QRes. 
+#              it could be sampled anywhere between -pi and pi
+#   - bea is the observation of obliquity at time zero. 
+#   - prma is I suspect output only. THis is the k term, the mean precession rate
+#          with is different from the 'kbar' that is the one that, really, should be used. 
+#   - ha is input for a guess of the "h" used in Ber90 eq. 30 and 24.  Units are degrees
+#   - tseta is a first guess for the phase shift alpha. It is also the output of that quantity
+#
+#  il reste une petite difference entre le psibar calcule ici et le 
+#  psibar dans ber90 (50.43 vs 50.41). Le psibar est le 'kbar'. La
+#  difference est peut-etre due au nombre de termes retenus car les 
+#  k (variable interne prma) est exactement le meme. 
+#   as far as I can tell, the ouptut is insensitive to prma and ha. 
+#   prma and ha should be setto ala*cos bea and to bea, respectively. 
 # ---
 #' @useDynLib palinsol
 #' @export compute_tables
-compute_tables <- function(bea = 23.44579, prea = 50.273147, prega = -2514.27, ala = 54.9066, apoa = 17.3919, 
+compute_tables <- function(bea = 23.44579, prea = 50.273147, prega = -2513.66, ala = 54.9066, apoa = 17.3919, 
                            prma = 50.44, ha=23.4, tseta=1.964) {
 #                             bea = 23.44579
 #                             prea = 50.273147 
@@ -63,6 +98,7 @@ compute_tables <- function(bea = 23.44579, prea = 50.273147, prega = -2514.27, a
                    prma = as.double(prma),
                    pprma = as.double(0),
                    ha = as.double(ha), 
+                   hha = as.double(0), 
                    tseta = as.double(tseta), 
                    aa = as.double(rep(0,80)), 
                    a = as.double(rep(0,80)), 
@@ -108,8 +144,8 @@ compute_tables <- function(bea = 23.44579, prea = 50.273147, prega = -2514.27, a
                    d111 = as.double(rep(0,9640)))
 
   
-  estar = result$ha
-  psibar = result$prma
+  estar = result$hha
+  psibar = result$pprma
   zeta   = result$tseta 
   
   

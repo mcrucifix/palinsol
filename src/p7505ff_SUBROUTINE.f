@@ -1,7 +1,7 @@
       subroutine berger(
      +  ia, ib, ic, id, 
      +  bea, prea, prega, ala, apoa, 
-     +  prma,pprma, ha, tseta,aa,a,c,bb,b,d,bf,pf,dpf,sa,ddr, 
+     +  prma,pprma, ha, hha,  tseta,aa,a,c,bb,b,d,bf,pf,dpf,sa,ddr, 
      +  qaa,qa,qc,
      +  filename, icl)
         implicit double precision (a-h,p-z)                        
@@ -15,7 +15,7 @@
      *,qaa(12900),qa(12900),qc(12900),ind(12900)                        p7500080
         intent(in)  :: bea,prea, prega, ala, apoa
         intent(out) :: ia,ib,ic,id
-        intent(inout) :: prma, ha, tseta
+        intent(inout) :: prma, ha, hha,  tseta
         intent(out) :: pprma,
      *               aa,a,c,bb,b,d,bf,pf,dpf,sa,ddr,qaa,qa,qc
         common kktilde
@@ -27,16 +27,35 @@ c  ----
 c  comments my mc
 c  summary of the constants that we provide
 c  - ala is the "newcomb" contant, which berger (or sharaf budnikova?)
-c    redined as 'l0'. see attached "explanation_of_constants.R" 
-c  - apoa is P0, and is defined as dl/de^2
+c    redined as 'l0'. see more info in R/ls_constants
+c  - apoa is P0, and is defined as dl/de^2 
+c    if my understading of  the code below is correct, both l0 and p0
+c    are defined (and have to be defined for) zero earch eccentricity
+c    both ala and apoa have to be defined consistently for a given
+c    Earth-Moon distance, etc. 
 c    prea is, I am reasnoably confident, the dpsi/dt given in his eq. 66
+c             p. 114
 c             which will be used to compute psi_bar (still need to
-c             undrestand, this)
-c   - prega is I guess the zeta, but exprssed in seconds. /
-c             t
-c    prega=5025.74d0                                                   p7500880
-c
-c                                                                       p7500490
+c             this).  This is an initial condition at time t-0. 
+c              it is important to get it right for realistic solutions
+c              over the latest 2 Myr. But for a speculative solution far
+c              back in time this should be sampled 
+c   - prega is I is the "psi_0", that is , the value of "psi" at the 
+c              time=0 (the reference time). THis again should be sampled
+c              for far-back-in-time solutions. 
+c              Psi  est la longitude du noeud gamma (de la date), tel
+c                   que ramene sur l'eclipitique de reference
+c                   voir Fig. 3 de Berger et Loutre 1990 QRes. 
+c              it could be sampled anywhere between -pi and pi
+c    - bea is the obliquity it time zero that is used to compute prma
+c           in degrees
+c    - ha is the initial guess proposed for iterative search for
+c      the 'h' that finally appears in eq. 24 of Berger and Loutre
+c      and is also output
+c    - prma is --- I guess - output only and contains the mean
+c           precession rate 'k'. But wait, this is this different
+c           from the "kbar" that, really, is the one that should be used
+c           SO TODO: CHECK THE DIFFERENCE
 c                                                                       p7500500
 c     pal 7505ee   calcul precession 2d degre                           p7500510
 c   calcul des coeff developpement sin i sin omega    obli  precession  p7500520
@@ -885,7 +904,7 @@ c calcul des coefficients des developpements de obliquite mobile        p7507660
 c   precession mobile   taux prec mobile                                p7507670
 c valeurs sont en radians. - pas impression : icim=0                    p7507680
 c impression en secondes, pulsations en secondes, phases en degres icim=p7507690
-c bf vecteurs de ic termes                                              p7507700
+c bf vecteurs de ic termes
 c pf dpf vecteurs de id termes                                          p7507710
 c                                                                       p7507720
       if (icim-1) 320,308,320                                           p7507730
