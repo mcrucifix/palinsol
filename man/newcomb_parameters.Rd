@@ -9,20 +9,20 @@ newcomb_parameters(
   omega = omega_solar,
   c = c_ref,
   ece = ece_ref,
-  alpha = alpha_ref
+  earth_moon_distance = earth_moon_distance_ref
 )
 }
 \arguments{
-\item{CAC}{is (C-A)/C where A and C are Earth's moments of inertia aroud the plora and equatioral axis of inertia}
+\item{CAC}{is (C-A)/C where A and C are Earth's moments of inertia aroud the plora and equatioral axis of inertia. Non-dimensional}
 
-\item{omega}{is the rotational angular velocity of the Earth, measured in a geocentric framework}
+\item{omega}{is the rotational angular velocity of the Earth, measured in a geocentric framework, in radians per second}
 
-\item{c}{is the inclination of the  lunar orbit on the ecliptic}
+\item{c}{is the inclination of the  lunar orbit on the ecliptic, in radians}
 
-\item{alpha}{is the ratio of moon over earth's masses, multiplied by the ration of earth over moon's semi-major axis, at power 3. It is generally considered to be constant}
+\item{earth_moon_distance}{is expressed in km}
 }
 \value{
-a list with "ell" and "P0", ready for use in `compute_tables`
+a list with "ell" and "P0", ready for use in `compute_tables`, in arc seconds per year.
 }
 \description{
 --
@@ -34,6 +34,16 @@ In first approximation, the precession frequency (the term k) appearing in astro
 is equal to "ell"*cos(e_bar), where e_bar is the reference value for obliquity. 
 d(ell)/d(e^2) = 3/2 P0, where "e" is the obliquity. All parameters are given default values
 coresponding to the present-day state.
+}
+\examples{
+# we consider the AstroGeo model of Farhat et al., Astron. Asttroph. 665
+# length of day at -370 Ma : 21.81
+# semi-major axis of moon: 361000km
+N = newcomb_parameters (omega = 2*pi/(21.81*3600), earth_moon_distance = 361000)
+print (N)
+# assuming, still according to the AstroGeo22 model, an obliquity of 22.2 degrees, 
+# this simple model suggests a precession rate of
+N$ala * cos(22.2 * pi/180)
 }
 \references{
 Berger, A. L. (1973)
