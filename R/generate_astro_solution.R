@@ -135,7 +135,13 @@ compute_tables <- function(bea = 23.44579, prea = 50.273147, prega = -2513.66, a
                    bf = result$bf, 
                    pf = result$pf,
                    sa = result$sa, 
-                   ddr = result$ddr)
+                   ddr = result$ddr, 
+                   baf = as.double(rep(0,9640)), 
+                   s = as.double(rep(0,9640)), 
+                   d11 = as.double(rep(0,9640)), 
+                   paf = as.double(rep(0,9640)), 
+                   ss = as.double(rep(0,9640)), 
+                   d111 = as.double(rep(0,9640)))
 
   
   estar = result$hha
