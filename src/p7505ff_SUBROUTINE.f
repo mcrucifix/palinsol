@@ -60,7 +60,7 @@ c      and is also output
 c    - prma is --- I guess - output only and contains the mean
 c           precession rate 'k'. But wait, this is this different
 c           from the "kbar" that, really, is the one that should be used
-c           SO TODO: CHECK THE DIFFERENCE
+c    - note there is an option kktilde to make them equal but not clear,
 c                                                                       p7500500
 c     pal 7505ee   calcul precession 2d degre                           p7500510
 c   calcul des coeff developpement sin i sin omega    obli  precession  p7500520
@@ -348,6 +348,9 @@ c                                                                       p7502130
 
 ! <<<<- NOW THAT H, PRM, TSET HAVE BEEN SETTLED RECOMPUTE
 !       ALL COEFFICIENTS AND PRINT (THAT'S WHAT THE ICIM=1 BIT IS DOING)
+! OTHERWISE, IF IMPOSED (BECAUSE WE DO NOT WANT TO PUT INTITIAL
+! CONDITIONS, NEED TO SPECIFY: H, PRM, TSET,  PPRM (with pprm = prm)
+! IN RADIANS , BUT HH is still set by coef
 
   102 icim=1                                                            p7502350
       call coef(h,prm,tset,apo,al,icim,ia,aa,a,c,ar,cr,ib,bb,b,d,br,dr, p7502360
