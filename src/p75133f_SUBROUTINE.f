@@ -2,9 +2,7 @@
      +ia, ib, ic,id, ha, prma, pprma, tseta,
      +aa, a, c,
      +bb, b, d,
-     +bf, pf, sa, ddr, 
-     +baf, s, d11, 
-     +paf, ss, d111)
+     +bf, pf, sa, ddr)
 
       implicit double precision(a-h,p-z)                                p7500030
       dimension aa(80),a(80),c(80),cyc1(80),bb(80),b(80),d(80),cyc2(80),p7500040
@@ -28,7 +26,7 @@ c                                                                       p7500150
       intent (in) :: aa, a, c
       intent (in) :: bb, b, d
       intent (in) :: bf, pf, sa, ddr
-      intent (inout) :: baf, s, d11, paf, ss, d111
+!      intent (inout) :: baf, s, d11, paf, ss, d111
 
       z=1.0d-08                                                         p7500160
       pi=dacos(-1.0d0)                                                  p7500170

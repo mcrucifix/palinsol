@@ -85,42 +85,6 @@ c
       un=1.0d0                                                          p7500660
       z=0.0d0                                                           p7500670
       zz=1.0d-08                                                        p7500680
-!  open(unit=7,status='new',file='ber907505_1')
-c                                                                       p7500690
-c constantes du probleme                                                p7500700
-c ala apoa constante                                                    p7500710
-c bea prea valeurs en 1950.0       refer to mean elements of 1850       p7500720
-c                                                                       p7500730
-c lecture of the data for e,i,pi,omega
-c
-***************************************************************************
-*c pour une solution bretagnon                                            
-c       ia=19                                                           p7500740
-c       ibt=15                                                          p7500750
-c       open(unit=1,status='old',name='ioep2.data')
-c	read(1,*)
-c	read(1,*)
-c	do 1 i=1,ia
-c       read(1,1000)aa(i),a(i),c(i)
-c1	continue
-c	read(1,*)
-c	read(1,*)
-c	do 2 i=1,ibt
-c       read(1,1000)bbt(i),bt(i),dt(i)
-c2	continue
-c       kz=5
-c1000	format(f12.8,f11.6,f12.6)
-c
-c  constantes 1950.0 par rapport a 1850.0
-c
-c     bea=23.4458d0                                                     p7500840
-c     prea=50.2686d0                                                    p7500860
-c     prega=5025.74d0                                                   p7500880
-c
-***************************************************************************
-***************************************************************************
-*c pour une solution laskar
-
 c ******
 c TODO : GET THIS AS AN INPUT DATA  RATHER THAN HAVING FORTRAN READING
 c        THE FILE
@@ -142,6 +106,7 @@ c ****
          kz=1                                                           p7500780
  1000	format(i4,f15.6,f15.0,f15.6)
  1001	format(i4)
+      close(10)
 c
 c  constantes 1950.0 par rapport a 2000.0 (Andoyer)
 c
@@ -394,110 +359,6 @@ c                                                                       p7502130
       ha=hha                                                            p7502410
 c   car pour la suite je n utiliserai plus que h*                       p7502420
 
-c   IT SEEMS THAT NO MORE IMPORTANT COMPUTATION IS DONE
-c   BETWEEN HERE AND "CALCUL DE LA PRECESSION"
-
-c                                                                       p7502430
-c   impression sur cartes                                               p7502440
-c                                                                       p7502450
-      ipr=7505                                                          p7502460
-!      write(7,7004) ia,ib,ic,id,ha,prma,pprma,tseta,ipr                 p7502470
- 7004 format(4i5,4f15.8,8x,'in',i5)                                     p7502480
-      do 50 i=1,ia                                                      p7502490
-!      write(7,7000) i,aa(i),a(i),c(i),ipr                               p7502500
- 7000 format(i4,f20.8,f20.7,f20.6,10x,'a',i5)                           p7502510
-   50 continue                                                          p7502520
-      do 51 i=1,ib                                                      p7502530
-!      write(7,7001) i,bb(i),b(i),d(i),ipr                               p7502540
- 7001 format(i4,3f20.10,10x,'b',i5)                                     p7502550
-   51 continue                                                          p7502560
-      do 52 i=1,ic                                                      p7502570
-      baf=bf(i)/pirr                                                    p7502580
-      paf=pf(i)/pirr                                                    p7502590
-      dpaf=dpf(i)/pirr                                                  p7502600
-      s=sa(i)/pirr                                                      p7502610
-      d11=ddr(i)/pir                                                    p7502620
-c     if(dabs(baf).ge.0.1d0)goto 54
-c     if(dabs(paf).ge.1.0d0)goto 54
-c     goto 52
-!54    write(7,7002) i,baf,paf,dpaf,s,d11,ipr                            p7502630
- 7002 format(i4,f15.7,f15.7,f13.7,f13.6,f13.5,' bp',i5)                  p7502640
-   52 continue                                                          p7502650
-      icc=ic+1                                                          p7502660
-      do 53 i=icc,id                                                    p7502670
-      paf=pf(i)/pirr                                                    p7502680
-      dpaf=dpf(i)/pirr                                                  p7502690
-      s=sa(i)/pirr                                                      p7502700
-      d11=ddr(i)/pir                                                    p7502710
-c     if(dabs(baf).ge.0.1d0)goto 56
-c     if(dabs(paf).ge.1.0d0)goto 56
-c     goto 53
-!   56 write(7,7003) i,paf,dpaf,s,d11,ipr                                p7502720
- 7003 format(i4,15x,f15.7,f13.7,f13.6,f13.5,' bp',i5)                    p7502730
-   53 continue                                                          p7502740
-c   
-c	stop                                                            p7502750
-c       goto 10
-c   test obl prec tprec                                                 p7502760
-c                                                                       p7502770
-*      write(6,6502)                                                    p7502780
- 6502 format(1h1,///,1x,'test valeurs obl prec tprec for dates from 1950p7502790
-     *',//)                                                             p7502800
-      zer=0.0d0                                                         p7502810
-      bvo=zer                                                           p7502820
-      pvo=zer                                                           p7502830
-      dpvo=zer                                                          p7502840
-      do 60 i=1,ic                                                      p7502850
-      bvo=bvo+bf(i)*dcos(ddr(i))                                        p7502860
-      pvo=pvo+pf(i)*dsin(ddr(i))                                        p7502870
-      dpvo=dpvo+dpf(i)*dcos(ddr(i))                                     p7502880
-   60 continue                                                          p7502890
-      ic1=ic+1                                                          p7502900
-      do 61 i=ic1,id                                                    p7502910
-      pvo=pvo+pf(i)*dsin(ddr(i))                                        p7502920
-      dpvo=dpvo+dpf(i)*dcos(ddr(i))                                     p7502930
-   61 continue                                                          p7502940
-      bvo=bvo/pir     +ha                                               p7502950
-      pvo=pvo/pir     +tseta                                            p7502960
-      dpvo=dpvo/pirr+pprma                                              p7502970
-      iwr=1950                                                          p7502980
-*      write(6,6503) iwr,bvo,pvo,dpvo                                   p7502990
-*      write(6,6910)                                                    p7503000
-      apa=1000.0d0                                                      p7503010
-      tc=0.0d0                                                          p7503020
-      do 14 kk=1,6                                                      p7503030
-      tcc=(kk-1)*100000.0d0                                             p7503040
-      do 11 i=1,10                                                      p7503050
-      t=tc-(i-1)*apa-tcc                                                p7503060
-      bvo=zer                                                           p7503070
-      pvo=pprm *t                                                       p7503080
-      dpvo=pprm                                                         p7503090
-      do 12 j=1,ic                                                      p7503100
-      wa=sa(j)*t+ddr(j)                                                 p7503110
-      bvo=bvo+bf(j)*dcos(wa)                                            p7503120
-      pvo=pvo+pf(j)*dsin(wa)                                            p7503130
-      dpvo=dpvo+dpf(j)*dcos(wa)                                         p7503140
-   12 continue                                                          p7503150
-      ic1=ic+1                                                          p7503160
-      do 13 j=ic1,id                                                    p7503170
-      wa=sa(j)*t+ddr(j)                                                 p7503180
-      pvo=pvo+pf(j)*dsin(wa)                                            p7503190
-      dpvo=dpvo+dpf(j)*dcos(wa)                                         p7503200
-   13 continue                                                          p7503210
-      iwr=(t-tc)/apa                                                    p7503220
-      bvo=bvo/pir                                                       p7503230
-      bvo=bvo+ha                                                        p7503240
-      pvo=pvo/pir+tseta                                                 p7503250
-      dpvo=dpvo/pirr                                                    p7503260
-   19 if(dabs(pvo).le.360.0d0) go to 18                                 p7503270
-      pvo=dsign(1.0d0,pvo)*(dabs(pvo)-360.0d0)                          p7503280
-      go to 19                                                          p7503290
-   18 continue                                                          p7503300
-*      write(6,6503) iwr,bvo,pvo,dpvo                                   p7503310
- 6503 format(i10,f10.4,f12.4,f12.6)                                     p7503320
-   11 continue                                                          p7503330
-
-   14 continue                                                          p7503360
 
 c ===============================================
 c CALCUL OF PRECESSION
@@ -533,7 +394,6 @@ c   wqa est toujours positif                                            p7503540
 c   premier ind rappelle ind e*sin                                      p7503610
 c   deuxieme  ind rapprlle  precession                                  p7503620
 c   troisieme ind est le numero d ordre final                           p7503630
-      call awri(wqaa,wqa,wqc,j,i,j)                                     p7503640
    90 continue                                                          p7503650
 !      write(6,6950)                                                     p7503660
  6950 format(1x)                                                        p7503670
@@ -549,7 +409,6 @@ c   troisieme ind est le numero d ordre final                           p7503630
       wqaa=qaa(j1)                                                      p7503770
       wqa=qa(j1)                                                        p7503780
       wqc=qc(j1)                                                        p7503790
-      call awri(wqaa,wqa,wqc,j,i,j1)                                    p7503800
       j2=ia*ib+j1                                                       p7503810
       qaa(j2)=qaa(j1)                                                   p7503820
       qa(j2)=a(j)-b(i)                                                  p7503830
@@ -562,107 +421,6 @@ c   troisieme ind est le numero d ordre final                           p7503630
 !      write(6,6950)
 c   IT SEEMS THAT NO MORE COMPUTATIONS ARE DONE HERE
 c 
-c                                                                       p7503910
-c   impression du troisieme groupe pour ne pas melanger avec le deuxiemep7503920
-c                                                                       p7503930
-      j3=ia*(ib+1)                                                      p7503940
-      j3=j3+1                                                           p7503950
-      j4=ia*(2*ib+1)                                                    p7503960
-      i=0                                                               p7503970
-      j=1                                                               p7503980
-      do 93 j1=j3,j4                                                    p7503990
-      i=i+1                                                             p7504000
-      if(i.le.ib) go to 94                                              p7504010
-      i=1                                                               p7504020
-      j=j+1                                                             p7504030
-   94 waa=qaa(j1)                                                       p7504040
-      wa=qa(j1)                                                         p7504050
-      wc=qc(j1)                                                         p7504060
-      call awri(waa,wa,wc,j,i,j1)                                       p7504070
-   93 continue                                                          p7504080
-c                                                                       p7504090
-c   elimination des valeurs inf a 10(-05)                               p7504100
-c                                                                       p7504110
-      acons=1296.0d03                                                   p7504120
-      tes=1.0d-05                                                       p7504130
-      ji=0                                                              p7504140
-      zz=0.0d0                                                          p7504150
-!      write(6,6957)                                                     p7504160
- 6957 format(1h1,///)                                                   p7504170
-!      write(6,6952)                                                     p7504180
-!      write(6,6955)                                                     p7504190
- 6955 format(3x,'i',6x,' amplitude',4x,'   mean rate ',3x,6x,'phase',3x,p7504200
-     *7x,'period',/)                                                    p7504210
-!      write(6,6956)                                                     p7504220
- 6956 format(27x,'(''''/year)',8x,'(degree)',9x,'(years)',/)            p7504230
-      jk=0                                                              p7504240
-      do 95 j=1,j4                                                      p7504250
-      waa=dabs(qaa(j))                                                  p7504260
-      if (waa.le.tes) go to 95                                          p7504270
-      ji=ji+1                                                           p7504280
-      if(qa(j).eq.zz) go to 88                                          p7504290
-      go to 89                                                          p7504300
-   88 aper=zz                                                           p7504310
-   89 aper=acons/dabs(qa(j))                                            p7504320
-      jk=jk+1                                                           p7504330
-      ind(jk)=j                                                         p7504340
-!      write(6,6958) ji,qaa(j),qa(j),qc(j),aper                          p7504350
-!      write(7,6958) ji,qaa(j),qa(j),qc(j),aper                          p7504360
- 6958 format(1x,i4,2x,d15.8,1x,f13.6,3x,f13.6,3x,f13.0)                 p7504370
-   95 continue                                                          p7504380
-c                                                                       p7504390
-c   test e*sin(xl)                                                      p7504400
-c                                                                       p7504410
-!      write(6,6504)                                                     p7504420
- 6504 format(1h1,///,1x,'test valeurs exc  long per mob for dates from  p7504430
-     *1950',//)                                                         p7504440
-!      write(7,9502) jk                                                  p7504450
- 9502 format(i10)                                                       p7504460
-!      write(6,9500) jk                                                  p7504470
-! 9500 format(1x,'for limited number of terms    jk=',i8,//)             p7504480
-      do 107 kk=1,6                                                     p7504490
-      tcc=(kk-1)*100000.0d0                                             p7504500
-      do 106 i=1,10                                                     p7504510
-      t=tc-(i-1)*apa-tcc                                                p7504520
-      es=zer                                                            p7504530
-      ec=zer                                                            p7504540
-      do 100 jf=1,jk                                                    p7504550
-      j=ind(jf)                                                         p7504560
-      ta=qa(j)*t*pirr+qc(j)*pir                                         p7504570
-      es=es+qaa(j)*dsin(ta)                                             p7504580
-      ec=ec+qaa(j)*dcos(ta)                                             p7504590
-  100 continue                                                          p7504600
-      call excen(es,ec,pi,zer,ee,peva,pir)                              p7504610
-      iwr=(t-tc)/apa                                                    p7504620
-!      write(6,6505) iwr,ee,peva,es                                      p7504630
-  106 continue                                                          p7504640
-!      write(6,6910)                                                     p7504650
-  107 continue                                                          p7504660
-!      write(6,6910)                                                     p7504670
-!      write(6,6910)                                                     p7504680
-      ie=ia+ia*ib*2                                                     p7504690
-!      write(6,9501) ie                                                  p7504700
- 9501 format(1x,'for all terms   ie=',i8,//)                            p7504710
-      do 17 kk=1,6                                                      p7504720
-      tcc=(kk-1)*100000.0d0                                             p7504730
-      do 16 i=1,10                                                      p7504740
-      t=tc-(i-1)*apa-tcc                                                p7504750
-      es=zer                                                            p7504760
-      ec=zer                                                            p7504770
-      do 15 j=1,ie                                                      p7504780
-      ta=qa(j)*t*pirr+qc(j)*pir                                         p7504790
-      ec=ec+dcos(ta)*qaa(j)                                             p7504800
-      es=es+dsin(ta)*qaa(j)                                             p7504810
-   15 continue                                                          p7504820
-      call excen(es,ec,pi,zer,ee,peva,pir)                              p7504830
-      iwr=(t-tc)/apa                                                    p7504840
-!      write(6,6505) iwr,ee,peva,es                                      p7504850
-! 6505 format(i10,f12.8,f12.5,f10.6)                                     p7504860
-   16 continue                                                          p7504870
-!      write(6,6910)                                                     p7504880
-   17 continue                                                          p7504890
-10    continue
-      close(10)
       end subroutine                                                    p7504910 
 
 
@@ -1603,45 +1361,4 @@ c                                                                       p7512840
       go to 3                                                           p7513050
     6 return                                                            p7513060
       end                                                               p7513070
-
-
-c     PRINTING ONLY
-c     =============
-      subroutine awri(x,y,z,j,i,kk)                                     p7513080
-      double precision x,y,z,aper,zz,a                                  p7513090
-      a=1296.0d03                                                       p7513100
-      zz=0.0d0                                                          p7513110
-      if(y.eq.zz) go to 8                                               p7513120
-      aper=a/dabs(y)                                                    p7513130
-      go to 9                                                           p7513140
-    8 aper=zz                                                           p7513150
-    9 continue
-*      write(6,6000) kk,j,i,x,y,z,aper                                  p7513160
-!*      write(7,6000) kk,j,i,x,y,z,aper                                  p7513170
- 6000 format(1x,i4,i3,i3,5x,f10.7,3x,f13.6,3x,f13.6,3x,f13.0)           p7513180
-      return                                                            p7513190
-      end                                                               p7513200
-
-cc    
-      subroutine excen(es,ec,pi,zer,ee,peva,pir)                        p7513210
-      double precision es,ec,pi,zer,ee,peva,pir                         p7513220
-      if(ec) 29,25,30                                                   p7513230
-   29 pev=datan(es/ec)+pi                                               p7513240
-      go to 24                                                          p7513250
-   30 pev=datan(es/ec)                                                  p7513260
-      if(es.ge.zer) go to 24                                            p7513270
-      pev=2.0d0*pi+pev                                                  p7513280
-      go to 24                                                          p7513290
-   25 if(es) 26,27,28                                                   p7513300
-   26 pev=pi+pi/2.0d0                                                   p7513310
-      go to 24                                                          p7513320
-   28 pev=pi/2.0d0                                                      p7513330
-      go to 24                                                          p7513340
-   27 pev=zer                                                           p7513350
-   24 ee=dsqrt(ec*ec+es*es)                                             p7513360
-      peva=pev/pir                                                      p7513370
-      return                                                            p7513380
-c     end                                                               p7513390
-      end  subroutine 
-
 
