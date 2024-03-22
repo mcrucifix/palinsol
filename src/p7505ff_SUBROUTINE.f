@@ -207,6 +207,7 @@ c                                                                       p7501250
       tset=tseta*pir                                                    p7501350
       icim=0                                                            p7501360
 c
+c
 c ** STARTING ITERATION ========================================
 c   THE OBJECTIVE OF THIS ITERATION IS TO SETTLE
 c   VALUES OF MEAN PRECESSION RATE AND MEAN OBLIQUITY
@@ -219,11 +220,26 @@ c   dpf is:  ...  phases
 c   debut de l'iteration                                                p7501380
 c
 
+c  NEW MC
+      if (bea.le.1.e-6) then
+        pprma = prma
+        pprm  = prm
+!        hh    = h
+!        hha   = ha
+
+      call coef(h,prm,tset,apo,al,icim,ia,aa,a,c,ar,cr,ib,bb,b,d,br,dr, p7501430
+     *bf,pf,dpf,sa,ddr,ic,id,pi,pir,pirr,hh)                            p7501440
+      else
+
+
 
   103 continue                                                          p7501390
 c                                                                       p7501400
 c calcul coeff bf pf dpf pour h prm tset donne                          p7501410
-c                                                                       p7501420
+c  if BEA is zero (thus BE is zero), then skip all the calibration
+c  and take the values of ha, and let prm to its prescribed value
+c  beware that in this case al should be the same pprm and prm
+
       call coef(h,prm,tset,apo,al,icim,ia,aa,a,c,ar,cr,ib,bb,b,d,br,dr, p7501430
      *bf,pf,dpf,sa,ddr,ic,id,pi,pir,pirr,hh)                            p7501440
 c                                                                       p7501450
@@ -338,12 +354,15 @@ c                                                                       p7502130
       tseta=tset/pir                                                    p7502280
       call conpr(pprm,h,al,apo,prm,ib,bb,br,ia,aa,cr)                   p7502290
       pprma=pprm/pirr                                                   p7502300
+
+
 !      write(6,6007) ha,prma,pprma,tseta                                 p7502310
 ! 6007 format(1h ,4f14.6,//)                                             p7502320
       if (icon.eq.0) go to 102                                          p7502330
       go to 103                                                         p7502340
 
 
+      endif   ! endif condition on bea = 0. 
 ! ----- END OF ITERATION
 
 ! <<<<- NOW THAT H, PRM, TSET HAVE BEEN SETTLED RECOMPUTE
@@ -353,12 +372,15 @@ c                                                                       p7502130
 ! IN RADIANS , BUT HH is still set by coef
 
   102 icim=1                                                            p7502350
+      write (*,*) '******************************'
+      write (*,*) h,prm,tset,apo, al
+      write (*,*) '******************************'
       call coef(h,prm,tset,apo,al,icim,ia,aa,a,c,ar,cr,ib,bb,b,d,br,dr, p7502360
      *bf,pf,dpf,sa,ddr,ic,id,pi,pir,pirr,hh)                            p7502370
       hha=hh/pir                                                        p7502380
-!      write(6,6900) ha,hha,prma,pprma,tseta                             p7502390
+      write(6,6900) ha,hha,prma,pprma,tseta                             p7502390
 !      write(7,6900) ha,hha,prma,pprma,tseta                             p7502390
-! 6900 format(///,1x,5f14.6)                                             p7502400
+6900  format(///,1x,5f14.6)                                             p7502400
       ha=hha                                                            p7502410
 c   car pour la suite je n utiliserai plus que h*                       p7502420
 
