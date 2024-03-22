@@ -7,7 +7,13 @@
 #n=2*pi/sideralyear
 tropicalyear = 365.2422*24*60*60
 n=2*pi/tropicalyear
-CAC_ref <- 0.00326742   # Earth oblateness 
+CAC_ref <- 0.00326742   # Earth dynamical ellipticity
+
+# note: see e.g. Laskar 2004 and others
+# "for a fast rotating planet like the Earth, the 
+# "dynamical ellipticity Ed = (2C-A-B)/C  can be 
+# considered to be proporotinal to omega^2. 
+# 
 # e_ref <- 0.017
 e_ref <- 0.0      # earth orbit reference excentricity, used as a basis for 
                   # the Taylor development in Berger's codes
