@@ -20,9 +20,14 @@
      *               aa,a,c,bb,b,d,bf,pf,dpf,sa,ddr,qaa,qa,qc
         common kktilde
 c                                                                       p7500090
-c       pal7505ee modifie   data a1                                     p7500100
-c                                                                       p7500110
-c                                                                       p7500120
+
+c  some more explanations about the INOUTS
+c  aa, a, c:          the g-terms. This is currently read from the ioepl
+c  bbt(i),bt(i),dt(i) the s-terms. DITTO (not output at present)
+c  bb,b,d : development of sin(i) as a function of sin(i/2)
+c  bf, pf, dpf : development of obliquity. Obtained after iteration
+c  ar, cr: 
+
 c  ----
 c  comments my mc
 c  summary of the constants that we provide
@@ -115,6 +120,12 @@ c
 ***************************************************************************
 ***************************************************************************
 *c pour une solution laskar
+
+c ******
+c TODO : GET THIS AS AN INPUT DATA  RATHER THAN HAVING FORTRAN READING
+c        THE FILE
+c ****
+
  	open(unit=10,file=filename,status='old')
         read(10,*)
  	read(10,1001)ia
@@ -230,8 +241,20 @@ c                                                                       p7501250
       prm=prma*pirr                                                     p7501340
       tset=tseta*pir                                                    p7501350
       icim=0                                                            p7501360
-c                                                                       p7501370
+c
+c ** STARTING ITERATION ========================================
+c   THE OBJECTIVE OF THIS ITERATION IS TO SETTLE
+c   VALUES OF MEAN PRECESSION RATE AND MEAN OBLIQUITY
+c   PRMA, PPRMA, HHA , TSETA
+c   THis is an iteration because for every prma, etc
+c   one must compute a set of bf, pf and dpf
+c   bf is a set of 65000 terms of obliquity amplitude
+c   pf is: ... obliqity frequencies
+c   dpf is:  ...  phases
 c   debut de l'iteration                                                p7501380
+c
+
+
   103 continue                                                          p7501390
 c                                                                       p7501400
 c calcul coeff bf pf dpf pour h prm tset donne                          p7501410
@@ -275,7 +298,7 @@ c 105 continue                                                          p7508780
 c
 c                                                                       p7501540
 c calcul des derivees des trois fonctions                               p7501550
-c                                                                       p7501560
+c                                                                      p7501560
 c                                                                       p7501570
 c sbfh = derivee de obl mobi par rapport a h                            p7501580
 c spfk = derivee de prec mobi par rapport a (k=prm)                     p7501590
@@ -354,6 +377,13 @@ c                                                                       p7502130
 ! 6007 format(1h ,4f14.6,//)                                             p7502320
       if (icon.eq.0) go to 102                                          p7502330
       go to 103                                                         p7502340
+
+
+! ----- END OF ITERATION
+
+! <<<<- NOW THAT H, PRM, TSET HAVE BEEN SETTLED RECOMPUTE
+!       ALL COEFFICIENTS AND PRINT (THAT'S WHAT THE ICIM=1 BIT IS DOING)
+
   102 icim=1                                                            p7502350
       call coef(h,prm,tset,apo,al,icim,ia,aa,a,c,ar,cr,ib,bb,b,d,br,dr, p7502360
      *bf,pf,dpf,sa,ddr,ic,id,pi,pir,pirr,hh)                            p7502370
@@ -363,6 +393,10 @@ c                                                                       p7502130
 ! 6900 format(///,1x,5f14.6)                                             p7502400
       ha=hha                                                            p7502410
 c   car pour la suite je n utiliserai plus que h*                       p7502420
+
+c   IT SEEMS THAT NO MORE IMPORTANT COMPUTATION IS DONE
+c   BETWEEN HERE AND "CALCUL DE LA PRECESSION"
+
 c                                                                       p7502430
 c   impression sur cartes                                               p7502440
 c                                                                       p7502450
@@ -464,6 +498,14 @@ c                                                                       p7502770
    11 continue                                                          p7503330
 
    14 continue                                                          p7503360
+
+c ===============================================
+c CALCUL OF PRECESSION
+c NEEDSa
+c  THE aa, a c terms   ('g-')
+c  the b and d terms   (the sin i development
+c  the coenstants prma, tseta etc. 
+c  to produce the qaa, qa and qc terms
 c                                                                       p7503370
 c   calcul  e*sin(long per mobil)                                       p7503380
 c                                                                       p7503390
@@ -497,7 +539,7 @@ c   troisieme ind est le numero d ordre final                           p7503630
  6950 format(1x)                                                        p7503670
       do 91 j=1,ia                                                      p7503680
       do 92 i=1,ib                                                      p7503690
-      j1=ia+(j-1)*ib+i                                                  p7503700
+      j1=ia+(j-1)*ib+i                                                  p750370
       qaa(j1)=aa(j)*pf(i)*0.5d0                                         p7503710
       qa(j1)=a(j)+b(i)+prma+prma                                        p7503720
       qc(j1)=c(j)+d(i)+2.0d0*tseta                                      p7503730
@@ -517,7 +559,9 @@ c   troisieme ind est le numero d ordre final                           p7503630
       qc(j2)=wq                                                         p7503870
    92 continue                                                          p7503880
    91 continue                                                          p7503890
-!      write(6,6950)                                                     p7503900
+!      write(6,6950)
+c   IT SEEMS THAT NO MORE COMPUTATIONS ARE DONE HERE
+c 
 c                                                                       p7503910
 c   impression du troisieme groupe pour ne pas melanger avec le deuxiemep7503920
 c                                                                       p7503930
@@ -620,6 +664,12 @@ c                                                                       p7504410
 10    continue
       close(10)
       end subroutine                                                    p7504910 
+
+
+c END OF MAIN SUBROUTINE
+c ===================================================================
+c ===================================================================
+
       subroutine impd(ia,ib,aa,a,c,bb,b,d,kz,ar,cr,br,dr,pip,pirr,pir,anp7504920
      *umi)                                                              p7504930
       implicit double precision (a-h,p-z)                               p7504940
@@ -690,6 +740,11 @@ c si periode infinie j'ecris 0.0                                        p7505130
 !     *15x,'max incl plan inv =',f10.6)                                  p7505570
       return                                                            p7505580
       end                                                               p7505590
+
+
+c END OF SUBROUTINE IMPD
+c +++++++++++++++++++++++++++++++++++++++++++++
+c
       subroutine trani(ibt,bbt,bt,dt,ibs,bb,b,d,ib)                     p7505600
       implicit double precision (a-h,p-z)                               p7505610
       dimension bbt(ibt),bt(ibt),dt(ibt),bb(ibs),b(ibs),d(ibs)          p7505620
@@ -893,6 +948,12 @@ c                                                                       p7506830
    30 continue                                                          p7507570
       return                                                            p7507580
       end                                                               p7507590
+
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C  SUBROUTINE COEF
+
+
       subroutine coef(h,prm,tset,apo,al,icim,ia,aa,a,c,ar,cr,ib,bb,b,d, p7507600
      *br,dr,bf,pf,dpf,sa,ddr,ic,id,pi,pir,pirr,hh)                      p7507610
       implicit double precision (a-h,p-z)                               p7507620
@@ -1079,6 +1140,10 @@ c                                                                       p7509070
   307 continue                                                          p7509270
       return                                                            p7509280
       end                                                               p7509290
+
+
+c    CALCUL DES '3  FUNCTIONS'. TOUJOURS PAS CLAIR CE QUE C'EST
+c    -<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-
       subroutine fbpf(t,ic,id,bf,pf,sa,ddr,fbf,fpf)                     p7509300
       implicit double precision (a-h,p-z)                               p7509310
       dimension bf(ic),pf(id),sa(id),ddr(id)                            p7509320
@@ -1103,6 +1168,10 @@ c                                                                       p7509380
     1 continue                                                          p7509500
       return                                                            p7509510
       end                                                               p7509520
+
+
+
+
       subroutine fdpf1(t,id,dpf,sa,ddr,fdpf)                            p7509530
       implicit double precision (a-h,p-z)                               p7509540
       dimension dpf(id),sa(id),ddr(id)                                  p7509550
@@ -1534,6 +1603,10 @@ c                                                                       p7512840
       go to 3                                                           p7513050
     6 return                                                            p7513060
       end                                                               p7513070
+
+
+c     PRINTING ONLY
+c     =============
       subroutine awri(x,y,z,j,i,kk)                                     p7513080
       double precision x,y,z,aper,zz,a                                  p7513090
       a=1296.0d03                                                       p7513100
@@ -1548,6 +1621,8 @@ c                                                                       p7512840
  6000 format(1x,i4,i3,i3,5x,f10.7,3x,f13.6,3x,f13.6,3x,f13.0)           p7513180
       return                                                            p7513190
       end                                                               p7513200
+
+cc    
       subroutine excen(es,ec,pi,zer,ee,peva,pir)                        p7513210
       double precision es,ec,pi,zer,ee,peva,pir                         p7513220
       if(ec) 29,25,30                                                   p7513230
