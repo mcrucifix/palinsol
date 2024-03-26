@@ -44,6 +44,8 @@ print (N)
 # assuming, still according to the AstroGeo22 model, an obliquity of 22.2 degrees, 
 # this simple model suggests a precession rate of
 N$ala * cos(22.2 * pi/180)
+MORE WORK IS NEEDED HERE BECAUSE  C-A/C also varies with OMEGA
+
 }
 \references{
 Berger, A. L. (1973)
