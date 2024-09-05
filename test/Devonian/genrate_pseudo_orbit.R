@@ -18,10 +18,11 @@ times=seq(-10e3,5)*1e3
 
 # data from AstroGeo22 for -300 M
 # http://www.astrogeo.eu/wp-content/uploads/2022/11/AstroGeo22.txta
+ #  T(Ga)     a (RE)      amin        amax         lod       lodmin      lodmax       obli       oblimin     oblimax       pre           premin        premax
 
  # 0.370   57.673582   57.335846   57.885557   21.818198   21.547225   21.991389   22.231292   22.227687   22.236342     61.062980     60.584835     61.826758
 
- estar <- 21.818198 
+ estar <- 22.231292 
  prma <- 61.062980    
  ala <- prma * cos(estar * pi / 180)
  
