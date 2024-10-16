@@ -805,6 +805,8 @@ c                                                                       p7507880
       abb=bf(k)*bf(k)                                                   p7508240
       bf(kk)=bf(kk)-pfik+twt2                                           p7508250
       bf(kkk)=bf(kkk)+un*pfik-ud*twt                                    p7508260
+      if (kk.eq.161) write (*,*) pf(i), pf(k),
+     c                  pfik, twt2, bf(kk), bf(kkk)
       pf(kk)=pf(kk)-(bf(i)+bf(k)-un)*twt*twt-ud*(aba+abb-un)            p7508270
       pf(kkk)=pf(kkk)-ud*(aba-abb-2.0d0*bf(i)+2.0d0*bf(k))              p7508280
       dpf(kk)=sa(kk)*pf(kk)                                             p7508290

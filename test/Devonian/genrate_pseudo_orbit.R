@@ -1,5 +1,5 @@
-# load_all () 
-install_github("mcrucifix/palinsol@deeppast_test")
+load_all () 
+# install_github("mcrucifix/palinsol@loic_1")
 
 
 require(palinsol)

@@ -1,0 +1,28 @@
+#### load La_ioepl.data
+fpath <- file.path("inst","extdata", "La88_IOEPL.dat")
+
+epi <- utils::read.table(fpath, skip=2, nrow=80)
+io <- utils::read.table(fpath, skip=84, nrow=80)
+
+sec2pi <- pi/3600/180*1e3
+
+epi <- data.frame( 
+                   Freq  = epi$V2*sec2pi,
+                   Amp   = epi$V3/1e8, 
+                   Phases = epi$V4*pi/180)
+
+io <- data.frame( 
+                   Freq  = io$V2*sec2pi,
+                   Amp   = io$V3/1e8, 
+                   Phases = io$V4*pi/180)
+
+class(epi) <- "discreteSpectrum"
+attr(epi,"nfreq") <- 80
+
+class(io) <- "discreteSpectrum"
+attr(io,"nfreq") <- 80
+
+La88 <- list(epi=epi, io=io)
+
+usethis::use_data(La88, overwrite=TRUE)
+

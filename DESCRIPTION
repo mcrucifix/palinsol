@@ -21,5 +21,5 @@ KeepSource: true
 Encoding: UTF-8
 URL: https://github.com/mcrucifix/palinsol
 BugReports: https://github.com/mcrucifix/palinsol/issues
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 NeedsCompilation: yes
