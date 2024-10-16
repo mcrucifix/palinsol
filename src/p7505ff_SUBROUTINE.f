@@ -220,7 +220,10 @@ c   dpf is:  ...  phases
 c   debut de l'iteration                                                p7501380
 c
 
-c  NEW MC
+c  NEW MC : if you do not want to specific an enitial condition for bea, 
+c  then we will avoid updating pprm and prm and set both to the 
+c   "initial guess" that is given. 
+    
       if (bea.le.1.e-6) then
         pprma = prma
         pprm  = prm
