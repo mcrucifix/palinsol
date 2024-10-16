@@ -9,7 +9,7 @@
 #' @note   place holder for type-specific develop functions
 #' @export develop
 #' @return nothing
-develop <- function(M, times=NULL, start=NULL, end=NULL, deltat=NULL,...){
+develop <- function(M, start=NULL, end=NULL, deltat=NULL, times = NULL, ...){
      UseMethod("develop") 
 }
 
@@ -32,7 +32,7 @@ cis <- function(x) exp(1i*x)
 #'         reconstructed time series otherwise
 #' @method develop discreteSpectrum
 #' @export
-develop.discreteSpectrum  <- function(M, times=NULL, start=NULL, end=NULL, deltat=NULL, dfunction = cos, sum=TRUE){
+develop.discreteSpectrum  <- function(M, start=NULL, end=NULL, deltat=NULL, times,  dfunction = cos, sum=TRUE){
  if (!("discreteSpectrum" %in% class(M))) stop ("object is not a discreteSpectrum decomposition")
 
  timesIsATseries = FALSE
@@ -46,9 +46,9 @@ develop.discreteSpectrum  <- function(M, times=NULL, start=NULL, end=NULL, delta
  if (is.null(times)){
    if (is.null(attr(M,"data"))) stop ("if you do not supply any time argument (times, or (start, end, deltat)), then object must have a valid data attribute")
  xdata <- attr(M,"data")
- start <- stats::start(xdata)
- deltat <- stats::deltat(deltat)
- times <- (seq(length(xdata))-1) * stats::deltat(xdata) + stats::start(xdata)[1]
+ start <- stats::start(xdata)[1]
+ deltat <- stats::deltat(xdata)
+ times <- (seq(length(xdata))-1) * deltat + start
  timesIsATseries = TRUE
  }
 

@@ -28,9 +28,10 @@ IJ = gtools::combinations(length(a),2)
 
 eccentricity_spectrum <- function(EPI, inputfreq = 10){
 
-O1 <- order(EPI$Freq, decreasing=TRUE)[seq(inputfreq)]
+# O1 <- order(EPI$Freq, decreasing=TRUE)[seq(inputfreq)]
+O1 <- seq(inputfreq)
 
-EPI <- list(Freq=EPI$Freq[O1], Amp=EPI$Amp[O1], Phases=EPI$Phases[O1])
+EPI <- list(Freq=EPI$Freq[O1] / 1000, Amp=EPI$Amp[O1], Phases=EPI$Phases[O1])
 
 m <- sqrt(sum(EPI$Amp^2))
 a = EPI$Amp / m
@@ -201,11 +202,14 @@ AFF <- cbind(AFF1, P=AFF2$P)
 
 
 print ('liste finale:')
+names(AFF) <- c("Freq","Amp","Phases")
 
-names(AFF) <- c('Amp','Freq','Phases')
+AFF$Amp <- AFF$Amp * m
+AFF$Freq <- AFF$Freq * 1000. 
+
 class(AFF) <- "discreteSpectrum"
 
-print(length(AFF$A))
+#print(length(AFF$A))
 
 return(AFF)
 }
