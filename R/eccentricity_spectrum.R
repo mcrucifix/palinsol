@@ -12,6 +12,8 @@ combine <- function(a,b, om1, om2, ph1, ph2, factor=1) {
   return(data.frame(A=A,O=O,P=P))
 }
 
+
+# might be a faster alternative but not used here in the end
 combine2 <- function(a,b, om1, om2, ph1, ph2) {
 IJ = gtools::combinations(length(a),2)
   A <- apply(IJ, 1, function(V) a[V[1]]*b[V[2]])

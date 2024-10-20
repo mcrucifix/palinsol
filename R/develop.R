@@ -26,22 +26,24 @@ cis <- function(x) exp(1i*x)
 #' @param  deltat : see start. 
 #' @param  sum : TRUE if user wants to sum components %in% the reconstruction
 #' @param  dfunction is the trigonometrical function. Classically one of 'cos', 'sin', or 'cis'
+#' @param  maxfreq if set: will only take the first `maxfreq` components in the reconstruction
 #' @note   if none if times, start and deltat are supplied, will reconstruct based on the attribute `xdata`
 #'         which must then be present. If no `xdata` is availble, return an error. 
 #' @return list of reconstructed components if sum=FALSE,  full
 #'         reconstructed time series otherwise
 #' @method develop discreteSpectrum
 #' @export
-develop.discreteSpectrum  <- function(M, start=NULL, end=NULL, deltat=NULL, times,  dfunction = cos, sum=TRUE){
+develop.discreteSpectrum  <- function(M, start = NULL, end = NULL, deltat = NULL, times,  dfunction = cos, maxfreq = NULL, sum=TRUE){
  if (!("discreteSpectrum" %in% class(M))) stop ("object is not a discreteSpectrum decomposition")
 
  timesIsATseries = FALSE
  if (!is.null(start)){
    if (is.null(deltat) || is.null(end)) stop ("if you supply start, you must also supply deltat and end");
-   n <- (end-start) %*% deltat
+   n <- (end-start) %/% deltat
    times <- start + seq(0, n) * deltat
    timesIsATseries = TRUE
  }
+
 
  if (is.null(times)){
    if (is.null(attr(M,"data"))) stop ("if you do not supply any time argument (times, or (start, end, deltat)), then object must have a valid data attribute")
@@ -54,14 +56,18 @@ develop.discreteSpectrum  <- function(M, start=NULL, end=NULL, deltat=NULL, time
 
  nfreq <- attr(M,"nfreq")
  if (is.null(nfreq)) nfreq <- length(M$Amp)
- if (timesIsATseries){
-   reconstructed <- lapply(seq(nfreq), function(i) ts( M$Amp[i] * dfunction(M$Freq[i] * times + M$Phase[i]), start=start, deltat=deltat) )} 
- else {
-   reconstructed <- lapply(seq(nfreq), function(i) M$Amp[i] * dfunction(M$Freq[i] * times + M$Phase[i]))
- }
+ if (!is.null(maxfreq)) nfreq <- min(nfreq, maxfreq) 
 
- if ( sum ) reconstructed <- apply(simplify2array(reconstructed), 1 , sum)
- if (timesIsATseries) reconstructed <- ts(reconstructed, start=start, deltat=deltat)
+ reconstructed <- sapply(seq(nfreq), function(i) M$Amp[i] * dfunction(M$Freq[i] * times + M$Phase[i]) )
+
+
+ if ( sum ) { 
+   shift <- attr(M, "shift"); if (is.null (shift)) shift = 0
+   trend <- attr(M, "trend"); if (is.null (trend)) trend = 0
+   reconstructed <- apply(reconstructed, 1 , sum) 
+   if (timesIsATseries) reconstructed <- ts(reconstructed, start=start, deltat=deltat) + times*trend + shift
+ } else if (timesIsATseries) { 
+   reconstructed <- apply(reconstructed, 2, function(x) ts(x,start=start, deltat=deltat))}
  return(reconstructed)
 }
 

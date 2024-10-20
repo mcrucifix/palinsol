@@ -39,7 +39,7 @@ c    are defined (and have to be defined for) zero earch eccentricity
 c    both ala and apoa have to be defined consistently for a given
 c    Earth-Moon distance, etc. 
 c    prea is, I am reasnoably confident, the dpsi/dt given in his eq. 66
-c             p. 114
+c             p. 114 (that is, the observational constraint...)
 c             which will be used to compute psi_bar (still need to
 c             this).  This is an initial condition at time t-0. 
 c              it is important to get it right for realistic solutions
@@ -61,6 +61,8 @@ c    - prma is --- I guess - output only and contains the mean
 c           precession rate 'k'. But wait, this is this different
 c           from the "kbar" that, really, is the one that should be used
 c    - note there is an option kktilde to make them equal but not clear,
+c           --> ok this is explained in BergerLoutre 91: diff between 
+c               BER78 and BER90
 c                                                                       p7500500
 c     pal 7505ee   calcul precession 2d degre                           p7500510
 c   calcul des coeff developpement sin i sin omega    obli  precession  p7500520
@@ -272,6 +274,16 @@ c
        so=so+bc*(1.5d0+0.75d0*x-2.5d0*ai-0.5*ai*(ai-1.0d0)
      $       *dtan(h)*dtan(h))
 104   continue
+c     ------------------------------------------------------
+c     QUESTION QUESTION QUESTION: WHY THE HELL IS THIS COMMENTED ? 
+c     THIS CORRESPONDS TO EQ. 21 (??????)
+c     NEED TO UNDERSTAND THIS !!!!!
+c     fdpf seems to be the sum of coefficients involed in psi
+c     at time zero. So, in final, you will expect 
+c     psi to be psibar (in his notation) + fdpf (at time zero)
+c     pre  seems to be "PREA" which is dpsi/dt, the observational
+c     constraint
+c     ----------------------------------------------------
 c     tw=3.0d0*apo/al                                                   p7508680
 c     do 105 i=1,ia-1                                                   p7508690
 c     do 105 k=i+1,ia                                                   p7508710

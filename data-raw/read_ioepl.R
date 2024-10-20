@@ -1,10 +1,10 @@
 #### load La_ioepl.data
 fpath <- file.path("inst","extdata", "La88_IOEPL.dat")
 
-epi <- utils::read.table(fpath, skip=2, nrow=80)
-io <- utils::read.table(fpath, skip=84, nrow=80)
+epi <- utils::read.table(fpath, skip=2, nrow=80, fill=TRUE)
+io <- utils::read.table(fpath, skip=84, nrow=80, fill=TRUE)
 
-sec2pi <- pi/3600/180*1e3
+sec2pi <- pi/3600/180
 
 epi <- data.frame( 
                    Freq  = epi$V2*sec2pi,
