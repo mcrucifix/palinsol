@@ -179,7 +179,7 @@ if (compute_esinw_from_table2)
  c(eps = eps, ecc = e, varpi = varpi, epsp = epsp, esinw=esinw)
 }
 
-#'  @export ber78
+#' @export ber78
 ber78 <- function(t, degree = FALSE) { 
   table_based_solution (t, palinsol::BER78, degree) }
 

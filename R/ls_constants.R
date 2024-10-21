@@ -54,6 +54,7 @@ omega_solar=2*pi/(24*60*60)
 #' @param CAC is (C-A)/C where A and C are Earth's moments of inertia aroud the plora and equatioral axis of inertia. Non-dimensional
 #' @param omega is the rotational angular velocity of the Earth, measured in a geocentric framework, in radians per second
 #' @param c is the inclination of the  lunar orbit on the ecliptic, in radians
+#' @param ece : moon orbit excentricity
 #' @param earth_moon_distance is expressed in km
 #' @return a list with "ell" and "P0", ready for use in `compute_tables`, in arc seconds per year. 
 #' @author Michel Crucifix, UC Louvain, Belgium
@@ -69,7 +70,7 @@ omega_solar=2*pi/(24*60*60)
 #' # assuming, still according to the AstroGeo22 model, an obliquity of 22.2 degrees, 
 #' # this simple model suggests a precession rate of
 #' N$ala * cos(22.2 * pi/180)
-#' MORE WORK IS NEEDED HERE BECAUSE  C-A/C also varies with OMEGA
+#' # MORE WORK IS NEEDED HERE BECAUSE  C-A/C also varies with OMEGA
 #'
 #' @export newcomb_parameters
 newcomb_parameters <- function(CAC=CAC_ref, omega = omega_solar, c=c_ref, ece = ece_ref, earth_moon_distance = earth_moon_distance_ref){

@@ -19,6 +19,8 @@ newcomb_parameters(
 
 \item{c}{is the inclination of the  lunar orbit on the ecliptic, in radians}
 
+\item{ece}{: moon orbit excentricity}
+
 \item{earth_moon_distance}{is expressed in km}
 }
 \value{
@@ -44,7 +46,7 @@ print (N)
 # assuming, still according to the AstroGeo22 model, an obliquity of 22.2 degrees, 
 # this simple model suggests a precession rate of
 N$ala * cos(22.2 * pi/180)
-MORE WORK IS NEEDED HERE BECAUSE  C-A/C also varies with OMEGA
+# MORE WORK IS NEEDED HERE BECAUSE  C-A/C also varies with OMEGA
 
 }
 \references{

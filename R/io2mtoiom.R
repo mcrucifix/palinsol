@@ -1,8 +1,6 @@
-require(gtseries)
-require(palinsol)
-
-
-require(dplyr)
+# require(gtseries)
+# require(palinsol)
+# data(La88)
 # 
 # I2OM <- read.table('ber90/iom.dat')
 # colnames(I2OM) <- c('index','sigmaprime','Nprime','deltaprime')
@@ -13,7 +11,7 @@ require(dplyr)
 # ellradiants <- ell * (2*pi/3600/360)
 # P0radiants  <- P0 * (2*pi/3600/360)
 
-SB67_Internal <- function(ell, P0, epsilonbar, zeta = 1.600753*pi/180,   I2OM = I2OM, EPI = EPI) {
+SB67_Internal <- function(ell, P0, epsilonbar, zeta = 1.600753*pi/180,   I2OM = I2OM, EPI = EPI, aggregating = FALSE) {
 
 # in the Berger and Loutre procedure: 
 # the inputs are "h" and "alpha", so in this notation
@@ -137,7 +135,7 @@ psi <- ell * cos(epsilonbar)  # the "k" in Berger and Loutre 1991
 # They also refer to Berger 1988 for more details, I haven't checked yet. 
 
 
-print (sprintf('Iteration %d; psi = %.9f', i, psi * 3600 * 180 / pi))
+# print (sprintf('Iteration %d; psi = %.9f', i, psi * 3600 * 180 / pi))
 
 # thesis Berger p. 110 = Sharaf Budnikova
 
@@ -330,7 +328,6 @@ if (1 == 0) { # disabled plotting : was for testing
 
 # this would be the command to group by frequency
 # note you must also make an equivalence for sigma -> abs(sigma) but also correct for te Phases accordingly
-# use package dplyr
 # > OBLIQUITY_S <- OBLIQUITY %>% group_by(sigma) %>% summarise (N=sum(N))
 
 
@@ -420,9 +417,27 @@ PSI$Freq[negatives] = -PSI$Freq[negatives]
 PSI$Phases[negatives] = -PSI$Phases[negatives] 
 PSI$Phases = PSI$Phases  %% (2*pi)
 
+# we proceed in two steps: first we order by frequencies, and check whether
+# grouping is needed. 
+
+
+# if aggregate (this can be time consuming, but this is the easiest to read, and
+# may introduce some small numeric errors) And loose group information
+# put efficient after all
+ 
+if (aggregating){
+COMPLEX_AMP <- PSI$Amp * cis(PSI$Phases)
+
+tmp <- aggregate( Amp ~ Freq, data = data.frame(Amp= COMPLEX_AMP, Freq=PSI$Freq), FUN=sum)
+
+PSI <- data.frame(Amp = Mod(tmp$Amp), Freq=tmp$Freq, Phases=Arg(tmp$Amp))
+}
+
+ORDER <- order(abs(PSI$Amp), decreasing=TRUE)
+PSI <- as.data.frame(PSI[ORDER, ])
+
+
 # PSI_ORDERED <- PSI %>% group_by(Freq) %>% summarise (Amp=sum(Amp), Phases, Group)
-# ORDER <- order(abs(PSI_ORDERED$Amp), decreasing=TRUE)
-# PSI_ORDERED <- as.data.frame(PSI_ORDERED[ORDER, ])
 # 
 # PSI <- PSI_ORDERED
 
@@ -514,15 +529,15 @@ CTERM3 <- list( Amp = as.numeric(outer(EPI$M, D1 * IOM$N)),
 
 # ellradiants <- ell * (2*pi/3600/360)
 
-VARPI <- data.frame ( 
+CLIMPRECESS <- data.frame ( 
        Amp = c(CTERM1$Amp, CTERM2$Amp, CTERM3$Amp), 
        Freq = c(CTERM1$Freq, CTERM2$Freq, CTERM3$Freq), 
        Phases = c(CTERM1$Phases, CTERM2$Phases, CTERM3$Phases))
 
 
-attr(VARPI, "class") <- 'spectral_decomp'
-attr(VARPI, "trend") <- 0. 
-attr(VARPI, "shift") <- 0.
+attr(CLIMPRECESS, "class") <- 'spectral_decomp'
+attr(CLIMPRECESS, "trend") <- 0. 
+attr(CLIMPRECESS, "shift") <- 0.
 
 
 ################################
@@ -546,23 +561,63 @@ attr(VARPI, "shift") <- 0.
                                               
 # still need to clarify epsilonbar and the determination of initial conditions but we can leave it for later
 
-class(VARPI) <- "discreteSpectrum"
+class(CLIMPRECESS) <- "discreteSpectrum"
 class(PSI) <- "discreteSpectrum"
 class(OBLIQUITY) <- "discreteSpectrum"
 
 
- return(list(VARPI=VARPI, 
+ return(list(CLIMPRECESS=CLIMPRECESS, 
              PSI = PSI, 
              OBLIQUITY = OBLIQUITY))
 
 }
 
 
+
+#' Sharaf-Budnikova model, based on Berger's implementation
+#'
+#' This is a fully transparent R-recording of André Berger's implementation of the Sharak and Budnikova precession
+#' model. Using, as inputs, a trigonometric expansion of (e,pi) and (i/2, omega) (e.g. `data(La88)`)
+#' newcomb canstants (as, e.g., supplied by `newcomp_parameters`), mean obliquity and mean precession phase at
+#' the reference year corresponding to the orbital solution (usually 1950.0 or 2000.0). 
+#' Supplies trigonometrical expansions for obliquity (OBLIQUITY), longitude of the vernal equinox with respect to the fixed
+#' plane (PSI) and climatic precession. 
+#'
+#' 
+#' @param orbital solution (e.g., `data(La88)`)
+#' @param P0 : "newcomb" constant
+#' @param ell : partial derivative of `P0` with respect to eccentricity
+#' @param epsilonbar : reference obliquity
+#' @param zeta : precession phase at year zero (note toself: I need to be a bit more accurate about the meaning here"
+#' @param aggregating : should different terms with same frequencies be aggregated ? (default : `TRUE`)
+#' @return a list with `discreteSpectrum` for OBLIQUITY, PSI (longitude of perihelion on fixed plane) and CLIMPRECESS
+#'         a `discreteSpectrum` is a list with `Amp`, `Freq` (angluar velocity) and `Phases`, with attributes given the
+#'         `shift` with respect to zero, and `trend` (for PSI). 
+#' @note  Running this routine typically takes one second on a modern computer, and precession and obliquity may then
+#'        be computed very efficiently for any period of time where the supplied parameters are considered as valid
+#'        However, given the nature of orbital solutions and also the range of validity of the SB development (accurate
+#'        up to order 2 in eccentricity), this generally would not span more than 2 or 3 million years. This would be 
+#'        enough for the recent past, or for illustrative purposes in the deep past. Modern codes for precession, more
+#'        accurate, would however not take much more computing time in practice. 
+#'        if aggregating is "FALSE", then the group, as per the arithmetic expansion of Berger (1973) and Berger and Loutre (1991)
+#'        belong, is given. 
+#' @references Berger, A. L. (1973), Berger and Loutre (1991), Sharaf S. G. and N. A. Boudnikova (1967), Secular variations of elements of the Earth's orbit which influences the climates of the geological past, Tr. Inst. Theor. Astron. Leningrad, (11) 231-261 
+#' @examples
+#' 
+#' data(La88)
+#' S <- SB67(La88, aggregating = TRUE)
+#' S2 <- SB67(La88, aggregating = FALSE)
+#' 
+#' psi1 <- develop(S$PSI, -1e6, 0, 1e3)
+#' psi2 <- develop(S2$PSI, -1e6, 0, 1e3)
+#' plot(psi1)
+#' lines(psi1 - psi2)
+#' @export
 SB67 <- function (PlanetarySolution, 
                   P0 = 17.3919 *  pi/(3600*180.) ,
                   ell = 54.9066 * pi/(3600*180.) , 
                   epsilonbar = 23.399935 * pi/180., 
-                  zeta = 1.600753 * pi / 180.){
+                  zeta = 1.600753 * pi / 180., aggregating = TRUE){
 
 EPI <- as.data.frame(PlanetarySolution$epi)
 I2OM <- as.data.frame(PlanetarySolution$io)
@@ -573,7 +628,7 @@ I2OM <- as.data.frame(PlanetarySolution$io)
 colnames(EPI) <- c('g','M','beta')
 colnames(I2OM) <- c('sigmaprime', 'Nprime', 'deltaprime')
 
-OUT <- SB67_Internal(ell, P0, epsilonbar, zeta, I2OM, EPI)
+OUT <- SB67_Internal(ell, P0, epsilonbar, zeta, I2OM, EPI, aggregating = aggregating)
 
 # le code commenté est pour deux types de reconstructions de la precession climatique. 1. Ec*sin(Pi+psi) ; 2. Par  le developpement. 
 
@@ -592,7 +647,7 @@ OUT <- SB67_Internal(ell, P0, epsilonbar, zeta, I2OM, EPI)
 ### 
 ### plot(esinomega)
 ### 
-### esinomega_method <- reconstruct_spectral(OUT$VARPI, times, sin) 
+### esinomega_method <- reconstruct_spectral(OUT$CLIMPRECESS, times, sin) 
 ### 
 ### 
 ### plot(esinomega, type='l')
@@ -608,8 +663,8 @@ return(OUT)
 
 
 
+# the  match is perfect down to 1.e-14 (for two points in a time series); so aggregation seems to work well, here. 
 
-S <- SB67(La88)
 
 
 

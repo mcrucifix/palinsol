@@ -1,4 +1,3 @@
-require(dplyr)
 require(gtools)
 
 
@@ -25,32 +24,42 @@ IJ = gtools::combinations(length(a),2)
 
 
 
+#' Trigonometrical development of eccentricity spectrum, based on an erbital solution
+#'
+#' This is a fully transparent R-implementation of the trigonometric epansion of excentricity,
+#' based on a trigonometrical epansio of (e,pi) (e.g., `data(La88)`).
+#' order  by decreasing frequency
+#'
+#' @param  epi : discrete spectrum of epi, as e.g. `La88$epi` based on `data(La88)`
+#' @param  inputfreq : artificially reduces the number of terms to take into account
+#' @return discrete spectrum of eccentricity
+#' @references Berger A. and M. F. Loutre (1990), Origine des frequences des elements astronomiques intervenant dans le calcul de l'insolation, Bulletin de la Classe des sciences, (1) 45-106 doi:10.3406/barb.1990.38523
+#' @importFrom gtools combinations
+#' @note # this actually provides the (exact) spectrum of m(1+A/2-A^2/8+A/16) where A= e^2/m^2 - 1 , and m =  sqrt(sum(epi$Amp^2))
+#'
+eccentricity_spectrum <- function(epi, inputfreq = 10){
 
-# order  by decreasing frequency
-
-eccentricity_spectrum <- function(EPI, inputfreq = 10){
-
-# O1 <- order(EPI$Freq, decreasing=TRUE)[seq(inputfreq)]
+# O1 <- order(epi$Freq, decreasing=TRUE)[seq(inputfreq)]
 O1 <- seq(inputfreq)
 
-EPI <- list(Freq=EPI$Freq[O1] / 1000, Amp=EPI$Amp[O1], Phases=EPI$Phases[O1])
+epi <- list(Freq=epi$Freq[O1] / 1000, Amp=epi$Amp[O1], Phases=epi$Phases[O1])
 
-m <- sqrt(sum(EPI$Amp^2))
-a = EPI$Amp / m
+m <- sqrt(sum(epi$Amp^2))
+a = epi$Amp / m
 
 
 n=0
 
 
-B <- combine(a,a, EPI$Freq, -EPI$Freq,  EPI$Phases, -EPI$Phases)
+B <- combine(a,a, epi$Freq, -epi$Freq,  epi$Phases, -epi$Phases)
 
 bk <- B$A
 gk <- B$O
 pk <- B$P
 
-# bk <- EPI$Amp[IJB[,1]] * EPI$Amp[IJB[,2]]
-# gk <- EPI$Freq[IJB[,1]] - EPI$Freq[IJB[,2]]
-# pk <- EPI$Phases[IJB[,1]] - EPI$Phases[IJB[,2]]
+# bk <- epi$Amp[IJB[,1]] * epi$Amp[IJB[,2]]
+# gk <- epi$Freq[IJB[,1]] - epi$Freq[IJB[,2]]
+# pk <- epi$Phases[IJB[,1]] - epi$Phases[IJB[,2]]
 
 ek1 <- bk 
 ek2 <- 0.375*bk*bk*bk 
@@ -164,8 +173,8 @@ print('ecremage')
 ## X <- t(sapply(group, function(developpement)
 ##    sapply(times, function(t) sum(m * developpement$A * cos(developpement$O*t+developpement$P))) ))
 ## 
-## esinpi <- sapply(times, function(t) sum(EPI$Amp * sin(EPI$Freq*t+EPI$Phases)))
-## ecospi <- sapply(times, function(t) sum(EPI$Amp * cos(EPI$Freq*t+EPI$Phases)))
+## esinpi <- sapply(times, function(t) sum(epi$Amp * sin(epi$Freq*t+epi$Phases)))
+## ecospi <- sapply(times, function(t) sum(epi$Amp * cos(epi$Freq*t+epi$Phases)))
 ## Y = sqrt(esinpi*esinpi+ecospi*ecospi)
 ## 
 ## 

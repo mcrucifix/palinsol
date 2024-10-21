@@ -4,7 +4,7 @@
 \alias{develop}
 \title{Develop a spectrum into a time series (generic)}
 \usage{
-develop(M, times = NULL, start = NULL, end = NULL, deltat = NULL, ...)
+develop(M, start = NULL, end = NULL, deltat = NULL, times = NULL, ...)
 }
 \arguments{
 \item{deltat}{: see start.}

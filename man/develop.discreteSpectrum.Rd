@@ -6,11 +6,12 @@
 \usage{
 \method{develop}{discreteSpectrum}(
   M,
-  times = NULL,
   start = NULL,
   end = NULL,
   deltat = NULL,
+  times,
   dfunction = cos,
+  maxfreq = NULL,
   sum = TRUE
 )
 }
@@ -20,6 +21,8 @@
 \item{deltat}{: see start.}
 
 \item{dfunction}{is the trigonometrical function. Classically one of 'cos', 'sin', or 'cis'}
+
+\item{maxfreq}{if set: will only take the first `maxfreq` components in the reconstruction}
 
 \item{sum}{: TRUE if user wants to sum components %in% the reconstruction}
 
