@@ -11,7 +11,7 @@
 # ellradiants <- ell * (2*pi/3600/360)
 # P0radiants  <- P0 * (2*pi/3600/360)
 
-SB67_Internal <- function(ell, P0, epsilonbar, zeta = 1.600753*pi/180,   I2OM = I2OM, EPI = EPI, aggregating = FALSE) {
+SB67_Internal <- function(ell, P0, epsilonbar, zeta = 1.600753*pi/180,   I2OM = I2OM, EPI = EPI, aggregating = FALSE, ber78_strict=FALSE) {
 
 # in the Berger and Loutre procedure: 
 # the inputs are "h" and "alpha", so in this notation
@@ -28,6 +28,7 @@ SB67_Internal <- function(ell, P0, epsilonbar, zeta = 1.600753*pi/180,   I2OM = 
 
 
 
+if (!ber78_strict){
 
 
 n <- length(I2OM$Nprime)
@@ -61,10 +62,11 @@ TERM2$N <- as.numeric(TERM2$N)
 TERM2$sigma <- as.numeric(TERM2$sigma)
 TERM2$delta <- as.numeric(TERM2$delta)
 
+keep <- which(!is.na(TERM2$sigma))
 
-TERM2$N <- TERM2$N[which(!is.na(TERM2$N))]
-TERM2$sigma <- TERM2$sigma[which(!is.na(TERM2$sigma))]
-TERM2$delta <- TERM2$delta[which(!is.na(TERM2$delta))]
+TERM2$N <- TERM2$N[keep]
+TERM2$sigma <- TERM2$sigma[keep]
+TERM2$delta <- TERM2$delta[keep]
 
 
 # line 2 (TERM3)
@@ -74,7 +76,7 @@ TERM3$N <- -2 * outer ( outer(I2OM$Nprime, I2OM$Nprime[-n]), I2OM$Nprime)
 
 TERM3$sigma<- outer( outer(I2OM$sigma, I2OM$sigma[-n], function(si, sj) sj-si), I2OM$sigma, function(sj,sk) sj+sk)
 
-TERM3$delta<- outer( outer(I2OM$delta, I2OM$sigma[-n], function(si, sj) sj-si), I2OM$delta, function(sj,sk) sj+sk)
+TERM3$delta<- outer( outer(I2OM$delta, I2OM$delta[-n], function(si, sj) sj-si), I2OM$delta, function(sj,sk) sj+sk)
 
 for (i in seq(n)) {
   for (j in seq(n-1)) {
@@ -91,9 +93,11 @@ TERM3$delta <- as.numeric(TERM3$delta)
 TERM3$N <- as.numeric(TERM3$N)
 
 
-TERM3$N <- TERM3$N[which(!is.na(TERM3$N))]
-TERM3$sigma <- TERM3$sigma[which(!is.na(TERM3$sigma))]
-TERM3$delta <- TERM3$delta[which(!is.na(TERM3$delta))]
+keep <- which(!is.na(TERM2$sigma))
+
+TERM3$N <- TERM3$N[keep]
+TERM3$sigma <- TERM3$sigma[keep]
+TERM3$delta <- TERM3$delta[keep]
 
 
 IOM <- list(
@@ -112,6 +116,16 @@ IOM <- list( N = IOM$N[nkeep],
              delta = IOM$delta[nkeep]) 
 
 
+print ('iomdelta12')
+print (IOM$delta[12])
+
+
+} else { ### JUST A TEST
+IOM <- list(
+            N = I2OM$N, 
+            sigma = I2OM$sigma, 
+            delta = I2OM$delta)
+}
 
 #### development of obliquity
 
@@ -141,10 +155,65 @@ psi <- ell * cos(epsilonbar)  # the "k" in Berger and Loutre 1991
 
 fi <-  psi + IOM$sigma
 deltaprime <- IOM$delta + zeta
-ci <-  psi / fi 
 
+### ATTENTION: 
+### 1. there is an extra ai^2 in eq. 21 or BER90 that is not in his code
+### 2. his code does something weird and does not include
+###    the 3 p0/p term. Need to understand and check this. 
+
+
+
+ng <- length(EPI$g)
 tane = tan(epsilonbar)
 cote = 1./tane
+
+###########
+
+itermax = 1;
+if (ber78_strict) itermax = 3 
+
+for (iter in seq(itermax)){
+
+ci <-  psi / fi 
+temp =  outer(EPI$M, EPI$M)
+ctemp = outer(EPI$beta, EPI$beta,  function(bi,bk) { cos(bi-bk) })
+dij = outer(seq(ng), seq(ng), function(i,k) {i < k})
+
+
+Constraint <- (1 - sum(IOM$N^2*(1.5 + 0.75 * ci^2 - 2.5 * ci - 0.5 * (ci*(ci-1))*tane^2)) - 3 * P0 / ell *  sum(temp*ctemp*dij, na.rm=TRUE))
+
+psibar <- ell * cos(epsilonbar) * Constraint
+
+
+print ('Constraint')
+print (Constraint)
+
+print (sprintf("psibar = %.5f", psibar * 180/pi * 3600))
+
+if(ber78_strict)  psi <- psibar
+
+}
+
+# the first part of the Constraint (until -3po/ell) is validated
+#  in his code, he actually loops to satisfy the initial condition constrain
+# you must look at line 214, where the loop begins
+# h (epsilonbar here) is first given a first guess. He computes all terms
+# with that one, including the precession (!)
+# then he only computes the first part of the constrain and tests a new
+# psibar, whele the second part of the constrain (-3 P0/ell etc.) is 
+# replaced by the difference you should have to satisfy the observation 
+# of the current rate. 
+# By newton raphson he infers a new 'h', which generates another psi
+# and the iteration goes on. 
+# His approach is beautiful because he has analytical integrals. 
+# We could also do it brute force if we had constraints to satisfy. 
+
+
+
+
+
+
+
 
 nf <- length(ci)
 
@@ -166,7 +235,6 @@ C2fikprime <- -0.5 * psi * outer (seq(nf), seq(nf), function(i,k) {
 
 # P0 et ell ont ete repris de sa these, sauf que pour ell il y a peut etre un facteur (1-e_0)3/2
 
-ng <- length(EPI$g)
 
 
 
@@ -240,9 +308,11 @@ for (i in seq(length(IOM$N))) {
        ETERM3$delta[i,k] = NA}}}
 
 
-ETERM3$N <- ETERM3$N[which(!is.na(ETERM3$N))]
-ETERM3$sigma <- ETERM3$sigma[which(!is.na(ETERM3$sigma))]
-ETERM3$delta <- ETERM3$delta[which(!is.na(ETERM3$delta))]
+keep <- which(!is.na(ETERM3$sigma))
+
+ETERM3$N <- ETERM3$N[keep]
+ETERM3$sigma <- ETERM3$sigma[keep]
+ETERM3$delta <- ETERM3$delta[keep]
 
 
 ETERM4 <- list ( N = C2ikprime * outer(IOM$N, IOM$N), sigma = outer(fi, fi, '-'), delta = outer(deltaprime, deltaprime, '-'))
@@ -255,9 +325,11 @@ for (i in seq(length(IOM$N))) {
        ETERM4$delta[i,k] = NA}}}
 
 
-ETERM4$N <- ETERM4$N[which(!is.na(ETERM4$N))]
-ETERM4$sigma <- ETERM4$sigma[which(!is.na(ETERM4$sigma))]
-ETERM4$delta <- ETERM4$delta[which(!is.na(ETERM4$delta))]
+keep <- which(!is.na(ETERM4$sigma))
+
+ETERM4$N <- ETERM4$N[keep]
+ETERM4$sigma <- ETERM4$sigma[keep]
+ETERM4$delta <- ETERM4$delta[keep]
 
 
 
@@ -280,7 +352,8 @@ epsilonbarstar <- epsilonbar - sum(IOM$N*IOM$N*(0.5*ci*(ci-1)*tane + 0.25*(2*ci-
 # again one step at a time. ... .
 
 nkeep = 2000
-OR <- order(abs(OBLIQUITY$N), decreasing=TRUE)[seq(nkeep)]
+OR <- order(abs(OBLIQUITY$N), decreasing=TRUE)
+OR <- OR[seq(min(length(OR), nkeep))]
 OBLIQUITY <- with(OBLIQUITY, data.frame(Amp = N[OR], Freq=sigma[OR], Phases=delta[OR]))
 
 
@@ -356,13 +429,13 @@ PTERM5 <- list ( Amp = D2ikprime*outer(IOM$N, IOM$N),
                        Freq = outer(fi, fi , '-'), 
                        Phases = outer(deltaprime, deltaprime, '-'))
 
-print('//////')
-print (PTERM5$Freq[26,61])
-print ('a')
-print ( which (abs(abs(PTERM5$Freq) - abs(2.437144e-6)) < 1.e-12))
-print ('b')
-print (PTERM5$Freq[27,62])
-print('//////')
+# print('//////')
+# print (PTERM5$Freq[26,61])
+# print ('a')
+# print ( which (abs(abs(PTERM5$Freq) - abs(2.437144e-6)) < 1.e-12))
+# print ('b')
+# print (PTERM5$Freq[27,62])
+# print('//////')
 
 
 for (i in seq(ng)) {
@@ -387,27 +460,38 @@ for (i in seq(nf)) {
   }}
 
 
-PTERM1$Amp <- PTERM1$Amp[which(!is.na(PTERM1$Amp))]*1
-PTERM1$Freq <- PTERM1$Freq[which(!is.na(PTERM1$Freq))]
-PTERM1$Phases <- PTERM1$Phases[which(!is.na(PTERM1$Phases))]
-PTERM4$Amp <- PTERM4$Amp[which(!is.na(PTERM4$Amp))]
-PTERM4$Freq <- PTERM4$Freq[which(!is.na(PTERM4$Freq))]
-PTERM4$Phases <- PTERM4$Phases[which(!is.na(PTERM4$Phases))]
-PTERM5$Amp <- PTERM5$Amp[which(!is.na(PTERM5$Amp))]
-PTERM5$Freq <- PTERM5$Freq[which(!is.na(PTERM5$Freq))]
-PTERM5$Phases <- PTERM5$Phases[which(!is.na(PTERM5$Phases))]
+keep <- which(!is.na(PTERM1$Freq))
+
+PTERM1$Amp <- PTERM1$Amp[keep]
+PTERM1$Freq <- PTERM1$Freq[keep]
+PTERM1$Phases <- PTERM1$Phases[keep]
 
 
-print ('icicic')
-print (PTERM5$Freq[1764])
-print ('icicic 00000')
+keep <- which(!is.na(PTERM4$Freq))
+
+
+PTERM4$Amp <- PTERM4$Amp[keep]
+PTERM4$Freq <- PTERM4$Freq[keep]
+PTERM4$Phases <- PTERM4$Phases[keep]
+
+
+keep <- which(!is.na(PTERM5$Freq))
+
+
+PTERM5$Amp <- PTERM5$Amp[keep]
+PTERM5$Freq <- PTERM5$Freq[keep]
+PTERM5$Phases <- PTERM5$Phases[keep]
+
+
+# print ('icicic')
+# print (PTERM5$Freq[1764])
+# print ('icicic 00000')
 
 PSI <- data.frame (
         Amp = c(PTERM1$Amp, PTERM2$Amp, PTERM3$Amp, PTERM4$Amp, PTERM5$Amp), 
         Freq = c(PTERM1$Freq, PTERM2$Freq, PTERM3$Freq, PTERM4$Freq, PTERM5$Freq), 
         Phases = c(PTERM1$Phases, PTERM2$Phases, PTERM3$Phases, PTERM4$Phases, PTERM5$Phases), 
         Group = c(PTERM1$Amp*0+1, PTERM2$Amp*0+2, PTERM3$Amp*0+3, PTERM4$Amp*0+4, PTERM5$Amp*0+5))
-
 
 
 negatives <- which(PSI$Freq < 0);
@@ -427,9 +511,7 @@ PSI$Phases = PSI$Phases  %% (2*pi)
  
 if (aggregating){
 COMPLEX_AMP <- PSI$Amp * cis(PSI$Phases)
-
 tmp <- aggregate( Amp ~ Freq, data = data.frame(Amp= COMPLEX_AMP, Freq=PSI$Freq), FUN=sum)
-
 PSI <- data.frame(Amp = Mod(tmp$Amp), Freq=tmp$Freq, Phases=Arg(tmp$Amp))
 }
 
@@ -453,37 +535,11 @@ PSI <- as.data.frame(PSI[ORDER, ])
 
 # it seems impossible to get them identical
 
-print ('<<<<<-')
-a1 = EPI$g[3] - EPI$g[51]
-a2 = IOM$sigma[27] - IOM$sigma[62]
-print (c(a1, a2, a1-a2))
-print ('<<<<<-')
-
-temp =  outer(EPI$M, EPI$M)
-ctemp = outer(EPI$beta, EPI$beta,  function(bi,bk) { cos(bi-bk) })
-dij = outer(seq(ng), seq(ng), function(i,k) {i < k})
-### ATTENTION: 
-### 1. there is an extra ai^2 in eq. 21 or BER90 that is not in his code
-### 2. his code does something weird and does not include
-###    the 3 p0/p term. Need to understand and check this. 
- 
-Constraint <- (1 - sum(IOM$N^2*(1.5 + 0.75 * ci^2 - 2.5 * ci - 0.5 * (ci*(ci-1))*tane^2)) - 3 * P0 / ell *  sum(temp*ctemp*dij, na.rm=TRUE))
-
-psibar <- ell * cos(epsilonbar) * Constraint
-
-# the first part of the Constraint (until -3po/ell) is validated
-#  in his code, he actually loops to satisfy the initial condition constrain
-# you must look at line 214, where the loop begins
-# h (epsilonbar here) is first given a first guess. He computes all terms
-# with that one, including the precession (!)
-# then he only computes the first part of the constrain and tests a new
-# psibar, whele the second part of the constrain (-3 P0/ell etc.) is 
-# replaced by the difference you should have to satisfy the observation 
-# of the current rate. 
-# By newton raphson he infers a new 'h', which generates another psi
-# and the iteration goes on. 
-# His approach is beautiful because he has analytical integrals. 
-# We could also do it brute force if we had constraints to satisfy. 
+# print ('<<<<<-')
+# a1 = EPI$g[3] - EPI$g[51]
+# a2 = IOM$sigma[27] - IOM$sigma[62]
+# print (c(a1, a2, a1-a2))
+# print ('<<<<<-')
 
 
 
@@ -590,6 +646,7 @@ class(OBLIQUITY) <- "discreteSpectrum"
 #' @param epsilonbar : reference obliquity
 #' @param zeta : precession phase at year zero (note toself: I need to be a bit more accurate about the meaning here"
 #' @param aggregating : should different terms with same frequencies be aggregated ? (default : `TRUE`)
+#' @param ber78_strict : original implementation of Berger 1973 thesis, used for the BER78 solution
 #' @return a list with `discreteSpectrum` for OBLIQUITY, PSI (longitude of perihelion on fixed plane) and CLIMPRECESS
 #'         a `discreteSpectrum` is a list with `Amp`, `Freq` (angluar velocity) and `Phases`, with attributes given the
 #'         `shift` with respect to zero, and `trend` (for PSI). 
@@ -617,7 +674,7 @@ SB67 <- function (PlanetarySolution,
                   P0 = 17.3919 *  pi/(3600*180.) ,
                   ell = 54.9066 * pi/(3600*180.) , 
                   epsilonbar = 23.399935 * pi/180., 
-                  zeta = 1.600753 * pi / 180., aggregating = TRUE){
+                  zeta = 1.600753 * pi / 180., aggregating = TRUE, ber78_strict = FALSE){
 
 EPI <- as.data.frame(PlanetarySolution$epi)
 I2OM <- as.data.frame(PlanetarySolution$io)
@@ -628,7 +685,7 @@ I2OM <- as.data.frame(PlanetarySolution$io)
 colnames(EPI) <- c('g','M','beta')
 colnames(I2OM) <- c('sigmaprime', 'Nprime', 'deltaprime')
 
-OUT <- SB67_Internal(ell, P0, epsilonbar, zeta, I2OM, EPI, aggregating = aggregating)
+OUT <- SB67_Internal(ell, P0, epsilonbar, zeta, I2OM, EPI, aggregating = aggregating, ber78_strict = ber78_strict)
 
 # le code commenté est pour deux types de reconstructions de la precession climatique. 1. Ec*sin(Pi+psi) ; 2. Par  le developpement. 
 
