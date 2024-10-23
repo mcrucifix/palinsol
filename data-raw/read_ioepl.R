@@ -11,7 +11,7 @@ epi <- data.frame(
                    Amp   = epi$V3/1e8, 
                    Phases = epi$V4*pi/180)
 
-io <- data.frame( 
+i2o <- data.frame( 
                    Freq  = io$V2*sec2pi,
                    Amp   = io$V3/1e8, 
                    Phases = io$V4*pi/180)
@@ -22,7 +22,7 @@ attr(epi,"nfreq") <- 80
 class(io) <- "discreteSpectrum"
 attr(io,"nfreq") <- 80
 
-La88 <- list(epi=epi, io=io)
+La88 <- list(epi=epi, i2o=i2o)
 
 usethis::use_data(La88, overwrite=TRUE)
 
