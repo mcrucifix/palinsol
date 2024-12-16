@@ -64,6 +64,8 @@ develop.discreteSpectrum  <- function(M, start = NULL, end = NULL, deltat = NULL
  if ( sum ) { 
    shift <- attr(M, "shift"); if (is.null (shift)) shift = 0
    trend <- attr(M, "trend"); if (is.null (trend)) trend = 0
+   print ("trend")
+   print(trend)
    reconstructed <- apply(reconstructed, 1 , sum) 
    if (timesIsATseries) reconstructed <- ts(reconstructed, start=start, deltat=deltat) + times*trend + shift
  } else if (timesIsATseries) { 
