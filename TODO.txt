@@ -42,3 +42,10 @@ test reproduction of Ber90
 verify Ber90 uses the right constants
 
 verify compatibility with insolation values provided by https://doi.pangaea.de/10.1594/PANGAEA.56040
+
+proper references to datasets related to La88 and Bre73
+
+original berger 78 will remain frozen in git tag 1.2 in deepast but cannot be part of a public release (code never officially released). Will need to acknowledge that that code was used for testing and developing, but not part of release. 
+
+
+convert current BER78 BER90 and La04 in spectrum objects
