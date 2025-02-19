@@ -83,6 +83,7 @@ if ( sum ) {
  return(reconstructed)
 }
 
+#' Discrete spectrum class
 #' @rdname discreteSpectrum
 #' @export
 as.data.frame.discreteSpectrum <- function(x) {data.frame(Freq=x$Freq, Amp=x$Amp, Phases=x$Phases)}

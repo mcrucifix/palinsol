@@ -4,7 +4,7 @@
 \alias{eccentricity_spectrum}
 \title{Trigonometrical development of eccentricity spectrum, based on an erbital solution}
 \usage{
-eccentricity_spectrum(epi, inputfreq = 10)
+eccentricity_spectrum(G)
 }
 \arguments{
 \item{epi}{: discrete spectrum of epi, as e.g. `La88$epi` based on `data(La88)`}

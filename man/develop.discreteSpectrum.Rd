@@ -9,10 +9,11 @@
   start = NULL,
   end = NULL,
   deltat = NULL,
-  times,
+  times = NULL,
   dfunction = cos,
   maxfreq = NULL,
-  sum = TRUE
+  sum = TRUE,
+  trendshift = TRUE
 )
 }
 \arguments{
@@ -22,9 +23,9 @@
 
 \item{dfunction}{is the trigonometrical function. Classically one of 'cos', 'sin', or 'cis'}
 
-\item{maxfreq}{if set: will only take the first `maxfreq` components in the reconstruction}
-
 \item{sum}{: TRUE if user wants to sum components %in% the reconstruction}
+
+\item{trendshift}{: TRUE if user wants to account for trend and shift encoded in the discreteSpectrum object}
 
 \item{times:}{if supplied, times of the decomposition}
 
