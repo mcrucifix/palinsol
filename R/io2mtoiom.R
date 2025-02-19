@@ -21,7 +21,7 @@ SB67_Internal <- function(ell, P0, epsilonbar, zeta = 1.600753*pi/180,   Planeta
 # We consider that this routine is the one that will provide psi, psibar and epsilonbarprime on this basis
 
 # However, epsilon_zero and psi_zero are constrained by observations
-# this constraints epsilonbarstar and alpha via the equations 25 and 26 in BL
+# this constraints epsilonbarstar and alpha via the equations 25 and 26 in BL91
 # this seems easy to do.....
 # but I am less sure how to obtain "h" (epsilonbar). That is equation 24
 # maybe it is self converging, i.e., first guess 'h' by epsilonbar = h - sum (... epsilon bar), then replace epsilonbar etc. It should work
@@ -218,7 +218,7 @@ print (sprintf("psibar without P0 correction = %.5f", psibar * 180/pi * 3600))
 # what they say!!! 
 
 } else {
-Constraint <- (1 - sum(IOM$N^2*(1.5 + 0.75 * ci^2 - 2.5 * ci - 0.5 * (ci*(ci-1))*tane^2)) - 0 * P0 / ell *  sum(temp*ctemp*dij, na.rm=TRUE))
+Constraint <- (1 - sum(IOM$N^2*(1.5 + 0.75 * ci^2 - 2.5 * ci - 0.5 * (ci*(ci-1))*tane^2)) - 3 * P0 / ell *  sum(temp*ctemp*dij, na.rm=TRUE))
 
 
 psibar <- ell * cos(epsilonbar) * Constraint
@@ -682,7 +682,7 @@ class(OBLIQUITY) <- "discreteSpectrum"
 
 #' Sharaf-Budnikova model, based on Berger's implementation
 #'
-#' This is a fully transparent R-recording of André Berger's implementation of the Sharak and Budnikova precession
+#' This is a R-recoding of André Berger's implementation of the Sharak and Budnikova precession
 #' model. Using, as inputs, a trigonometric expansion of (e,pi) and (i/2, omega) (e.g. `data(La88)`)
 #' newcomb canstants (as, e.g., supplied by `newcomp_parameters`), mean obliquity and mean precession phase at
 #' the reference year corresponding to the orbital solution (usually 1950.0 or 2000.0). 
@@ -691,8 +691,8 @@ class(OBLIQUITY) <- "discreteSpectrum"
 #'
 #' 
 #' @param orbital solution (e.g., `data(La88)`)
-#' @param P0 : "newcomb" constant
-#' @param ell : partial derivative of `P0` with respect to eccentricity
+#' @param P0  : partial derivative of `P0` with respect to eccentricity
+#' @param ell : "newcomb" constant
 #' @param epsilonbar : reference obliquity
 #' @param zeta : precession phase at year zero (note toself: I need to be a bit more accurate about the meaning here"
 #' @param aggregating : should different terms with same frequencies be aggregated ? (default : `TRUE`)
