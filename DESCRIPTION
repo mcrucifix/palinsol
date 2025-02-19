@@ -1,15 +1,11 @@
 Package: palinsol
-Version: 1.2
+Version: 1.3
 Date: 2025-02-19
 Title: Insolation for Palaeoclimate Studies
 Author: Michel Crucifix [aut, cre] (<https://orcid.org/0000-0002-3437-4911>)
 Authors@R: c(person("Michel", "Crucifix",
                   email = "michel.crucifix@uclouvain.be",
                   comment = c(ORCID= "0000-0002-3437-4911"), 
-                  role = c("aut", "cre")), 
-             person("André", "Berger",
-                    role = c("aut", "cre")), 
-             person("Marie-France", "Loutre",
                   role = c("aut", "cre")))
 Maintainer: Michel Crucifix <michel.crucifix@uclouvain.be>
 Depends: R (>= 2.10), stats, graphics, gtools
