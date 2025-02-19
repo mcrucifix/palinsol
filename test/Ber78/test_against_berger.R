@@ -1,3 +1,4 @@
+require(palinsol)
 dyn.load(file.path('berger78','insol.so'))
 
 
@@ -7,6 +8,7 @@ PIRR=PIR/3600.
 STEP = 360 / 365.25
 TEST = 0.0001
 TAU = 1.
+# TAU = 86.
 
 
 berger_DAYINS <- function(ecc, xl, so, tls, S0, lat) {
@@ -20,9 +22,18 @@ berger_DAYINS <- function(ecc, xl, so, tls, S0, lat) {
 # tls : true solar longitude
 # xl  : true solar longitude of perihelion + 180 [making it heliocentric]
 
-print ('ici')
+ecc = 0.07
+xl = pi
+eps = 23*pi/180
+so = sin(eps)       
+tls = 0. 
+S0 = 1368
 
-require(palinsol)
+print ( berger_DAYINS (ecc, xl, so, tls + pi, S0,  lat=60*pi/180) )
+
+
+palinsol::Insol(orbit=c(ecc=ecc, varpi=xl, eps=eps), long=tls,  lat=60*pi/180, S0=S0)
+
 
 for (ecc in seq(7)*0.01)
   for (xl in seq(0,10)*2*pi/10)
@@ -43,12 +54,9 @@ tol = 1.e-12
 error = max(abs(berger_tls['ww',] - palinsol_tls))
 
 if (max(abs(berger_tls['ww',] - palinsol_tls)) < tol) {
-   print(sprintf("PASSED", ecc, lat, eps, xl))
+   print(sprintf("PASSED ecc=%.2f lat=%.2f eps=%.2f xl=%.2f ", ecc, lat, eps, xl))
 } else {
   print(sprintf("ecc %.2f lat %.2f eps %.2f xl %.2f : FAILED by %.4f  ", ecc, lat, eps, xl, error))
 
 }}
-
-
-
 

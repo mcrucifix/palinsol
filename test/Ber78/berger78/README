@@ -1,0 +1,10 @@
+this directory contains:
+insol.f : program to compute orbital parameters and insolation according
+          to the solution of Berger (1978)
+          total daily irradiation is given in KJ m-2 (to be divided by 86400
+          to get it in Wm-2)
+INSOL.IN : input file (trigonometrical expansion for the astronomical 
+           parameters)
+README : this file
+example.out : an example of output file 
+

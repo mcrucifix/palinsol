@@ -3,8 +3,13 @@
 .Rdata
 .httr-oauth
 .DS_Store
+<<<<<<< HEAD
 *.o
 *.so
 *.pdf
 src/palinsol.so
 .ipyn*
+=======
+*.o 
+*.so
+>>>>>>> master
