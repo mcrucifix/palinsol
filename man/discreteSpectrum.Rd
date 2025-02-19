@@ -23,5 +23,8 @@
 \item{a}{`discreteSpectrum` object, typically the output of a `mfft` call.}
 }
 \description{
-Discrete spectrum class
+Class designed to contain amplitudes, frequencies
+and phases of a trigonometric decomposition
+
+Plot a discrete spectrum object
 }

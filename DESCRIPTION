@@ -8,7 +8,7 @@ Authors@R: c(person("Michel", "Crucifix",
                   comment = c(ORCID= "0000-0002-3437-4911"), 
                   role = c("aut", "cre")))
 Maintainer: Michel Crucifix <michel.crucifix@uclouvain.be>
-Depends: R (>= 2.10), stats, graphics, gtools
+Depends: R (>= 2.10), stats, graphics, gtools, dplyr
 Suggests: gsl
 Description: R package to compute Incoming Solar Radiation (insolation) for palaeoclimate studies. Features three solutions: Berger (1978), Berger and Loutre (1991) and Laskar et al. (2004). Computes daily-mean, season-averaged and annual means and for all latitudes, and polar night dates.
 License: file LICENSE

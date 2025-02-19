@@ -7,12 +7,12 @@
 eccentricity_spectrum(G)
 }
 \arguments{
-\item{epi}{: discrete spectrum of epi, as e.g. `La88$epi` based on `data(La88)`}
-
-\item{inputfreq}{: artificially reduces the number of terms to take into account}
+\item{G}{: `discreteSpectrum` object giving the 
+trigonometric development of (e * cos (Pi) + \sqrt(1) * e * sin (Pi)) 
+with complex amplitudes and frequencies as radians / year}
 }
 \value{
-discrete spectrum of eccentricity
+`discreteSpectrum` object containing  the trigonometric development of eccentricity
 }
 \description{
 This is a fully transparent R-implementation of the trigonometric epansion of excentricity,

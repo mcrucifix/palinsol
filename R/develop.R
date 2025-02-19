@@ -13,8 +13,13 @@ develop <- function(M, start=NULL, end=NULL, deltat=NULL, times = NULL, ...){
      UseMethod("develop") 
 }
 
-
-#' @export cis
+#' Cis function
+#'
+#' The mathematic function defined by cisx = cos x + i sin x
+#'
+#' @param x : input
+#' @return complex number cos x + i sin x
+#' @export 
 cis <- function(x) exp(1i*x)
 
 #' Discrete spectrum reconstruction
@@ -84,15 +89,24 @@ if ( sum ) {
 }
 
 #' Discrete spectrum class
+#' 
+#' Class designed to contain amplitudes, frequencies
+#' and phases of a trigonometric decomposition
+#'
 #' @rdname discreteSpectrum
 #' @export
 as.data.frame.discreteSpectrum <- function(x) {data.frame(Freq=x$Freq, Amp=x$Amp, Phases=x$Phases)}
 
 
+#' Plot function for descrete spectrum
+#'
+#' Plot a discrete spectrum object
+#'
 #' @rdname discreteSpectrum
 #' @param a `discreteSpectrum` object, typically the output of a `mfft` call. 
 #' @param labels to be set above the frequency peaks. Can be the output of `attributeTone`
 #' @param periods if TRUE will add a lower axis with period labels
+#' @importFrom graphics mtext axis plot text
 #' @export
 plot.discreteSpectrum <- function (M,periods=FALSE,labels=NULL,...){
 #   O <- order(M$Freq)

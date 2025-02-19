@@ -14,11 +14,14 @@
 #' based on a trigonometrical epansio of (e,pi) (e.g., `data(La88)`).
 #' order  by decreasing frequency
 #'
-#' @param  epi : discrete spectrum of epi, as e.g. `La88$epi` based on `data(La88)`
-#' @param  inputfreq : artificially reduces the number of terms to take into account
-#' @return discrete spectrum of eccentricity
+#' @param  G : `discreteSpectrum` object giving the 
+#'             trigonometric development of (e * cos (Pi) + \sqrt(1) * e * sin (Pi)) 
+#'             with complex amplitudes and frequencies as radians / year
+#' @return `discreteSpectrum` object containing  the trigonometric development of eccentricity
 #' @references Berger A. and M. F. Loutre (1990), Origine des frequences des elements astronomiques intervenant dans le calcul de l'insolation, Bulletin de la Classe des sciences, (1) 45-106 doi:10.3406/barb.1990.38523
 #' @importFrom gtools combinations
+#' @importFrom dplyr  bind_rows
+#' @importFrom stats aggregate
 #' @note # this actually provides the (exact) spectrum of m(1+A/2-A^2/8+A/16) where A= e^2/m^2 - 1 , and m =  sqrt(sum(epi$Amp^2))
 #
 eccentricity_spectrum <- function(G) {
