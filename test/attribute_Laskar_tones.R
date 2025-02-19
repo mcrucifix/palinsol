@@ -1,3 +1,7 @@
+# This code is not ready for use. This is a experimentation with the automatic
+# to an attribution routine available in the sister package "gtseries". 
+
+
 epi <- read.table('../extdata/La88_IOEPL.dat', col.names=c('id','Freq','Amp','Phases','name'), fill=TRUE, skip=2, nrow=80)
 iom <- read.table('../extdata/La88_IOEPL.dat', col.names=c('id','Freq','Amp','Phases','name'), fill=TRUE, skip=84, nrow=80)
 full = rbind(epi, iom)
