@@ -154,10 +154,15 @@ IOM <- list(
 # "ell" is the "P_bar" in Berger and Loutre 1991
 # zeta is the "alpha" in Berger and Loutre 1991
 
+# note to self: 
+# still need to work out whether the psi estimated this way
+# is a firt guess and should then be recopmuted with esplinobarstar (iterating, then)
+# or whether this is intended
+# if need be recomputed, perhaps better to supply the right value
+# straightaway if, for example, supplied by Laskar ? 
+
 psi <- ell * cos(epsilonbar)  # the "k" in Berger and Loutre 1991
 
-
-# psi <- psi_alone   
 
 # so in the following we will use "psi" in all the developments
 # this is as BER90. Berger and Loutre, p. 303 have a note about
@@ -173,6 +178,7 @@ psi <- ell * cos(epsilonbar)  # the "k" in Berger and Loutre 1991
 ###    the 3 p0/p term. Need to understand and check this. 
 
 
+# so for anyuse of epsilonbar below, see remark above
 
 ng <- length(EPI$g)
 tane = tan(epsilonbar)
