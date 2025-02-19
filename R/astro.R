@@ -122,6 +122,7 @@ astro <- function(t, solution = ber78, degree = FALSE){
   solution(t, degree)
 }
 
+#' @export table_based_solution
 table_based_solution <- function(t, tab_solution = palinsol::BER78, degree = FALSE, compute_esinw_from_table2 = FALSE)
 {
   psibar <- tab_solution$psibar / 60. / 60. * pi / 180
@@ -178,7 +179,7 @@ if (compute_esinw_from_table2)
  c(eps = eps, ecc = e, varpi = varpi, epsp = epsp, esinw=esinw)
 }
 
-#'  @export ber78
+#' @export ber78
 ber78 <- function(t, degree = FALSE) { 
   table_based_solution (t, palinsol::BER78, degree) }
 

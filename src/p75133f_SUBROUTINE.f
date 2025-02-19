@@ -2,9 +2,7 @@
      +ia, ib, ic,id, ha, prma, pprma, tseta,
      +aa, a, c,
      +bb, b, d,
-     +bf, pf, sa, ddr, 
-     +baf, s, d11, 
-     +paf, ss, d111)
+     +bf, pf, sa, ddr, baf, s, d11, paf, ss, d111)
 
       implicit double precision(a-h,p-z)                                p7500030
       dimension aa(80),a(80),c(80),cyc1(80),bb(80),b(80),d(80),cyc2(80),p7500040

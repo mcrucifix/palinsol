@@ -7,3 +7,4 @@
 *.so
 *.pdf
 src/palinsol.so
+.ipyn*
