@@ -11,6 +11,8 @@ takahito : explain doc long perihelion wrt to vernal equinox
 
 fix obliquity function
 
+in doc: clean discreteSpectrum stuff (probably merge with gtseries at one point)
+
 Please always read the CRAN policies first. This document gives some additional hints for a useful CRAN submission, especially for new submissions.
 
 Unless there are good reasons, packages submitted to CRAN are expected to pass R CMD check --as-cran, and you will be asked to fix and resubmit your package if it gives warnings or significant notes. To avoid this, you should run R CMD check --as-cran yourself with a current development version of R before submitting to CRAN.
