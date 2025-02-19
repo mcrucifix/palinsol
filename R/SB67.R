@@ -1,9 +1,46 @@
-# require(gtseries)
-# require(palinsol)
-# data(La88)
+# #########################################################
 # 
-# I2OM <- read.table('ber90/iom.dat')
-# colnames(I2OM) <- c('index','sigmaprime','Nprime','deltaprime')
+# WARNING NOTICE
+#
+# #########################################################
+# 
+# This code is a R-implementation of code developed by Andre Berger for his
+# thesis (Berger, 1973, UCLouvain), and further developed until publication of
+# the Berger and Loutre 1991 article. The best of my knowledge, this code has
+# never been officially released and so cannot be explicitly transcribed here.
+# However, this code was used to check the validity of the R code below. This
+# code can be viewed as the legacy of many years is of  Berger and Loutre's
+# work and now available to the public. I commented splices were I could not
+# exactly will produce their output and  take full responsibility for any
+# mistake or omission. 
+# 
+# The code takes a trigonometric development of the planetary solution
+# (typically the h,q,p,k development of Bretagnon or Laskar) and, using the
+# personal equation to the sick and ordered to the masses and eccentricity,
+# generates trigonometric developments for climatic precession and obliquity.
+# This is original work by Berger,  though he recognises that a similar work
+# had been previously undertaken by Sharaf and Budnikova (1967). Unfortunately,
+# that original reference published in the former USSR is not available to me. 
+# 
+# The thesis of André Berger has been scanned but it is not publicly released.
+# It is however accessible from this author. 
+#
+# Below: 
+# BL91 : Berger A. and M. F. Loutre (1991), Insolation values for the climate
+# of the last 10 million years, Quaternary Science Reviews, (10) 297 - 317
+# doi:10.1016/0277-3791(91)90033-Q
+# 
+# SB67 : Sharaf S. G. and N. A. Boudnikova (1967), Secular variations of
+# elements of the Earth's orbit which influences the climates of the geological
+# past, Tr. Inst. Theor. Astron. Leningrad, (11) 231-261 
+# (this paper remained unaccessible to us)
+#
+# 
+# Michel Crucifix, 2025-02-19
+#
+# #########################################################
+
+# The following code does all the dirty work but is not to be called by the user. 
 # 
 # P0 = 17.3919
 # ell = 54.9066 
@@ -11,7 +48,9 @@
 # ellradiants <- ell * (2*pi/3600/360)
 # P0radiants  <- P0 * (2*pi/3600/360)
 
-SB67_Internal <- function(ell, P0, epsilonbar, zeta = 1.600753*pi/180,   PlanetarySolution, aggregating = FALSE, ber78_strict=FALSE, ber90_reproduce = FALSE) {
+SB67_Internal <- function(ell, P0, epsilonbar, zeta = 1.600753*pi/180,   
+                          PlanetarySolution, aggregating = FALSE, 
+                          ber78_strict=FALSE, ber90_reproduce = FALSE) {
 
 # in the Berger and Loutre procedure: 
 # the inputs are "h" and "alpha", so in this notation
@@ -24,7 +63,8 @@ SB67_Internal <- function(ell, P0, epsilonbar, zeta = 1.600753*pi/180,   Planeta
 # this constraints epsilonbarstar and alpha via the equations 25 and 26 in BL91
 # this seems easy to do.....
 # but I am less sure how to obtain "h" (epsilonbar). That is equation 24
-# maybe it is self converging, i.e., first guess 'h' by epsilonbar = h - sum (... epsilon bar), then replace epsilonbar etc. It should work
+# maybe it is self converging, i.e., first guess 'h' by epsilonbar = h - sum
+# (... epsilon bar), then replace epsilonbar etc. It should work
 
 
 EPI <- as.data.frame(PlanetarySolution$epi)
@@ -43,8 +83,6 @@ I2OM <- as.data.frame(PlanetarySolution$i2o)
 # EPI <- read.table('ber90/epi.dat')
 
 colnames(I2OM) <- c('sigmaprime', 'Nprime', 'deltaprime')
-
-
 
 n <- length(I2OM$Nprime)
 
@@ -583,7 +621,7 @@ PSI <- as.data.frame(PSI[ORDER, ])
 # the 1764 corresponds to the combination 26 / 61 
 # and tis corresponds to gi terms in the IOM development
 
-# it seems impossible to get them identical
+# it seems impossible to get them identical but yet this seems to be
 
 # print ('<<<<<-')
 # a1 = EPI$g[3] - EPI$g[51]
