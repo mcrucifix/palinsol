@@ -6,13 +6,14 @@
 # 
 # This code is a R-implementation of code developed by Andre Berger for his
 # thesis (Berger, 1973, UCLouvain), and further developed until publication of
-# the Berger and Loutre 1991 article. The best of my knowledge, this code has
-# never been officially released and so cannot be explicitly transcribed here.
-# However, this code was used to check the validity of the R code below. This
-# code can be viewed as the legacy of many years is of  Berger and Loutre's
-# work and now available to the public. I commented splices were I could not
-# exactly will produce their output and  take full responsibility for any
-# mistake or omission. 
+# the Berger and Loutre 1991 article (BL91). This code by Berger (and Loutre)
+# includes two Fortran subprograms, called  p7505ff.f and  p75133f.f. To
+# the best of my knowledge, it has never been officially released and so cannot
+# be explicitly transcribed here. However, this code was used to check the
+# validity of the R code below. The present code can be viewed as the legacy of many
+# years is of  Berger and Loutre's work and now made available to the public by means
+# of this package. I commented places were I could not exactly will produce
+# their output and take full responsibility for any mistake or omission. 
 # 
 # The code takes a trigonometric development of the planetary solution
 # (typically the h,q,p,k development of Bretagnon or Laskar) and, using the
