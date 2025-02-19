@@ -3,6 +3,9 @@ insol.f : program to compute orbital parameters and insolation according
           to the solution of Berger (1978)
           total daily irradiation is given in KJ m-2 (to be divided by 86400
           to get it in Wm-2)
+          insol.f has been pulicly released and is available as a zenodo dataset
+          Berger, A. (1978). Long-term variations of daily insolation and Quaternary climatic changes (Version 2014) [Data set].
+          Zenodo. https://doi.org/10.5281/zenodo.7198109
 INSOL.IN : input file (trigonometrical expansion for the astronomical 
            parameters)
 README : this file
