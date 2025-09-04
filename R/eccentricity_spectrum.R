@@ -24,6 +24,7 @@
 #' @importFrom stats aggregate
 #' @note # this actually provides the (exact) spectrum of m(1+A/2-A^2/8+A/16) where A= e^2/m^2 - 1 , and m =  sqrt(sum(epi$Amp^2))
 #
+#' @export eccentricity_spectrum
 eccentricity_spectrum <- function(G) {
 
 require(gtools)
