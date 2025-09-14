@@ -99,6 +99,7 @@
   varpi <- NULL
   eps <- NULL
   ecc <- NULL
+  # 
   for (i in names(orbit)) assign(i,orbit[[i]])
   nu <- long - varpi
   rho <- (1-ecc^2)/(1+ecc*cos(nu))
@@ -126,7 +127,7 @@
   ecc <- orbit['ecc']
   xec <- ecc*ecc
   rho <- (1-xec)/(1+ecc*cos(nu))
-  .dtdnu <- rho^2/sqrt(1.-xec)
+  return ( rho^2/sqrt(1.-xec) ) 
  }
  # Provides an insolation times series
  # astrosol = astronomical solution (defaults to Ber78)
@@ -524,7 +525,7 @@ Insol_d1d2 <- function (orbit,d1,d2,lat=65*pi/180,avg=FALSE,...)
 
 #' Milankovitch graph for a given astronomical configuration
 #' 
-#' Computes the distrubition in latitude and longitude of incoming solar
+#' Computes the distribution in latitude and longitude of incoming solar
 #' radiation, known as a Milankovitch graph, with possibility of plotting with
 #' a dedicated plot function
 #' 
@@ -620,10 +621,11 @@ if (months)
    axis (1, at=seq(0,11)*30+15, labels=c("J","F","M","A","M","J","J","A","S","O","N","D"), tick=FALSE)}
    if (polar_night)
    {
-   polar_night_curves <- attr(x, ".polar_nights")
+   polar_night_curves <- attr(x, "polar_nights")
+      print(polar_night_curves)
    if (!is.null (polar_night_curves))
    {
-   lapply(polar_night_curves, function(p) {
+      lapply(polar_night_curves, function(p) {
       polygon(p[[1]], p[[2]], density=12, col=col)
       polygon(p[[1]], p[[2]], density=12, angle=-45, border=NA, col=col) })
    }
