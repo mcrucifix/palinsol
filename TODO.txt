@@ -50,7 +50,7 @@ proper references to datasets related to La88 and Bre73
 original berger 78 will remain frozen in git tag 1.2 in deepast but cannot be part of a public release (code never officially released). Will need to acknowledge that that code was used for testing and developing, but not part of release. 
 
 
-convert current BER78 BER90 and La04 in spectrum objects
+convert current BER78 BER90 and La04 in spectrum objects 
 
 
-check eccentricity after co-pilot cleaning (check current version against 1.3 tag) 
+check eccentricity after co-pilot cleaning (check current version against 1.3 tag)   -> DONE ! 
