@@ -38,13 +38,13 @@ day in the year using the function \code{day2l}.
 
 ## make a little wrapper, with all default values
 
-insolation <- function(times, astrosol=ber78,...)
-  sapply(times, function(tt) Insol(orbit=astrosol(tt)))
+insolation <- function(times, astrosol = ber78, ...) {
+  sapply(times, function(tt) Insol(orbit = astrosol(tt)))
+}
 
 tts <- seq(from = -400e3, to = 0, by = 1e3)
 isl <- insolation(tts, ber78)
-plot(tts, isl, typ='l')
-
+plot(tts, isl, typ = "l")
 
 }
 \references{

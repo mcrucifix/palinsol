@@ -61,33 +61,47 @@ small differences with the original publication
 \examples{
 
 ## reproduces Table 1a of Berger et al. 2010:
-lat <- seq(85, -85, -10) * pi/180. ## angles in radians. 
-orbit=c(eps=  23.446 * pi/180., ecc= 0.016724, varpi= (102.04 - 180)* pi/180. )
-T <-  sapply(lat, function(x) c(lat = x * 180/pi, 
-        m1 =  Insol_l1l2(orbit, 0, 70 * pi/180, lat=x, ell= TRUE, S0=1368) / 1e3,
-        m2 =  Insol_l1l2(orbit, 0, 70 * pi/180, lat=x, ell=FALSE, S0=1368) / 1e3) ) 
+lat <- seq(85, -85, -10) * pi / 180. ## angles in radians.
+orbit <- c(eps = 23.446 * pi / 180., ecc = 0.016724, varpi = (102.04 - 180) * pi / 180.)
+T <- sapply(lat, function(x) {
+  c(
+    lat = x * 180 / pi,
+    m1 = Insol_l1l2(orbit, 0, 70 * pi / 180, lat = x, ell = TRUE, S0 = 1368) / 1e3,
+    m2 = Insol_l1l2(orbit, 0, 70 * pi / 180, lat = x, ell = FALSE, S0 = 1368) / 1e3
+  )
+})
 data.frame(t(T))
- ## reproduces Table 1b of Berger et al. 2010:
-lat <- c(85, 55, 0, -55, -85) * pi/180. ## angles in radians. 
-T <-  sapply(lat, function(x) c(lat = x * 180/pi, 
-         m1 =  Insol_l1l2(orbit, 30 * pi/180. , 75 * pi/180, 
-               lat=x, ell= TRUE, S0=1368) / 1e3,
-         m2 =  Insol_l1l2(orbit, 30 * pi/180. , 75 * pi/180, 
-               lat=x, ell=FALSE, S0=1368) / 1e3) ) 
- ## reproduces Table 2a of Berger et al. 2010:
-lat <- seq(85, -85, -10) * pi/180. ## angles in radians. 
+## reproduces Table 1b of Berger et al. 2010:
+lat <- c(85, 55, 0, -55, -85) * pi / 180. ## angles in radians.
+T <- sapply(lat, function(x) {
+  c(
+    lat = x * 180 / pi,
+    m1 = Insol_l1l2(orbit, 30 * pi / 180., 75 * pi / 180,
+      lat = x, ell = TRUE, S0 = 1368
+    ) / 1e3,
+    m2 = Insol_l1l2(orbit, 30 * pi / 180., 75 * pi / 180,
+      lat = x, ell = FALSE, S0 = 1368
+    ) / 1e3
+  )
+})
+## reproduces Table 2a of Berger et al. 2010:
+lat <- seq(85, -85, -10) * pi / 180. ## angles in radians.
 
 ## 21 march in a 360-d year. By definition : day 80 = 21 march at 12u
-d1 = 79.5 
-d2 = 79.5 + (10 + 30 + 30 ) * 360/365.2425 ## 30th May in a 360-d year
+d1 <- 79.5
+d2 <- 79.5 + (10 + 30 + 30) * 360 / 365.2425 ## 30th May in a 360-d year
 
-T <-  sapply(lat, function(x) c(lat = x * 180/pi, 
-        m1 =  Insol_d1d2(orbit, d1,d2, lat=x, ell= TRUE, S0=1368) / 1e3,
-        m2 =  Insol_d1d2(orbit, d1,d2, lat=x, ell= FALSE, S0=1368) / 1e3))
-                          
-## I did not quite get the same results as on the table 
+T <- sapply(lat, function(x) {
+  c(
+    lat = x * 180 / pi,
+    m1 = Insol_d1d2(orbit, d1, d2, lat = x, ell = TRUE, S0 = 1368) / 1e3,
+    m2 = Insol_d1d2(orbit, d1, d2, lat = x, ell = FALSE, S0 = 1368) / 1e3
+  )
+})
+
+## I did not quite get the same results as on the table
 ## on this one; probably a matter of calendar
-## note : the authors in fact used S0=1368 (pers. comm.) 
+## note : the authors in fact used S0=1368 (pers. comm.)
 ## 1366 in the paper is a misprint
 
 data.frame(t(T))
@@ -95,12 +109,12 @@ data.frame(t(T))
 ## annual mean insolation at 65N North, as a function of the longitude of the perihelion
 ## (expected to be invariant)
 
-varpis <- seq(0,360,10)*pi/180.  
-sapply(varpis, function(varpi)
-   {   orbit=c(eps=  23.446 * pi/180., ecc= 0.016724, varpi= varpi )
-       amean <- Insol_l1l2 (orbit, lat=65*pi/180., avg=TRUE)
-       return(amean)
-   })
+varpis <- seq(0, 360, 10) * pi / 180.
+sapply(varpis, function(varpi) {
+  orbit <- c(eps = 23.446 * pi / 180., ecc = 0.016724, varpi = varpi)
+  amean <- Insol_l1l2(orbit, lat = 65 * pi / 180., avg = TRUE)
+  return(amean)
+})
 }
 \references{
 Berger, A., Loutre, M.F. and Yin Q. (2010), Total irradiation

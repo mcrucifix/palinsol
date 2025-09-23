@@ -30,7 +30,7 @@ A object of Milankovitch class, which may be plotted using the
 regular plot function
 }
 \description{
-Computes the distrubition in latitude and longitude of incoming solar
+Computes the distribution in latitude and longitude of incoming solar
 radiation, known as a Milankovitch graph, with possibility of plotting with
 a dedicated plot function
 }
@@ -39,10 +39,10 @@ The polar night option may not be bullet-proof for exotic obliquities
 }
 \examples{
 
-orbit <- c(eps=0.409214, ecc=0.01672393, varpi=4.92251)
+orbit <- c(eps = 0.409214, ecc = 0.01672393, varpi = 4.92251)
 M <- Milankovitch(orbit)
-plot(M, plot=contour)
-plot(M, plot=contour, month=FALSE)
+plot(M, plot = contour)
+plot(M, plot = contour, month = FALSE)
 
 }
 \references{

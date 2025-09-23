@@ -16,8 +16,8 @@
 # their output and take full responsibility for any mistake or omission.
 #
 # The code takes a trigonometric development of the planetary solution
-# (typically the h,q,p,k development of Bretagnon or Laskar) and, using the
-# personal equation to the sick and ordered to the masses and eccentricity,
+# (typically the h,k,q,p development of Bretagnon or Laskar) and, using the
+# precession equation to the third order in the masses and eccentricity,
 # generates trigonometric developments for climatic precession and obliquity.
 # This is original work by Berger,  though he recognises that a similar work
 # had been previously undertaken by Sharaf and Budnikova (1967). Unfortunately,
@@ -107,9 +107,9 @@ SB67_Internal <- function(ell, P0, epsilonbar, zeta = 1.600753 * pi / 180,
     TERM2$delta <- outer(I2OM$deltaprime, I2OM$deltaprime, function(Si, Sj) (2 * Sj - Si))
 
 
-    for (h in seq(ncol(TERM2$N))) TERM2$N[h, h] <- NA
-    for (h in seq(ncol(TERM2$sigma))) TERM2$sigma[h, h] <- NA
-    for (h in seq(ncol(TERM2$delta))) TERM2$delta[h, h] <- NA
+    for (h in seq_len(ncol(TERM2$N))) TERM2$N[h, h] <- NA
+    for (h in seq_len(ncol(TERM2$sigma))) TERM2$sigma[h, h] <- NA
+    for (h in seq_len(ncol(TERM2$delta))) TERM2$delta[h, h] <- NA
 
     TERM2$N <- as.numeric(TERM2$N)
     TERM2$sigma <- as.numeric(TERM2$sigma)
@@ -221,7 +221,7 @@ SB67_Internal <- function(ell, P0, epsilonbar, zeta = 1.600753 * pi / 180,
   ###    the 3 p0/p term. Need to understand and check this.
 
 
-  # so for anyuse of epsilonbar below, see remark above
+  # so for analyse  of epsilonbar below, see remark above
 
   ng <- length(EPI$g)
   tane <- tan(epsilonbar)
@@ -396,8 +396,8 @@ SB67_Internal <- function(ell, P0, epsilonbar, zeta = 1.600753 * pi / 180,
 
   ETERM3 <- list(N = C2ik * outer(IOM$N, IOM$N), sigma = outer(fi, fi, "+"), delta = outer(deltaprime, deltaprime, "+"))
 
-  for (i in seq(length(IOM$N))) {
-    for (k in seq(length(IOM$N))) {
+  for (i in seq_along(IOM$N)) {
+    for (k in seq_along(IOM$N)) {
       if (i >= k) {
         ETERM3$N[i, k] <- NA
         ETERM3$sigma[i, k] <- NA
@@ -416,8 +416,8 @@ SB67_Internal <- function(ell, P0, epsilonbar, zeta = 1.600753 * pi / 180,
 
   ETERM4 <- list(N = C2ikprime * outer(IOM$N, IOM$N), sigma = outer(fi, fi, "-"), delta = outer(deltaprime, deltaprime, "-"))
 
-  for (i in seq(length(IOM$N))) {
-    for (k in seq(length(IOM$N))) {
+  for (i in seq_along(IOM$N)) {
+    for (k in seq_along(IOM$N)) {
       if (i >= k) {
         ETERM4$N[i, k] <- NA
         ETERM4$sigma[i, k] <- NA
@@ -460,13 +460,10 @@ SB67_Internal <- function(ell, P0, epsilonbar, zeta = 1.600753 * pi / 180,
   OR <- OR[seq(min(length(OR), nkeep))]
   OBLIQUITY <- with(OBLIQUITY, data.frame(Amp = N[OR], Freq = sigma[OR], Phases = delta[OR]))
 
-
-
   # with this, there seems be no duplicates (but maybe there will be once we have recitfied the N's)
   # however we have a problem becase the sigma0 generates periods = psi
 
   OBLIQUITY_ORDERED <- OBLIQUITY # %>% group_by(Freq) %>% summarise (Amp=sum(Amp), Phases)
-  # OBLIQUITY_ORDERED # <- OBLIQUITY %>% group_by(Freq) %>% summarise (Amp=sum(Amp), Phases)
   ORDER <- order(abs(OBLIQUITY_ORDERED$Amp), decreasing = TRUE)
   OBLIQUITY <- as.data.frame(OBLIQUITY_ORDERED[ORDER, ])
 
@@ -491,7 +488,9 @@ SB67_Internal <- function(ell, P0, epsilonbar, zeta = 1.600753 * pi / 180,
     lines(ETERM3$sigma / (2 * pi), ETERM3$N, col = "gray", type = "h")
     lines(ETERM4$sigma / (2 * pi), ETERM4$N, col = "green", type = "h")
     grid()
-    with(BER90$Table1, plot(Freq / 360 / 3600, Amp * 2 * pi / 60 / 60 / 360, type = "h", col = "black", ylim = c(-1e-2, 0), xlim = c(0e-5, 4e-5)))
+    with(BER90$Table1, plot(Freq / 360 / 3600, Amp * 2 * pi / 60 / 60 / 360,
+			    type = "h", col = "black", ylim = c(-1e-2, 0),
+			    xlim = c(0e-5, 4e-5)))
     grid()
   }
   # ok this is more or less validated.
@@ -605,7 +604,8 @@ SB67_Internal <- function(ell, P0, epsilonbar, zeta = 1.600753 * pi / 180,
       Amp = c(PTERM1$Amp[keep1], PTERM2$Amp[keep2], PTERM3$Amp[keep3], PTERM4$Amp[keep4], PTERM5$Amp[keep5]),
       Freq = c(PTERM1$Freq[keep1], PTERM2$Freq[keep2], PTERM3$Freq[keep3], PTERM4$Freq[keep4], PTERM5$Freq[keep5]),
       Phases = c(PTERM1$Phases[keep1], PTERM2$Phases[keep2], PTERM3$Phases[keep3], PTERM4$Phases[keep4], PTERM5$Phases[keep5]),
-      Group = c(PTERM1$Amp[keep1] * 0 + 1, PTERM2$Amp[keep2] * 0 + 2, PTERM3$Amp[keep3] * 0 + 3, PTERM4$Amp[keep4] * 0 + 4, PTERM5$Amp[keep5] * 0 + 5)
+      Group = c(PTERM1$Amp[keep1] * 0 + 1, PTERM2$Amp[keep2] * 0 + 2,
+		PTERM3$Amp[keep3] * 0 + 3, PTERM4$Amp[keep4] * 0 + 4, PTERM5$Amp[keep5] * 0 + 5)
     )
   } else {
     # print ('icicic')
@@ -779,17 +779,47 @@ SB67_Internal <- function(ell, P0, epsilonbar, zeta = 1.600753 * pi / 180,
 #' @return a list with `discreteSpectrum` for OBLIQUITY, PSI (longitude of perihelion on fixed plane) and CLIMPRECESS
 #'         a `discreteSpectrum` is a list with `Amp`, `Freq` (angluar velocity) and `Phases`, with attributes given the
 #'         `shift` with respect to zero, and `trend` (for PSI).
-#' @note  Running this routine typically takes one second on a modern computer, and precession and obliquity may then
-#'        be computed very efficiently for any period of time where the supplied parameters are considered as valid
-#'        However, given the nature of orbital solutions and also the range of validity of the SB development (accurate
-#'        up to order 2 in eccentricity), this generally would not span more than 2 or 3 million years. This would be
-#'        enough for the recent past, or for illustrative purposes in the deep past. Modern codes for precession, more
-#'        accurate, would however not take much more computing time in practice.
-#'        if aggregating is "FALSE", then the group, as per the arithmetic expansion of Berger (1973)
-#'        and Berger and Loutre (1991) belong, is given.
-#' @references Berger, A. L. (1973), Berger and Loutre (1991), Sharaf S. G. and N. A. Boudnikova (1967),
-#'              Secular variations of elements of the Earth's orbit which influences the climates of the geological past,
-#'              Tr. Inst. Theor. Astron. Leningrad, (11) 231-261
+#' @note
+#'  This code is a R-implementation of code developed by Andre Berger for his
+#'  thesis (Berger, 1973, UCLouvain), and further developed until publication of
+#'  the Berger and Loutre 1991 article (BL91). This code by Berger (and Loutre)
+#'  includes two Fortran subprograms, called  p7505ff.f and  p75133f.f. To
+#'  the best of my knowledge, it has never been officially released and so cannot
+#'  be explicitly transcribed here. However, this code was used to check the
+#'  validity of the R code below. The present code can be viewed as the legacy of many
+#'  years is of  Berger and Loutre's work and now made available to the public by means
+#'  of this package. I commented places were I could not exactly will produce
+#'  their output and take full responsibility for any mistake or omission.
+#'
+#'  The code takes a trigonometric development of the planetary solution
+#'  (typically the h,k,q,p development of Bretagnon or Laskar) and, using the
+#'  precession equation to the third order in the masses and eccentricity,
+#'  generates trigonometric developments for climatic precession and obliquity.
+#'  This is original work by Berger,  though he recognises that a similar work
+#'  had been previously undertaken by Sharaf and Budnikova (1967). Unfortunately,
+#'  that original reference published in the former USSR is not available to me.
+#'
+#'  The thesis of André Berger has been scanned but it is not publicly released.
+#'  It is however accessible from this author.
+#'  Running this routine typically takes one second on a modern computer, and precession and obliquity may then
+#'  be computed very efficiently for any period of time where the supplied parameters are considered as valid
+#'  However, given the nature of orbital solutions and also the range of validity of the SB development (accurate
+#'  up to order 2 in eccentricity), this generally would not span more than 2 or 3 million years. This would be
+#'  enough for the recent past, or for illustrative purposes in the deep past. Modern codes for precession, more
+#'  accurate, would however not take much more computing time in practice.
+#'  if aggregating is "FALSE", then the group, as per the arithmetic expansion of Berger (1973)
+#'  and Berger and Loutre (1991) belong, is given.
+#' @references
+#' Berger, A. L., & Loutre, M. F. (1991). Insolation values for the climate of the last 10 million years.
+#' \emph{Quaternary Science Reviews}, 10(4), 297–317. \doi{10.1016/0277-3791(91)90033-Q}
+#'
+#' Sharaf, S. G., & Budnikova, N. A. (1967). Secular variations of elements of the Earth's orbit which
+#' influence the climates of the geological past. \emph{Trudy Instituta Teoreticheskoi Astronomii},
+#' 11, 231–261. [in Russian]
+#'
+#' Berger, A. L. (1973). Théorie astronomique des paléoclimats, PhD thesis, Université Catholique de Louvain,
+#' https://hdl.handle.net/2078.1/233872
+#'
 #' @examples
 #'
 #' data(La88)
@@ -806,10 +836,12 @@ SB67 <- function(PlanetarySolution,
                  ell = 54.9066 * pi / (3600 * 180.),
                  epsilonbar = 23.399935 * pi / 180.,
                  zeta = 1.600753 * pi / 180., aggregating = TRUE, ber78_strict = FALSE, ber90_reproduce = FALSE) {
-  OUT <- SB67_Internal(ell, P0, epsilonbar, zeta, PlanetarySolution, aggregating = aggregating, ber78_strict = ber78_strict, ber90_reproduce = ber90_reproduce)
-
+  OUT <- SB67_Internal(ell, P0, epsilonbar, zeta, PlanetarySolution,
+                       aggregating = aggregating,
+                       ber78_strict = ber78_strict,
+                       ber90_reproduce = ber90_reproduce)
   # le code commenté est pour deux types de reconstructions de la precession climatique. 1. Ec*sin(Pi+psi) ; 2. Par  le developpement.
-
+  #
   ### times <- seq(1000)*1000
   ### esinpi <- reconstruct_spectral(EPPI, times, sin)
   ### ecospi <- reconstruct_spectral(EPPI, times, cos)
@@ -831,10 +863,9 @@ SB67 <- function(PlanetarySolution,
   ### plot(esinomega, type='l')
   ### lines(esinomega_method, col='red')
 
-
-  # le mathch est correct mais pas parfait.
-  # revoir avec les rotines originales de Berger pour voir si le match etait cense etre parfait.
-  # on peut le faire avec palinsol, version deepast (pas deepast_test)
+  # The match is correct but not perfect.
+  # Check again with Berger's original routines to see if the match was supposed to be perfect.
+  # This can be done with palinsol, version deepast (not deepast_test)
 
   return(OUT)
 }

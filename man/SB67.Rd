@@ -41,19 +41,40 @@ a list with `discreteSpectrum` for OBLIQUITY, PSI (longitude of perihelion on fi
 This is a R-recoding of André Berger's implementation of the Sharak and Budnikova precession
 model. Using, as inputs, a trigonometric expansion of (e,pi) and (i/2, omega) (e.g. `data(La88)`)
 newcomb canstants (as, e.g., supplied by `newcomp_parameters`), mean obliquity and mean precession phase at
-the reference year corresponding to the orbital solution (usually 1950.0 or 2000.0). 
+the reference year corresponding to the orbital solution (usually 1950.0 or 2000.0).
 Supplies trigonometrical expansions for obliquity (OBLIQUITY), longitude of the vernal equinox with respect to the fixed
 plane (PSI) and climatic precession.
 }
 \note{
-Running this routine typically takes one second on a modern computer, and precession and obliquity may then
-       be computed very efficiently for any period of time where the supplied parameters are considered as valid
-       However, given the nature of orbital solutions and also the range of validity of the SB development (accurate
-       up to order 2 in eccentricity), this generally would not span more than 2 or 3 million years. This would be 
-       enough for the recent past, or for illustrative purposes in the deep past. Modern codes for precession, more
-       accurate, would however not take much more computing time in practice. 
-       if aggregating is "FALSE", then the group, as per the arithmetic expansion of Berger (1973) and Berger and Loutre (1991)
-       belong, is given.
+This code is a R-implementation of code developed by Andre Berger for his
+ thesis (Berger, 1973, UCLouvain), and further developed until publication of
+ the Berger and Loutre 1991 article (BL91). This code by Berger (and Loutre)
+ includes two Fortran subprograms, called  p7505ff.f and  p75133f.f. To
+ the best of my knowledge, it has never been officially released and so cannot
+ be explicitly transcribed here. However, this code was used to check the
+ validity of the R code below. The present code can be viewed as the legacy of many
+ years is of  Berger and Loutre's work and now made available to the public by means
+ of this package. I commented places were I could not exactly will produce
+ their output and take full responsibility for any mistake or omission.
+
+ The code takes a trigonometric development of the planetary solution
+ (typically the h,k,q,p development of Bretagnon or Laskar) and, using the
+ precession equation to the third order in the masses and eccentricity,
+ generates trigonometric developments for climatic precession and obliquity.
+ This is original work by Berger,  though he recognises that a similar work
+ had been previously undertaken by Sharaf and Budnikova (1967). Unfortunately,
+ that original reference published in the former USSR is not available to me.
+
+ The thesis of André Berger has been scanned but it is not publicly released.
+ It is however accessible from this author.
+ Running this routine typically takes one second on a modern computer, and precession and obliquity may then
+ be computed very efficiently for any period of time where the supplied parameters are considered as valid
+ However, given the nature of orbital solutions and also the range of validity of the SB development (accurate
+ up to order 2 in eccentricity), this generally would not span more than 2 or 3 million years. This would be
+ enough for the recent past, or for illustrative purposes in the deep past. Modern codes for precession, more
+ accurate, would however not take much more computing time in practice.
+ if aggregating is "FALSE", then the group, as per the arithmetic expansion of Berger (1973)
+ and Berger and Loutre (1991) belong, is given.
 }
 \examples{
 
@@ -67,5 +88,13 @@ plot(psi1)
 lines(psi1 - psi2)
 }
 \references{
-Berger, A. L. (1973), Berger and Loutre (1991), Sharaf S. G. and N. A. Boudnikova (1967), Secular variations of elements of the Earth's orbit which influences the climates of the geological past, Tr. Inst. Theor. Astron. Leningrad, (11) 231-261
+Berger, A. L., & Loutre, M. F. (1991). Insolation values for the climate of the last 10 million years.
+\emph{Quaternary Science Reviews}, 10(4), 297–317. \doi{10.1016/0277-3791(91)90033-Q}
+
+Sharaf, S. G., & Budnikova, N. A. (1967). Secular variations of elements of the Earth's orbit which
+influence the climates of the geological past. \emph{Trudy Instituta Teoreticheskoi Astronomii},
+11, 231–261. [in Russian]
+
+Berger, A. L. (1973). Théorie astronomique des paléoclimats, PhD thesis, Université Catholique de Louvain,
+https://hdl.handle.net/2078.1/233872
 }

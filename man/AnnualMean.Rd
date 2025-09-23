@@ -7,7 +7,7 @@
 AnnualMean(orbit, S0 = 1365, lats = seq(-90, 90, 1), degree = TRUE)
 }
 \arguments{
-\item{orbit}{Output from a solution, such as \code{ber78}, \code{ber90} or 
+\item{orbit}{Output from a solution, such as \code{ber78}, \code{ber90} or
 \code{la04}}
 
 \item{S0}{Total solar irradiance}

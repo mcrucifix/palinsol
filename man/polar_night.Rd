@@ -26,15 +26,14 @@ the polar night for a given latitude and orbit
 
 current_orbit <- la04(0)
 
-# polar night at the equator ? 
-polar_night (0, current_orbit)
+# polar night at the equator ?
+polar_night(0, current_orbit)
 
-# polar night at 80 N ? 
-polar_night (80*pi/180, current_orbit)
+# polar night at 80 N ?
+polar_night(80 * pi / 180, current_orbit)
 
-# polar nights expressed as day of year 
-l2day(current_orbit, polar_night (80*pi/180, current_orbit))
-
+# polar nights expressed as day of year
+l2day(current_orbit, polar_night(80 * pi / 180, current_orbit))
 
 }
 \references{

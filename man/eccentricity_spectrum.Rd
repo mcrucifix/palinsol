@@ -2,26 +2,34 @@
 % Please edit documentation in R/eccentricity_spectrum.R
 \name{eccentricity_spectrum}
 \alias{eccentricity_spectrum}
-\title{Trigonometrical development of eccentricity spectrum, based on an erbital solution}
+\title{Eccentricity spectrum from an orbital solution}
 \usage{
-eccentricity_spectrum(G)
+eccentricity_spectrum(spectrum_obj, verbose = FALSE)
 }
 \arguments{
-\item{G}{: `discreteSpectrum` object giving the 
-trigonometric development of (e * cos (Pi) + \sqrt(1) * e * sin (Pi)) 
-with complex amplitudes and frequencies as radians / year}
+\item{spectrum_obj}{`discreteSpectrum` object for trigonometric development}
+
+\item{verbose}{logical, default FALSE. If TRUE, prints progress messages}
 }
 \value{
-`discreteSpectrum` object containing  the trigonometric development of eccentricity
+`discreteSpectrum` object for eccentricity development
 }
 \description{
-This is a fully transparent R-implementation of the trigonometric epansion of excentricity,
-based on a trigonometrical epansio of (e,pi) (e.g., `data(La88)`).
-order  by decreasing frequency
+Transparent R-implementation of trigonometric expansion of eccentricity.
+Based on (e, pi) expansion (e.g., `data(La88)`).
+Ordered by decreasing frequency.
 }
 \note{
-# this actually provides the (exact) spectrum of m(1+A/2-A^2/8+A/16) where A= e^2/m^2 - 1 , and m =  sqrt(sum(epi$Amp^2))
+Spectrum of m(1+A/2-A^2/8+A/16) with A = e^2/m^2 - 1, m = sqrt(sum(epi$Amp^2))
+errors are thus of the order of 5/128A^4, which perhaps surprisingly is still of the order
+of 0.015 / 0.020 in eccentricity.
+Errors are seem to be always positive (5/128*A^4 may reach 2.0, as A may reach 2.0, but not easy to prove
+because the next term, in A^5, can be large as well.
+Using higher order terms helps a bit for capturing the 'low eccentricity' bit, but it actually makes things
+much worse above 0.04, so that the third order is actually the right deal.
 }
 \references{
-Berger A. and M. F. Loutre (1990), Origine des frequences des elements astronomiques intervenant dans le calcul de l'insolation, Bulletin de la Classe des sciences, (1) 45-106 doi:10.3406/barb.1990.38523
+Berger A. & M. F. Loutre (1990), Origine des frequences des
+elements astronomiques intervenant dans le calcul de l'insolation,
+Bulletin de la Classe des sciences, (1) 45-106.
 }

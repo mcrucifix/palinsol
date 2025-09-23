@@ -49,10 +49,10 @@ details).
 \examples{
 
 ## date of perihelion throughout today
-orbit=c(eps=0.409214, ecc=0.01672393, varpi=4.92251)
+orbit <- c(eps = 0.409214, ecc = 0.01672393, varpi = 4.92251)
 date_of_perihelion(orbit)
 ## date of winter solstice)
-l2day(orbit, 270*pi/180.)
+l2day(orbit, 270 * pi / 180.)
 
 }
 \references{
