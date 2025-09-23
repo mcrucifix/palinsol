@@ -20,7 +20,6 @@
 #' because the next term, in A^5, can be large as well.
 #' Using higher order terms helps a bit for capturing the 'low eccentricity' bit, but it actually makes things
 #' much worse above 0.04, so that the third order is actually the right deal.
-#'
 #' @export eccentricity_spectrum
 eccentricity_spectrum <- function(spectrum_obj, verbose = FALSE) {
   requireNamespace("gtools", quietly = TRUE)
