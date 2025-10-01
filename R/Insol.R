@@ -620,7 +620,7 @@ if (months)
    axis (1, at=seq(0,11)*30+15, labels=c("J","F","M","A","M","J","J","A","S","O","N","D"), tick=FALSE)}
    if (polar_night)
    {
-   polar_night_curves <- attr(x, ".polar_nights")
+   polar_night_curves <- attr(x, "polar_nights")
    if (!is.null (polar_night_curves))
    {
    lapply(polar_night_curves, function(p) {
