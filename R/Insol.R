@@ -608,9 +608,6 @@ plot.Milankovitch <- function(x, months = TRUE, polar_night = TRUE, plot_functio
         MM, axes = FALSE, xlab = "Month",
         ylab = "Latitude", xaxs = "i", yaxs = "i",
         col = cols, levels = levels, ...)
-
-
-<<<<<<< HEAD
      polar_night <- FALSE
    } else {
    plot_function(Long, attr(x, "lat"), MM, axes=FALSE,xlab="Month",ylab="Latitude",xaxs="i",yaxs="i",col=col,...)
@@ -629,39 +626,7 @@ plot.Milankovitch <- function(x, months = TRUE, polar_night = TRUE, plot_functio
       polygon(p[[1]], p[[2]], density=12, angle=-45, border=NA, col=col) })
    }
    }
- }
- else { 
- plot_function(attr(x, "long"), attr(x, "lat"), x, axes=FALSE, 
-      xlab='True solar Longitude',ylab='Latitude',xaxs='i',yaxs='i',...)
-   if(!exists("legend.only")) {
-       axis (1, at=seq(0,360,30))
-       axis (3, at=seq(0,360,30))
-=======
-        polar_night <- FALSE
-      } else {
-      plot_function(Long, attr(x, "lat"), MM, axes = FALSE,
-        xlab = "Month",
-        ylab = "Latitude", xaxs = "i", yaxs = "i", col = col, ...)
->>>>>>> dev
-    }
-    if (!exists("legend.only")) {
-      axis(1, at = seq(0, 12) * 30, labels = rep("", 13))
-      axis(3, at = seq(0, 12) * 30, labels = rep("", 13))
-      axis(1, at = seq(0, 11) * 30 + 15,
-        labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"),
-        tick = FALSE)
-    }
-    if (polar_night) {
-      polar_night_curves <- attr(x, "polar_nights")
-      print(polar_night_curves)
-      if (!is.null(polar_night_curves)) {
-        lapply(polar_night_curves, function(p) {
-          polygon(p[[1]], p[[2]], density = 12, col = col)
-          polygon(p[[1]], p[[2]], density = 12, angle = -45, border = NA, col = col)
-        })
-      }
-    }
-  } else {
+ } else { 
     plot_function(attr(x, "long"), attr(x, "lat"), x,
       axes = FALSE,
       xlab = "True solar Longitude", ylab = "Latitude", xaxs = "i", yaxs = "i", ...
